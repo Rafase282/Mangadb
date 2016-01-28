@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  div(class="container-fluid")
+  
+    if (err)
+        div
+            h2(style = "color: red;")= err
+  
+    img(src="https://avatars0.githubusercontent.com/Rafase282?&s=128" alt="My Face")
+    p
+      a(href="mailto:rafase282@gmail.com") 
+        i(class="fa fa-envelope fa-fw")
+      a(href="https://github.com/Rafase282" target="_blank") 
+        i(class="fa fa-github fa-fw")
+      a(href="https://www.linkedin.com/in/rafase282" target="_blank") 
+        i(class="fa fa-linkedin")
+      a(href="http://codepen.io/Rafase282" target="_blank") 
+        i(class="fa fa-codepen")
+      a(href="https://rafase282.wordpress.com/" target="_blank") 
+        i(class="fa fa-wordpress")
+      a(href="http://www.freecodecamp.com/rafase282" target="_blank")
+        i(class="fa fa-fire fa-fw")
+    p Created by Rafael (Rafase282) Rodriguez.
+    h1(class="header")
+      | Manga Record Microservice
+    blockquote
+      p.
+        This is an API that connects to a database that keeps a record of the manga that I read, finished or will read in the near future,
+        so I don't have to bother remembering or looking for where I wrote down teh information.
+        
+    h3 Example query usage:
+    code.
+        https://img-sal.herokuapp.com/lolcats%20funny?offset=10
+    br
+    code.
+        https://img-sal.herokuapp.com/latest
+    h3 Example query output:

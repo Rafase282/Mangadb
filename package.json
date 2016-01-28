@@ -1,0 +1,34 @@
+{
+  "name": "mangadb",
+  "version": "1.0.0",
+  "description": "A service to help users keep a good record of their favorite manga series",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rafase282/Mangadb.git"
+  },
+  "keywords": [
+    "R282",
+    "Rafase282",
+    "Manga"
+  ],
+  "author": "Rafael Rodriguez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Rafase282/Mangadb/issues"
+  },
+  "homepage": "https://github.com/Rafase282/Mangadb#readme",
+  "devDependencies": {
+    "nodemon": "^1.8.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "dotenv": "^2.0.0",
+    "express": "^4.13.4",
+    "jade": "^1.11.0",
+    "mongoose": "^4.3.7"
+  }
+}
