@@ -29,10 +29,95 @@ block content
         This is an API that connects to a database that keeps a record of the manga that I read, finished or will read in the near future,
         so I don't have to bother remembering or looking for where I wrote down teh information.
         
-    h3 Example query usage:
-    code.
-        https://img-sal.herokuapp.com/lolcats%20funny?offset=10
+    h3 What you can do:
+    ol
+      li Create a manga accessed at:
+        code POST https://mangadb-r282.herokuapp.com/api/mangas/title=Aiki&author=Isutoshi&url=http%3A%2F%2Fwww.readmanga.today%2Faiki&userStatus=reading&type=Japanese&categories=Action%2C+Ecchi%2C+Martial+Arts%2C+Mature%2C+Seinen&chapter=14&seriesStatus=Completed&plot=There+is+fighting+at+the+high+school+due+to+a+power+struggle+for+control.+The+granddaughter+of+the+chief+director+requests+help+from+the+Aikido+fighting+style+genius.+Will+he+help%3F+Or+will+he+show+his+true+colors+with+his+bad+boy+ways%3F
+      li Get the manga by title:
+        code GET https://mangadb-r282.herokuapp.com/api/mangas/:manga_title)
+      li Update the manga with this title:
+        code PUT https://mangadb-r282.herokuapp.com/api/mangas/:manga_title
+      li Delete the manga by title
+        code DELETE https://mangadb-r282.herokuapp.com/api/mangas/:manga_title
+      li Get all the mangas
+        code GET https://mangadb-r282.herokuapp.com/api/mangas
     br
+    p
+      | Keep in mine that for creating and updating all fileds are required.
+      | Also for the PUT
+      code Content-Type: application/x-www-form-urlencoded
+    br
+    h3 The Schema
     code.
-        https://img-sal.herokuapp.com/latest
-    h3 Example query output:
+        {
+        title: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: true,
+          unique: true,
+          match: /[a-z]/
+        },
+        author: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: true,
+          unique: false,
+          match: /[a-z]/
+        },
+        url: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: true,
+          unique: true,
+          match: /[a-z]/
+        },
+        userStatus: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: true,
+          unique: false,
+          match: /[a-z]/
+        },
+        type: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: true,
+          unique: false,
+          match: /[a-z]/
+        },
+        categories: [{
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: true,
+          unique: false,
+          match: /[a-z]/
+        }],
+        chapter: {
+          type: Number,
+          required: true,
+          unique: false,
+          min: 0
+        },
+        seriesStatus: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: true,
+          unique: false,
+          match: /[a-z]/
+        },
+        plot: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: true,
+          unique: false,
+          match: /[a-z]/
+        }
+        }

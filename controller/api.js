@@ -17,10 +17,10 @@ module.exports = function(app, router, Manga) {
     next(); // make sure we go to the next routes and don't stop here
   });
 
-  // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
+  // test route to make sure everything is working (accessed at GET https://mangadb-r282.herokuapp.com/api)
   router.get('/', function(req, res) {
     res.json({
-      message: 'hooray! welcome to our api!'
+      message: 'Welcome, check the API usage at https://mangadb-r282.herokuapp.com, there is nothing to do here.'
     });
   });
   app.route('/')
@@ -33,7 +33,7 @@ module.exports = function(app, router, Manga) {
   // ----------------------------------------------------
   router.route('/mangas/:manga_title')
 
-  // get the manga with that id (accessed at GET http://localhost:8080/api/mangas/:manga_title)
+  // Get the manga with that title (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas/:manga_title)
   .get(function(req, res) {
     Manga.findOne({
       title: req.params.manga_title
@@ -51,7 +51,7 @@ module.exports = function(app, router, Manga) {
   })
 
   // UPDATE MANGA BY TITLE
-  // update the manga with this id (accessed at PUT http://localhost:8080/api/mangas/:manga_title)
+  // Update the manga with this title (accessed at PUT https://mangadb-r282.herokuapp.com/api/mangas/:manga_title)
   .put(function(req, res) {
 
     // use our manga model to find the manga we want
@@ -75,13 +75,14 @@ module.exports = function(app, router, Manga) {
         manga.plot = req.body.plot;
         // update the manga
         var msg = req.body.title + ' manga updated.';
-        save(manga, res, msg);
+        var errMsg = 'All fields are required for creating or updating.';
+        save(manga, res, msg, errMsg);
       }
     });
   })
 
   // DELETE MANGA BY TITLE
-  // delete the manga with this id (accessed at DELETE http://localhost:8080/api/mangas/:manga_title)
+  // Delete the manga with this title (accessed at DELETE https://mangadb-r282.herokuapp.com/api/mangas/:manga_title)
   .delete(function(req, res) {
     Manga.remove({
       title: req.params.manga_title
@@ -102,7 +103,7 @@ module.exports = function(app, router, Manga) {
   // CREATE NEW MANGA
   router.route('/mangas')
 
-  // create a manga (accessed at POST http://localhost:8080/api/mangas)
+  // Create a manga (accessed at POST https://mangadb-r282.herokuapp.com/api/mangas)
   .post(function(req, res) {
 
     var manga = new Manga(); // create a new instance of the Manga model
@@ -118,12 +119,13 @@ module.exports = function(app, router, Manga) {
 
     // Call function to save manga
     var msg = req.body.title + ' manga created.';
-    save(manga, res, msg);
+    var errMsg = 'A manga already exist with duplicated name or url.';
+    save(manga, res, msg, errMsg);
 
   })
 
   // FIND ALL MANGAS.
-  // get all the mangas (accessed at GET http://localhost:8080/api/mangas)
+  // Get all the mangas (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas)
   .get(function(req, res) {
     Manga.find(function(err, mangas) {
       if (err) {
@@ -138,12 +140,12 @@ module.exports = function(app, router, Manga) {
     });
   });
 
-  function save(manga, res, msg) {
+  function save(manga, res, msg, errMsg) {
     // save the manga and check for errors
     manga.save(function(err) {
       if (err) {
         res.status(409).json({
-          error: 'A manga already exist with duplicated name or url.'
+          error: errMsg
         });
         console.log('Error creating manga.');
       } else {
