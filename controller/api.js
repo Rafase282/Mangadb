@@ -28,14 +28,16 @@ module.exports = function(app, router, Manga) {
       res.render('index');
     });
 
-  // Find manga by id.
+  // FIND MANGA BY TITLE
   // on routes that end in /mangas/:manga_title
   // ----------------------------------------------------
   router.route('/mangas/:manga_title')
 
   // get the manga with that id (accessed at GET http://localhost:8080/api/mangas/:manga_title)
   .get(function(req, res) {
-    Manga.findOne({title: req.params.manga_title}, function(err, manga) {
+    Manga.findOne({
+      title: req.params.manga_title
+    }, function(err, manga) {
       if (err) {
         res.status(404).json({
           error: req.params.manga_title + ' not found.'
@@ -46,11 +48,55 @@ module.exports = function(app, router, Manga) {
         res.json(manga);
       }
     });
-  });
+  })
 
-  // Update manga by id.
-  app.put('/api/mangas/:id', function(req, res) {
+  // UPDATE MANGA BY TITLE
+  // update the manga with this id (accessed at PUT http://localhost:8080/api/mangas/:manga_title)
+  .put(function(req, res) {
 
+    // use our manga model to find the manga we want
+    Manga.findOne({
+      title: req.params.manga_title
+    }, function(err, manga) {
+      if (err) {
+        res.status(404).json({
+          error: req.params.manga_title + ' not found.'
+        });
+        console.log('Manga not found.');
+      } else {
+        manga.title = req.body.title; // update the mangas info
+        manga.author = req.body.author;
+        manga.url = req.body.url;
+        manga.userStatus = req.body.userStatus;
+        manga.type = req.body.type;
+        manga.categories = req.body.categories;
+        manga.chapter = req.body.chapter;
+        manga.seriesStatus = req.body.seriesStatus;
+        manga.plot = req.body.plot;
+        // update the manga
+        var msg = req.body.title + ' manga updated.';
+        save(manga, res, msg);
+      }
+    });
+  })
+
+  // DELETE MANGA BY TITLE
+  // delete the manga with this id (accessed at DELETE http://localhost:8080/api/mangas/:manga_title)
+  .delete(function(req, res) {
+    Manga.remove({
+      title: req.params.manga_title
+    }, function(err, manga) {
+      if (err) {
+        res.status(404).json({
+          error: 'Could not find manga'
+        });
+        console.log('Manga not found');
+      } else {
+        res.json({
+          message: 'Successfully deleted'
+        });
+      }
+    });
   });
 
   // CREATE NEW MANGA
@@ -70,20 +116,9 @@ module.exports = function(app, router, Manga) {
     manga.seriesStatus = req.body.seriesStatus;
     manga.plot = req.body.plot;
 
-    // save the manga and check for errors
-    manga.save(function(err) {
-      if (err) {
-        res.status(409).json({
-          error: 'A manga already exist with duplicated name or url.'
-        });
-        console.log('Error creating manga.');
-      } else {
-        console.log('Manga Created!');
-        res.json({
-          message: 'Manga created!'
-        });
-      }
-    });
+    // Call function to save manga
+    var msg = req.body.title + ' manga created.';
+    save(manga, res, msg);
 
   })
 
@@ -103,8 +138,21 @@ module.exports = function(app, router, Manga) {
     });
   });
 
-  // Delete manga by id.
-  app.delete('/api/mangas/:id', function(req, res) {
+  function save(manga, res, msg) {
+    // save the manga and check for errors
+    manga.save(function(err) {
+      if (err) {
+        res.status(409).json({
+          error: 'A manga already exist with duplicated name or url.'
+        });
+        console.log('Error creating manga.');
+      } else {
+        console.log('Manga Created!');
+        res.json({
+          message: msg
+        });
+      }
+    });
+  }
 
-  });
 };

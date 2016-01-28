@@ -17,7 +17,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: true,
+    required: false,
     unique: false,
     match: /[a-z]/
   },
@@ -33,7 +33,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: true,
+    required: false,
     unique: false,
     match: /[a-z]/
   },
@@ -55,7 +55,7 @@ var MangaSchema = new Schema({
   }],
   chapter: {
     type: Number,
-    required: true,
+    required: false,
     unique: false,
     min: 0
   },
