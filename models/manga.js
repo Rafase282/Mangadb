@@ -17,7 +17,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: false,
+    required: true,
     unique: false,
     match: /[a-z]/
   },
@@ -33,7 +33,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: false,
+    required: true,
     unique: false,
     match: /[a-z]/
   },
@@ -41,7 +41,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: false,
+    required: true,
     unique: false,
     match: /[a-z]/
   },
@@ -49,13 +49,13 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: false,
+    required: true,
     unique: false,
     match: /[a-z]/
   }],
   chapter: {
     type: Number,
-    required: false,
+    required: true,
     unique: false,
     min: 0
   },
@@ -63,7 +63,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: false,
+    required: true,
     unique: false,
     match: /[a-z]/
   },
@@ -71,7 +71,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: false,
+    required: true,
     unique: false,
     match: /[a-z]/
   },
@@ -79,7 +79,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: false,
+    required: true,
     unique: false,
     match: /[a-z]/
   }]

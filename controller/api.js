@@ -53,38 +53,33 @@ module.exports = function(app, router, Manga) {
   // UPDATE MANGA BY TITLE
   // Update the manga with this title (accessed at PUT https://mangadb-r282.herokuapp.com/api/mangas/:manga_title)
   .put(function(req, res) {
-    // use our manga model to find the manga we want
-    Manga.findOne({
-      title: req.params.manga_title
-    }, function(err, manga) {
-      if (err) {
-        res.status(404).json({
-          error: req.params.manga_title + ' not found.'
-        });
-        console.log('Manga not found.');
-      } else {
-        manga.title = req.body.title; // update the mangas info
-        manga.author = req.body.author;
-        manga.url = req.body.url;
-        manga.userStatus = req.body.userStatus;
-        manga.type = req.body.type;
-        manga.categories = req.body.categories;
-        manga.chapter = req.body.chapter;
-        manga.seriesStatus = req.body.seriesStatus;
-        manga.plot = req.body.plot;
-        manga.altName = req.body.altName;
-        // update the manga
-        var msg = req.body.title + ' manga updated.';
-        var errMsg = 'All fields are required for creating or updating.';
-        save(manga, res, msg, errMsg);
-      }
-    });
-  })
-  /*
-  // UPDATE PARTIAL INFO BY TITLE
-  .patch(function (req, res) {
-    // body...
-  })*/
+      // use our manga model to find the manga we want
+      Manga.findOne({
+        title: req.params.manga_title
+      }, function(err, manga) {
+        if (err) {
+          res.status(404).json({
+            error: req.params.manga_title + ' not found.'
+          });
+          console.log('Manga not found.');
+        } else {
+          manga.title = req.body.title; // update the mangas info
+          manga.author = req.body.author || manga.author;
+          manga.url = req.body.url || manga.url;
+          manga.userStatus = req.body.userStatus || manga.userStatus;
+          manga.type = req.body.type || manga.type;
+          manga.categories = req.body.categories || manga.categories;
+          manga.chapter = req.body.chapter || manga.chapter;
+          manga.seriesStatus = req.body.seriesStatus || manga.seriesStatus;
+          manga.plot = req.body.plot || manga.plot;
+          manga.altName = req.body.altName || manga.altName;
+          // update the manga
+          var msg = req.body.title + ' manga updated.';
+          var errMsg = 'All fields are required for creating new manga, the title is required for updating though..';
+          save(manga, res, msg, errMsg);
+        }
+      });
+    })
 
   // DELETE MANGA BY TITLE
   // Delete the manga with this title (accessed at DELETE https://mangadb-r282.herokuapp.com/api/mangas/:manga_title)
