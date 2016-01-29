@@ -82,7 +82,15 @@ var MangaSchema = new Schema({
     required: false,
     unique: false,
     match: /[a-z]/
-  }]
+  }],
+  direction: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: false,
+    unique: false,
+    match: /[a-z]/
+  }
 }).set('toObject', { retainKeyOrder: true });
 
 module.exports = mongoose.model('Manga', MangaSchema);

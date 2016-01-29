@@ -73,9 +73,10 @@ module.exports = function(app, router, Manga) {
           manga.seriesStatus = req.body.seriesStatus || manga.seriesStatus;
           manga.plot = req.body.plot || manga.plot;
           manga.altName = req.body.altName || manga.altName;
+          manga.direction = req.body.direction || manga.direction;
           // update the manga
           var msg = req.body.title + ' manga updated.';
-          var errMsg = 'All fields are required for creating new manga, the title is required for updating though..';
+          var errMsg = 'All fields are required for creating new manga, the title is required for updating though.';
           save(manga, res, msg, errMsg);
         }
       });
@@ -117,6 +118,7 @@ module.exports = function(app, router, Manga) {
     manga.seriesStatus = req.body.seriesStatus;
     manga.plot = req.body.plot;
     manga.altName = req.body.altName;
+    manga.direction = req.body.direction;
     // Call function to save manga
     var msg = req.body.title + ' manga created.';
     var errMsg = 'A manga already exist with duplicated name or url.';
