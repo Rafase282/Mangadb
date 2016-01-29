@@ -1,10 +1,8 @@
 // /models/manga.js
 
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-//Schema.set('toObject', { retainKeyOrder: true });
 
-var MangaSchema = new Schema({
+var MangaSchema = new mongoose.Schema({
   title: {
     type: String,
     lowercase: true,

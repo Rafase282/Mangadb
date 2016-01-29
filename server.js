@@ -10,11 +10,14 @@ var app = express(); // define our app using express
 var bodyParser = require('body-parser');
 var path = require('path');
 var mongoose = require('mongoose');
-var Manga = require('./models/manga.js');
-var api = require('./controller/api.js'); // Where all the api routes are
+var User = require('./models/user');
+var passport = require('./controllers/passport');
+//var mangaController = require('./controllers/manga');
+var routesController = require('./controllers/routes');
 require('dotenv').config({
   silent: true
 });
+
 // Connect to the database
 var mongouri = process.env.MONGOLAB_URI ||
   "mongodb://" + process.env.IP + ":27017/mangadb";
@@ -36,7 +39,30 @@ var router = express.Router(); // get an instance of the express Router
 
 // all of our routes will be prefixed with /api
 app.use('/api', router);
-api(app, router, Manga);
+passport(app, User);
+
+
+// middleware to use for all requests
+router.use(routesController.logConnection);
+
+// test route to make sure everything is working (accessed at GET https://mangadb-r282.herokuapp.com/api)
+router.route('/')
+  .get(routesController.getWelcome);
+
+// Serve index.jade
+app.route('/')
+  .get(routesController.getIndex);
+
+//Create endpoint handlers for /mangas/:manga_title    
+router.route('/mangas/:manga_title')
+  .get(routesController.getManga)
+  .put(routesController.putManga)
+  .delete(routesController.delManga);
+
+// Create endpoint handlers for /mangas    
+router.route('/mangas')
+  .get(routesController.getMangas)
+  .post(routesController.postMangas);
 
 // CONFIGURE & START THE SERVER
 // =============================================================================
