@@ -63,19 +63,19 @@ module.exports = function(app, router, Manga) {
           });
           console.log('Manga not found.');
         } else {
-          manga.title = req.body.title; // update the mangas info
+          manga.title = req.params.manga_title; 
           manga.author = req.body.author || manga.author;
           manga.url = req.body.url || manga.url;
           manga.userStatus = req.body.userStatus || manga.userStatus;
           manga.type = req.body.type || manga.type;
-          manga.categories = req.body.categories || manga.categories;
+          manga.categories = req.body.categories ? req.body.categories.split(',') : itemize(manga.categories);
           manga.chapter = req.body.chapter || manga.chapter;
           manga.seriesStatus = req.body.seriesStatus || manga.seriesStatus;
           manga.plot = req.body.plot || manga.plot;
-          manga.altName = req.body.altName || manga.altName;
+          manga.altName = req.body.altName ? req.body.altName.split(',') : itemize(manga.altName);
           manga.direction = req.body.direction || manga.direction;
           // update the manga
-          var msg = req.body.title + ' manga updated.';
+          var msg = req.params.manga_title + ' manga updated.';
           var errMsg = 'All fields are required for creating new manga, the title is required for updating though.';
           save(manga, res, msg, errMsg);
         }
@@ -113,11 +113,11 @@ module.exports = function(app, router, Manga) {
     manga.url = req.body.url;
     manga.userStatus = req.body.userStatus;
     manga.type = req.body.type;
-    manga.categories = req.body.categories;
+    manga.categories = req.body.categories.split(',');
     manga.chapter = req.body.chapter;
     manga.seriesStatus = req.body.seriesStatus;
     manga.plot = req.body.plot;
-    manga.altName = req.body.altName;
+    manga.altName = req.body.altName.split(',');
     manga.direction = req.body.direction;
     // Call function to save manga
     var msg = req.body.title + ' manga created.';
@@ -149,14 +149,31 @@ module.exports = function(app, router, Manga) {
         res.status(409).json({
           error: errMsg
         });
-        console.log('Error creating manga.');
+        console.log(errMsg);
       } else {
-        console.log('Manga Created!');
+        console.log(msg);
         res.json({
           message: msg
         });
       }
     });
   }
+  
+  function itemize(arr) {
+  var expression = arr.slice(0);
+  var item;
+  switch (true) {
+    case expression.length < 1:
+      item = '';
+      break;
+    case expression.length > 1:
+      item = expression;
+      break;
+    case expression.length === 1:
+      item = expression[0].split(',');
+      break;
+  }
+  return item;
+}
 
 };
