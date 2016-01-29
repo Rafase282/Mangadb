@@ -1,4 +1,5 @@
 'use strict';
+var geoip = require('geoip-lite');
 
 module.exports = function(app, router, Manga) {
   // middleware to use for all requests
@@ -8,12 +9,13 @@ module.exports = function(app, router, Manga) {
       req.connection.remoteAddress ||
       req.socket.remoteAddress ||
       req.connection.socket.remoteAddress;
-    var info = JSON.stringify({
+    var info = {
       'ip-address': ip,
       'language': req.headers["accept-language"].split(',')[0],
       'software': req.headers['user-agent'].split(') ')[0].split(' (')[1]
-    });
-    console.log('Something is happening from ' + info);
+    };
+    var geo = geoip.lookup(ip);
+    console.log('Someone has connected to the api from ' + geo.city + ', ' + geo.region + ', ' + geo.country + ' using a ' + info.software + ' machine with ' + info.language + ' language. I\'m watching you ' + info['ip-address'] + ' you better behave!' );
     next(); // make sure we go to the next routes and don't stop here
   });
 
