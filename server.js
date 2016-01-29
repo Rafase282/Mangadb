@@ -13,7 +13,6 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var authController = require('./controllers/auth');
 var mangaController = require('./controllers/manga');
-//var routesController = require('./controllers/routes');
 var userController = require('./controllers/user');
 require('dotenv').config({
   silent: true
@@ -70,6 +69,12 @@ router.route('/mangas')
 router.route('/users')
   .post(userController.postUsers)
   .get(authController.isAuthenticated, userController.getUsers);
+  
+//Create endpoint handlers for /mangas/:username    
+router.route('/users/:username')
+  .get(authController.isAuthenticated, userController.getUser)
+  .put(authController.isAuthenticated, userController.putUser)
+  .delete(authController.isAuthenticated, userController.delUser);
 
 // CONFIGURE & START THE SERVER
 // =============================================================================

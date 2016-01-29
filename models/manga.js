@@ -25,8 +25,7 @@ var MangaSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
     required: true,
-    unique: true,
-    match: /[a-z]/
+    unique: true
   },
   userStatus: {
     type: String,
@@ -56,7 +55,8 @@ var MangaSchema = new mongoose.Schema({
     type: Number,
     required: true,
     unique: false,
-    min: 0
+    min: 0,
+    match: /[0-9]/
   },
   seriesStatus: {
     type: String,
@@ -89,6 +89,14 @@ var MangaSchema = new mongoose.Schema({
     required: false,
     unique: false,
     match: /[a-z]/
+  },
+  userId:{
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: false,
+    unique: false,
+    match: /[a-z-0-9]+/
   }
 }).set('toObject', { retainKeyOrder: true });
 

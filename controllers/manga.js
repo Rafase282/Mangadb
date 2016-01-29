@@ -1,6 +1,8 @@
 'use strict';
+// Load required packages
 var geoip = require('geoip-lite');
 var Manga = require('../models/manga');
+var dbHelper = require('./dbHelper');
 
 exports.logConnection = function(req, res, next) {
   // do logging
@@ -35,11 +37,10 @@ exports.getIndex = function(req, res) {
 exports.getManga = function(req, res) {
   Manga.findOne({
     title: req.params.manga_title
-  }, function(err, manga) {
+  }, 'userId', function(err, manga) {
     var ok = req.params.manga_title + ' found!';
     var notOk = req.params.manga_title + ' not found.';
     if (err) {
-
       res.status(404).json({
         error: notOk
       });
@@ -57,7 +58,7 @@ exports.putManga = function(req, res) {
   // use our manga model to find the manga we want
   Manga.findOne({
     title: req.params.manga_title
-  }, function(err, manga) {
+  }, 'userId', function(err, manga) {
     if (err) {
       var notOk = req.params.manga_title + ' not found.';
       res.status(404).json({
@@ -65,21 +66,23 @@ exports.putManga = function(req, res) {
       });
       console.log(notOk);
     } else {
+      console.log(req.params);
       manga.title = req.params.manga_title;
       manga.author = req.body.author || manga.author;
       manga.url = req.body.url || manga.url;
       manga.userStatus = req.body.userStatus || manga.userStatus;
       manga.type = req.body.type || manga.type;
-      manga.categories = req.body.categories ? req.body.categories.split(',') : itemize(manga.categories);
+      manga.categories = req.body.categories ? req.body.categories.split(',') : dbHelper.objItemize(manga.categories);
       manga.chapter = req.body.chapter || manga.chapter;
       manga.seriesStatus = req.body.seriesStatus || manga.seriesStatus;
       manga.plot = req.body.plot || manga.plot;
-      manga.altName = req.body.altName ? req.body.altName.split(',') : itemize(manga.altName);
+      manga.altName = req.body.altName ? req.body.altName.split(',') : dbHelper.objItemize(manga.altName);
       manga.direction = req.body.direction || manga.direction;
+      manga.userId = req.user._id || manga.userId;
       // update the manga
       var msg = req.params.manga_title + ' manga updated.';
       var errMsg = 'All fields are required for creating new manga, the title is required for updating though.';
-      save(manga, res, msg, errMsg);
+      dbHelper.objSave(manga, res, msg, errMsg);
     }
   });
 };
@@ -89,7 +92,7 @@ exports.putManga = function(req, res) {
 exports.delManga = function(req, res) {
   Manga.remove({
     title: req.params.manga_title
-  }, function(err, manga) {
+  }, 'userId', function(err, manga) {
     var ok = 'Successfully deleted ' + req.params.manga_title;
     var notOk = 'Could not find manga ' + req.params.manga_title;
     if (err) {
@@ -121,16 +124,20 @@ exports.postMangas = function(req, res) {
   manga.plot = req.body.plot;
   manga.altName = req.body.altName.split(',');
   manga.direction = req.body.direction;
+  manga.userId = req.user._id;
+
   // Call function to save manga
   var msg = req.body.title + ' manga created.';
   var errMsg = 'A manga already exist with duplicated name or url.';
-  save(manga, res, msg, errMsg);
+  dbHelper.objSave(manga, res, msg, errMsg);
 };
 
 // FIND ALL MANGAS.
 // Get all the mangas (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas)
 exports.getMangas = function(req, res) {
-  Manga.find(function(err, mangas) {
+  Manga.find({
+    userId: req.user._id
+  }, function(err, mangas) {
     var ok = 'Manga List Generated';
     var notOk = 'No mangas found';
     if (err) {
@@ -144,37 +151,3 @@ exports.getMangas = function(req, res) {
     }
   });
 };
-
-function save(manga, res, msg, errMsg) {
-  // save the manga and check for errors
-  manga.save(function(err) {
-    if (err) {
-      res.status(409).json({
-        error: errMsg
-      });
-      console.log(errMsg);
-    } else {
-      console.log(msg);
-      res.json({
-        message: msg
-      });
-    }
-  });
-}
-
-function itemize(arr) {
-  var expression = arr.slice(0);
-  var item;
-  switch (true) {
-    case expression.length < 1:
-      item = '';
-      break;
-    case expression.length > 1:
-      item = expression;
-      break;
-    case expression.length === 1:
-      item = expression[0].split(',');
-      break;
-  }
-  return item;
-}
