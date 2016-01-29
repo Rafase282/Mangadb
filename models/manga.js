@@ -1,7 +1,8 @@
-// /models/manga.js
-
+// ./models/manga.js
+// Load required packages
 var mongoose = require('mongoose');
 
+// Define our user schema
 var MangaSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -91,4 +92,5 @@ var MangaSchema = new mongoose.Schema({
   }
 }).set('toObject', { retainKeyOrder: true });
 
+// Export the Mongoose model
 module.exports = mongoose.model('Manga', MangaSchema);

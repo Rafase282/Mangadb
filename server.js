@@ -14,6 +14,7 @@ var User = require('./models/user');
 var passport = require('./controllers/passport');
 //var mangaController = require('./controllers/manga');
 var routesController = require('./controllers/routes');
+var userController = require('./controllers/user');
 require('dotenv').config({
   silent: true
 });
@@ -63,6 +64,11 @@ router.route('/mangas/:manga_title')
 router.route('/mangas')
   .get(routesController.getMangas)
   .post(routesController.postMangas);
+  
+// Create endpoint handlers for /users
+router.route('/users')
+  .post(userController.postUsers)
+  .get(userController.getUsers);
 
 // CONFIGURE & START THE SERVER
 // =============================================================================

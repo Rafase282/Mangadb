@@ -36,13 +36,16 @@ exports.getManga = function(req, res) {
   Manga.findOne({
     title: req.params.manga_title
   }, function(err, manga) {
+    var ok = req.params.manga_title + ' found!';
+    var notOk = req.params.manga_title + ' not found.';
     if (err) {
+
       res.status(404).json({
-        error: req.params.manga_title + ' not found.'
+        error: notOk
       });
-      console.log('Manga not found.');
+      console.log(notOk);
     } else {
-      console.log(req.params.manga_title + ' found!');
+      console.log(ok);
       res.json(manga);
     }
   });
@@ -56,10 +59,11 @@ exports.putManga = function(req, res) {
     title: req.params.manga_title
   }, function(err, manga) {
     if (err) {
+      var notOk = req.params.manga_title + ' not found.';
       res.status(404).json({
-        error: req.params.manga_title + ' not found.'
+        error: notOk
       });
-      console.log('Manga not found.');
+      console.log(notOk);
     } else {
       manga.title = req.params.manga_title;
       manga.author = req.body.author || manga.author;
@@ -86,14 +90,17 @@ exports.delManga = function(req, res) {
   Manga.remove({
     title: req.params.manga_title
   }, function(err, manga) {
+    var ok = 'Successfully deleted ' + req.params.manga_title;
+    var notOk = 'Could not find manga ' + req.params.manga_title;
     if (err) {
       res.status(404).json({
-        error: 'Could not find manga'
+        error: notOk
       });
-      console.log('Manga not found');
+      console.log(notOk);
     } else {
+      console.log(ok);
       res.json({
-        message: 'Successfully deleted'
+        message: ok
       });
     }
   });
@@ -124,13 +131,15 @@ exports.postMangas = function(req, res) {
 // Get all the mangas (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas)
 exports.getMangas = function(req, res) {
   Manga.find(function(err, mangas) {
+    var ok = 'Manga List Generated';
+    var notOk = 'No mangas found';
     if (err) {
       res.status(404).json({
-        error: 'No mangas found.'
+        error: notOk
       });
-      console.log('No mangas found.');
+      console.log(notOk);
     } else {
-      console.log('Mangas found!');
+      console.log(ok);
       res.json(mangas);
     }
   });
