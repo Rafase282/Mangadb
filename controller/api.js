@@ -53,7 +53,6 @@ module.exports = function(app, router, Manga) {
   // UPDATE MANGA BY TITLE
   // Update the manga with this title (accessed at PUT https://mangadb-r282.herokuapp.com/api/mangas/:manga_title)
   .put(function(req, res) {
-
     // use our manga model to find the manga we want
     Manga.findOne({
       title: req.params.manga_title
@@ -81,6 +80,11 @@ module.exports = function(app, router, Manga) {
       }
     });
   })
+  /*
+  // UPDATE PARTIAL INFO BY TITLE
+  .patch(function (req, res) {
+    // body...
+  })*/
 
   // DELETE MANGA BY TITLE
   // Delete the manga with this title (accessed at DELETE https://mangadb-r282.herokuapp.com/api/mangas/:manga_title)
