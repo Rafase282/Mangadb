@@ -79,7 +79,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: true,
+    required: false,
     unique: false,
     match: /[a-z]/
   }]
