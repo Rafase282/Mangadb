@@ -17,7 +17,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: true,
+    required: false,
     unique: false,
     match: /[a-z]/
   },
@@ -33,7 +33,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: true,
+    required: false,
     unique: false,
     match: /[a-z]/
   },
@@ -41,7 +41,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: true,
+    required: false,
     unique: false,
     match: /[a-z]/
   },
@@ -49,13 +49,13 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: true,
+    required: false,
     unique: false,
     match: /[a-z]/
   }],
   chapter: {
     type: Number,
-    required: true,
+    required: false,
     unique: false,
     min: 0
   },
@@ -63,7 +63,7 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: true,
+    required: false,
     unique: false,
     match: /[a-z]/
   },
@@ -71,10 +71,18 @@ var MangaSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: true,
+    required: false,
     unique: false,
     match: /[a-z]/
-  }
+  },
+  altName: [{
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: false,
+    unique: false,
+    match: /[a-z]/
+  }]
 }).set('toObject', { retainKeyOrder: true });
 
 module.exports = mongoose.model('Manga', MangaSchema);

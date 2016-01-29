@@ -73,6 +73,7 @@ module.exports = function(app, router, Manga) {
         manga.chapter = req.body.chapter;
         manga.seriesStatus = req.body.seriesStatus;
         manga.plot = req.body.plot;
+        manga.altName = req.body.altName;
         // update the manga
         var msg = req.body.title + ' manga updated.';
         var errMsg = 'All fields are required for creating or updating.';
@@ -116,7 +117,7 @@ module.exports = function(app, router, Manga) {
     manga.chapter = req.body.chapter;
     manga.seriesStatus = req.body.seriesStatus;
     manga.plot = req.body.plot;
-
+    manga.altName = req.body.altName;
     // Call function to save manga
     var msg = req.body.title + ' manga created.';
     var errMsg = 'A manga already exist with duplicated name or url.';
