@@ -10,10 +10,10 @@ var app = express(); // define our app using express
 var bodyParser = require('body-parser');
 var path = require('path');
 var mongoose = require('mongoose');
-var User = require('./models/user');
-var passport = require('./controllers/passport');
-//var mangaController = require('./controllers/manga');
-var routesController = require('./controllers/routes');
+var passport = require('passport');
+var authController = require('./controllers/auth');
+var mangaController = require('./controllers/manga');
+//var routesController = require('./controllers/routes');
 var userController = require('./controllers/user');
 require('dotenv').config({
   silent: true
@@ -31,6 +31,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+// Use the passport package in our application
+app.use(passport.initialize());
+
 // configure the view
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -40,35 +43,33 @@ var router = express.Router(); // get an instance of the express Router
 
 // all of our routes will be prefixed with /api
 app.use('/api', router);
-passport(app, User);
-
 
 // middleware to use for all requests
-router.use(routesController.logConnection);
+router.use(mangaController.logConnection);
 
 // test route to make sure everything is working (accessed at GET https://mangadb-r282.herokuapp.com/api)
 router.route('/')
-  .get(routesController.getWelcome);
+  .get(mangaController.getWelcome);
 
 // Serve index.jade
 app.route('/')
-  .get(routesController.getIndex);
+  .get(mangaController.getIndex);
 
 //Create endpoint handlers for /mangas/:manga_title    
 router.route('/mangas/:manga_title')
-  .get(routesController.getManga)
-  .put(routesController.putManga)
-  .delete(routesController.delManga);
+  .get(authController.isAuthenticated, mangaController.getManga)
+  .put(authController.isAuthenticated, mangaController.putManga)
+  .delete(authController.isAuthenticated, mangaController.delManga);
 
 // Create endpoint handlers for /mangas    
 router.route('/mangas')
-  .get(routesController.getMangas)
-  .post(routesController.postMangas);
-  
+  .get(authController.isAuthenticated, mangaController.getMangas)
+  .post(authController.isAuthenticated, mangaController.postMangas);
+
 // Create endpoint handlers for /users
 router.route('/users')
   .post(userController.postUsers)
-  .get(userController.getUsers);
+  .get(authController.isAuthenticated, userController.getUsers);
 
 // CONFIGURE & START THE SERVER
 // =============================================================================

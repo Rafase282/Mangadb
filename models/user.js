@@ -25,7 +25,9 @@ var UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
   }
-}).set('toObject', { retainKeyOrder: true });
+}).set('toObject', {
+  retainKeyOrder: true
+});
 
 // Execute before each user.save() call
 UserSchema.pre('save', function(callback) {
@@ -44,6 +46,13 @@ UserSchema.pre('save', function(callback) {
     });
   });
 });
+
+UserSchema.methods.verifyPassword = function(password, cb) {
+  bcrypt.compare(password, this.password, function(err, isMatch) {
+    if (err) return cb(err);
+    cb(null, isMatch);
+  });
+};
 
 // Export the Mongoose model
 module.exports = mongoose.model('User', UserSchema);
