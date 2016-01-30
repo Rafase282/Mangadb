@@ -166,7 +166,6 @@ exports.postManga = function(req, res) {
 exports.getMangas = function(req, res) {
   if (req.user.username === process.env.ADMIN || req.user.username === req.params.user) {
     var userName = req.user.username === process.env.ADMIN ? req.params.user : req.user.username;
-    console.log(userName);
     Manga.find({
       username: userName
     }, function(err, mangas) {
