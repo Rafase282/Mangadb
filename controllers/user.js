@@ -20,7 +20,7 @@ exports.postUsers = function(req, res) {
 // FIND ALL USERS
 // Create endpoint /api/users for GET
 exports.getUsers = function(req, res) {
-  if (req.user.username === 'rafase282') {
+  if (req.user.username === process.env.ADMIN) {
     User.find(function(err, users) {
       var ok = 'List of users succesfully generated';
       var notOk = 'No users found';
@@ -44,7 +44,7 @@ exports.getUsers = function(req, res) {
 // FIND USER BY USERNAME
 // Get the user (accessed at GET https://mangadb-r282.herokuapp.com/api/users/:username)
 exports.getUser = function(req, res) {
-  if (req.user.username === 'rafase282' || req.user.username === req.params.username) {
+  if (req.user.username === process.env.ADMIN || req.user.username === req.params.username) {
     User.findOne({
       username: req.params.username
     }, function(err, user) {
@@ -70,7 +70,7 @@ exports.getUser = function(req, res) {
 // DELETE USER BY USERNAME
 // Delete the user with this title (accessed at DELETE https://mangadb-r282.herokuapp.com/api/users/:username)
 exports.delUser = function(req, res) {
-  if (req.user.username === 'rafase282' || req.user.username === req.params.username) {
+  if (req.user.username === process.env.ADMIN || req.user.username === req.params.username) {
     User.remove({
       username: req.params.username
     }, function(err, user) {
@@ -95,11 +95,37 @@ exports.delUser = function(req, res) {
   }
 };
 
+// DELETE ALL USER VIA ADMIN
+// Delete all users via admin rights (accessed at DELETE https://mangadb-r282.herokuapp.com/api/users)
+exports.delUsers = function(req, res) {
+  if (req.user.username === process.env.ADMIN) {
+    User.remove({}, function(err, user) {
+      var ok = 'Successfully deleted all users, remember to create admin again.';
+      var notOk = 'Could not delete users';
+      if (err) {
+        res.status(404).json({
+          error: notOk
+        });
+        console.log(notOk);
+      } else {
+        console.log(ok);
+        res.json({
+          message: ok
+        });
+      }
+    });
+  } else {
+    res.json({
+      error: 'You are not an admin!'
+    });
+  }
+};
+
 // UPDATE USER BY USERNAME
 // Update the user by username (accessed at PUT https://mangadb-r282.herokuapp.com/api/users/:username)
 exports.putUser = function(req, res) {
   // use our user model to find the user we want
-  if (req.user.username === 'rafase282' || req.user.username === req.params.username) {
+  if (req.user.username === process.env.ADMIN || req.user.username === req.params.username) {
     User.findOne({
       username: req.params.username
     }, function(err, user) {
@@ -115,6 +141,7 @@ exports.putUser = function(req, res) {
         user.email = req.body.email || user.email;
         user.name = req.body.name || user.name;
         user.lastname = req.body.lastname || user.lastname;
+        
         // update the user
         var msg = req.params.username + ' user updated.';
         var errMsg = 'All fields are required for creating new user, the title is required for updating though.';

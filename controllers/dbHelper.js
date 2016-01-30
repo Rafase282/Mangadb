@@ -18,17 +18,22 @@ exports.objSave = function save(object, res, msg, errMsg) {
 };
 
 exports.objItemize = function itemize(arr) {
-  var expression = arr.slice(0);
   var item;
   switch (true) {
-    case expression.length < 1:
+    case arr === null || arr === undefined:
+      item = [];
+      break;
+    case arr === ['']:
+      item = arr;
+      break;
+    case arr.slice(0).length < 1:
       item = '';
       break;
-    case expression.length > 1:
-      item = expression;
+    case arr.slice(0).length > 1:
+      item = arr.slice(0);
       break;
-    case expression.length === 1:
-      item = expression[0].split(',');
+    case arr.slice(0).length === 1:
+      item = arr.slice(0)[0].split(',');
       break;
   }
   return item;

@@ -54,21 +54,27 @@ router.route('/')
 app.route('/')
   .get(mangaController.getIndex);
 
-//Create endpoint handlers for /mangas/:manga_title    
-router.route('/mangas/:manga_title')
+//Create endpoint handlers for /mangas/:user/:manga_tile   
+router.route('/mangas/:user/:manga_title')
   .get(authController.isAuthenticated, mangaController.getManga)
   .put(authController.isAuthenticated, mangaController.putManga)
   .delete(authController.isAuthenticated, mangaController.delManga);
 
-// Create endpoint handlers for /mangas    
-router.route('/mangas')
+// Create endpoint handlers for /mangas/:user  
+router.route('/mangas/:user')
   .get(authController.isAuthenticated, mangaController.getMangas)
   .post(authController.isAuthenticated, mangaController.postMangas);
-
+  
+// Get all mangas by admin
+router.route('/mangas')
+  .get(authController.isAuthenticated, mangaController.getAllMangas)
+  .delete(authController.isAuthenticated, mangaController.delMangas);
+  
 // Create endpoint handlers for /users
 router.route('/users')
   .post(userController.postUsers)
-  .get(authController.isAuthenticated, userController.getUsers);
+  .get(authController.isAuthenticated, userController.getUsers)
+  .delete(authController.isAuthenticated, userController.delUsers);
   
 //Create endpoint handlers for /mangas/:username    
 router.route('/users/:username')
