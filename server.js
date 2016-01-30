@@ -56,31 +56,31 @@ app.route('/')
 
 //Create endpoint handlers for /mangas/:user/:manga_tile   
 router.route('/mangas/:user/:manga_title')
-  .get(authController.isAuthenticated, mangaController.getManga)
-  .put(authController.isAuthenticated, mangaController.putManga)
-  .delete(authController.isAuthenticated, mangaController.delManga);
+  .get(authController.isAuthenticated, mangaController.getManga) // get user's manga info
+  .put(authController.isAuthenticated, mangaController.putManga) // update user's manga info
+  .delete(authController.isAuthenticated, mangaController.delManga); // deletes user's manga
 
 // Create endpoint handlers for /mangas/:user  
 router.route('/mangas/:user')
-  .get(authController.isAuthenticated, mangaController.getMangas)
-  .post(authController.isAuthenticated, mangaController.postMangas);
+  .get(authController.isAuthenticated, mangaController.getMangas) //get all user's manga
+  .post(authController.isAuthenticated, mangaController.postManga); //create new manga
   
 // Get all mangas by admin
 router.route('/mangas')
-  .get(authController.isAuthenticated, mangaController.getAllMangas)
-  .delete(authController.isAuthenticated, mangaController.delMangas);
+  .get(authController.isAuthenticated, mangaController.getAllMangas) //admin get all mangas
+  .delete(authController.isAuthenticated, mangaController.delMangas); // admin delete all mangas
   
 // Create endpoint handlers for /users
 router.route('/users')
-  .post(userController.postUsers)
-  .get(authController.isAuthenticated, userController.getUsers)
-  .delete(authController.isAuthenticated, userController.delUsers);
+  .post(userController.postUsers) // Creates new user
+  .get(authController.isAuthenticated, userController.getUsers) //admin get all users
+  .delete(authController.isAuthenticated, userController.delUsers); //admin delete all users
   
 //Create endpoint handlers for /mangas/:username    
 router.route('/users/:username')
-  .get(authController.isAuthenticated, userController.getUser)
-  .put(authController.isAuthenticated, userController.putUser)
-  .delete(authController.isAuthenticated, userController.delUser);
+  .get(authController.isAuthenticated, userController.getUser) // get user info
+  .put(authController.isAuthenticated, userController.putUser) // update user info
+  .delete(authController.isAuthenticated, userController.delUser); // deletes user
 
 // CONFIGURE & START THE SERVER
 // =============================================================================

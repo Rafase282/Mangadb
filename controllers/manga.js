@@ -133,7 +133,7 @@ exports.delManga = function(req, res) {
 
 // CREATE NEW MANGA
 // Create a manga (accessed at POST https://mangadb-r282.herokuapp.com/api/mangas/:user)
-exports.postMangas = function(req, res) {
+exports.postManga = function(req, res) {
   if (req.user.username === process.env.ADMIN || req.user.username === req.params.user) {
     var manga = new Manga(); // create a new instance of the Manga model
     manga.title = req.body.title; // set the manga name (comes from the request)
