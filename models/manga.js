@@ -90,7 +90,7 @@ var MangaSchema = new mongoose.Schema({
     unique: false,
     match: /[a-z]/
   },
-  userId:{
+  userId: {
     type: String,
     lowercase: true,
     trim: true,
@@ -106,7 +106,9 @@ var MangaSchema = new mongoose.Schema({
     unique: false,
     match: /[a-z-0-9]+/
   }
-}).set('toObject', { retainKeyOrder: true });
+}).set('toObject', {
+  retainKeyOrder: true
+});
 
 // Export the Mongoose model
 module.exports = mongoose.model('Manga', MangaSchema);

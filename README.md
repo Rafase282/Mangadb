@@ -6,21 +6,23 @@ Created by Rafase282
 [Github](https://github.com/Rafase282) | [FreeCodeCamp](http://www.freecodecamp.com/rafase282) | [CodePen](http://codepen.io/Rafase282/) | [LinkedIn](https://www.linkedin.com/in/rafase282) | [Blog/Site](https://rafase282.wordpress.com/) | [E-Mail](mailto:rafase282@gmail.com)
 
 # Manga Record Microservice
+This is an API created to store crucial information for any manga an authenticated user might read. Wtheer you want to keep track of the manga you will rea, already finished or are currently reading this microservice will help you get your data together. In the Future I intend on adding more features but meanwhile the user interface will be separated and this stays as the core backend.
 
-This is a RESTful API that connects to a database that keeps a record of the manga that I read, finished or will read in the near future, so I don't have to bother remembering or looking for where I wrote down teh information.
+There is an admin account that is declared onteh envarioment variables that basically has root access, it must be created and a secure password used. The admin can override any information if needed including passwords. In the future I will implement email services to mail queries, and particularly to allow for password reset if forgotten.
 
 ## What you can do:
+1. Create a manga accessed at: **POST** `https://mangadb-r282.herokuapp.com/api/mangas/:user/title=Aiki&author=Isutoshi&url=http%3A%2F%2Fwww.readmanga.today%2Faiki&userStatus=reading&type=Japanese&categories=Action%2C+Ecchi%2C+Martial+Arts%2C+Mature%2C+Seinen&chapter=14&seriesStatus=Completed&plot=There+is+fighting+at+the+high+school+due+to+a+power+struggle+for+control.+The+granddaughter+of+the+chief+director+requests+help+from+the+Aikido+fighting+style+genius.+Will+he+help%3F+Or+will+he+show+his+true+colors+with+his+bad+boy+ways%3F`
+2. Get the manga by title: **GET** `https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title`
+3. Update the manga with this title: **PUT** `https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title`
+4. Delete the manga by title: **DELETE** `https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title`
+5. Admin can get a list of all the mangas across the user base: **GET** `https://mangadb-r282.herokuapp.com/api/mangas`
+6. Admin can get a list of all users: **GET** `https://mangadb-r282.herokuapp.com/api/users`
+7. Admin can delete all users including itself, this requires the admin to be re-created: **DELETE** `https://mangadb-r282.herokuapp.com/api/mangas`
+8. Admin can get a list of all the mangas across the user base: **GET** `https://mangadb-r282.herokuapp.com/api/mangas`
 
-1. Create a manga (accessed at POST https://mangadb-r282.herokuapp.com/api/mangas/title=Aiki&author=Isutoshi&url=http%3A%2F%2Fwww.readmanga.today%2Faiki&userStatus=reading&type=Japanese&categories=Action%2C+Ecchi%2C+Martial+Arts%2C+Mature%2C+Seinen&chapter=14&seriesStatus=Completed&plot=There+is+fighting+at+the+high+school+due+to+a+power+struggle+for+control.+The+granddaughter+of+the+chief+director+requests+help+from+the+Aikido+fighting+style+genius.+Will+he+help%3F+Or+will+he+show+his+true+colors+with+his+bad+boy+ways%3F)
-2. Get the manga by title (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas/:manga_title)
-3. Update the manga by title (accessed at PUT https://mangadb-r282.herokuapp.com/api/mangas/:manga_title)
-4. Delete the manga by title (accessed at DELETE https://mangadb-r282.herokuapp.com/api/mangas/:manga_title)
-5. Get all the mangas (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas)
+Keep in mine that for creating and updating all fields are required. Also `Content-Type: application/x-www-form-urlencoded`
 
-Keep in mine that for creating and updating all fileds are required.
-Also `Content-Type: application/x-www-form-urlencoded`
-
-## Schema:
+## The Manga Schema:
 
 ```js
 {
@@ -29,7 +31,7 @@ Also `Content-Type: application/x-www-form-urlencoded`
     lowercase: true,
     trim: true,
     required: true,
-    unique: true,
+    unique: false,
     match: /[a-z]/
   },
   author: {
@@ -45,8 +47,7 @@ Also `Content-Type: application/x-www-form-urlencoded`
     lowercase: true,
     trim: true,
     required: true,
-    unique: true,
-    match: /[a-z]/
+    unique: false
   },
   userStatus: {
     type: String,
@@ -76,7 +77,8 @@ Also `Content-Type: application/x-www-form-urlencoded`
     type: Number,
     required: true,
     unique: false,
-    min: 0
+    min: 0,
+    match: /[0-9]/
   },
   seriesStatus: {
     type: String,
@@ -91,6 +93,82 @@ Also `Content-Type: application/x-www-form-urlencoded`
     lowercase: true,
     trim: true,
     required: true,
+    unique: false,
+    match: /[a-z]/
+  },
+  altName: [{
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: false,
+    unique: false,
+    match: /[a-z]/
+  }],
+  direction: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: false,
+    unique: false,
+    match: /[a-z]/
+  },
+  userId: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: false,
+    unique: false,
+    match: /[a-z-0-9]+/
+  },
+  username: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: false,
+    unique: false,
+    match: /[a-z-0-9]+/
+  }
+}
+```
+
+## The User Schema:
+
+```js
+{
+  username: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: true,
+    unique: true,
+    match: /[a-z-0-9]+/
+  },
+  password: {
+    type: String,
+    trim: true,
+    required: true,
+    unique: false
+  },
+  email: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: true,
+    unique: true
+  },
+  name: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: false,
+    unique: false,
+    match: /[a-z]/
+  },
+  lastname: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: false,
     unique: false,
     match: /[a-z]/
   }

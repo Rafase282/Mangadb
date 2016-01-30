@@ -64,18 +64,18 @@ router.route('/mangas/:user/:manga_title')
 router.route('/mangas/:user')
   .get(authController.isAuthenticated, mangaController.getMangas) //get all user's manga
   .post(authController.isAuthenticated, mangaController.postManga); //create new manga
-  
+
 // Get all mangas by admin
 router.route('/mangas')
   .get(authController.isAuthenticated, mangaController.getAllMangas) //admin get all mangas
   .delete(authController.isAuthenticated, mangaController.delMangas); // admin delete all mangas
-  
+
 // Create endpoint handlers for /users
 router.route('/users')
   .post(userController.postUsers) // Creates new user
   .get(authController.isAuthenticated, userController.getUsers) //admin get all users
   .delete(authController.isAuthenticated, userController.delUsers); //admin delete all users
-  
+
 //Create endpoint handlers for /mangas/:username    
 router.route('/users/:username')
   .get(authController.isAuthenticated, userController.getUser) // get user info

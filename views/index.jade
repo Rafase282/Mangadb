@@ -24,30 +24,42 @@ block content
     p Created by Rafael (Rafase282) Rodriguez.
     h1(class="header")
       | Manga Record Microservice
-    blockquote
-      p.
-        This is an API that connects to a database that keeps a record of the manga that I read, finished or will read in the near future,
-        so I don't have to bother remembering or looking for where I wrote down teh information.
+    p.
+      This is an API created to store crucial information for any manga an authenticated user might read. Wtheer you want to keep track of the manga
+      you will rea, already finished or are currently reading this microservice will help you get your data together. In the Future I intend on adding more features
+      but meanwhile the user interface will be separated and this stays as the core backend.
+    br
+    p.
+      There is an admin account that is declared onteh envarioment variables that basically has root access, it must be created and a secure password used.
+      The admin can override any information if needed including passwords. In the future I will implement email services to mail queries, and particularly to allow for
+      password reset if forgotten.
+        
         
     h3 What you can do:
     ol
       li Create a manga accessed at:
-        code POST https://mangadb-r282.herokuapp.com/api/mangas/title=Aiki&author=Isutoshi&url=http%3A%2F%2Fwww.readmanga.today%2Faiki&userStatus=reading&type=Japanese&categories=Action%2C+Ecchi%2C+Martial+Arts%2C+Mature%2C+Seinen&chapter=14&seriesStatus=Completed&plot=There+is+fighting+at+the+high+school+due+to+a+power+struggle+for+control.+The+granddaughter+of+the+chief+director+requests+help+from+the+Aikido+fighting+style+genius.+Will+he+help%3F+Or+will+he+show+his+true+colors+with+his+bad+boy+ways%3F
+        code POST https://mangadb-r282.herokuapp.com/api/mangas/:user/title=Aiki&author=Isutoshi&url=http%3A%2F%2Fwww.readmanga.today%2Faiki&userStatus=reading&type=Japanese&categories=Action%2C+Ecchi%2C+Martial+Arts%2C+Mature%2C+Seinen&chapter=14&seriesStatus=Completed&plot=There+is+fighting+at+the+high+school+due+to+a+power+struggle+for+control.+The+granddaughter+of+the+chief+director+requests+help+from+the+Aikido+fighting+style+genius.+Will+he+help%3F+Or+will+he+show+his+true+colors+with+his+bad+boy+ways%3F
       li Get the manga by title:
-        code GET https://mangadb-r282.herokuapp.com/api/mangas/:manga_title)
+        code GET https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title)
       li Update the manga with this title:
-        code PUT https://mangadb-r282.herokuapp.com/api/mangas/:manga_title
+        code PUT https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title
       li Delete the manga by title
-        code DELETE https://mangadb-r282.herokuapp.com/api/mangas/:manga_title
-      li Get all the mangas
+        code DELETE https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title
+      li Admin can get a list of all the mangas across the user base.
+        code GET https://mangadb-r282.herokuapp.com/api/mangas
+      li Admin can get a list of all users.
+        code GET https://mangadb-r282.herokuapp.com/api/users
+      li Admin can delete all users including itself, this requires the admin to be re-created.
+        code DELETE https://mangadb-r282.herokuapp.com/api/mangas
+      li Admin can get a list of all the mangas across the user base.
         code GET https://mangadb-r282.herokuapp.com/api/mangas
     br
     p
-      | Keep in mine that for creating and updating all fileds are required.
+      | Keep in mine that for creating and updating all fields are required.
       | Also for the PUT
       code Content-Type: application/x-www-form-urlencoded
     br
-    h3 The Schema
+    h3 The Manga Schema
     code.
         {
         title: {
@@ -55,7 +67,7 @@ block content
           lowercase: true,
           trim: true,
           required: true,
-          unique: true,
+          unique: false,
           match: /[a-z]/
         },
         author: {
@@ -71,8 +83,7 @@ block content
           lowercase: true,
           trim: true,
           required: true,
-          unique: true,
-          match: /[a-z]/
+          unique: false
         },
         userStatus: {
           type: String,
@@ -102,7 +113,8 @@ block content
           type: Number,
           required: true,
           unique: false,
-          min: 0
+          min: 0,
+          match: /[0-9]/
         },
         seriesStatus: {
           type: String,
@@ -117,6 +129,80 @@ block content
           lowercase: true,
           trim: true,
           required: true,
+          unique: false,
+          match: /[a-z]/
+        },
+        altName: [{
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: false,
+          unique: false,
+          match: /[a-z]/
+        }],
+        direction: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: false,
+          unique: false,
+          match: /[a-z]/
+        },
+        userId:{
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: false,
+          unique: false,
+          match: /[a-z-0-9]+/
+        },
+        username: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: false,
+          unique: false,
+          match: /[a-z-0-9]+/
+        }
+        }
+    br
+    h3 The User Schema
+    code.
+        {
+        username: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: true,
+          unique: true,
+          match: /[a-z-0-9]+/
+        },
+        password: {
+          type: String,
+          trim: true,
+          required: true,
+          unique: false
+        },
+        email: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: true,
+          unique: true
+        },
+        name: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: false,
+          unique: false,
+          match: /[a-z]/
+        },
+        lastname: {
+          type: String,
+          lowercase: true,
+          trim: true,
+          required: false,
           unique: false,
           match: /[a-z]/
         }
