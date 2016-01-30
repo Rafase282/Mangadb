@@ -39,7 +39,7 @@ exports.getManga = function(req, res) {
     Manga.findOne({
       title: req.params.manga_title,
       username: req.params.user
-    }, 'userId', function(err, manga) {
+    }, function(err, manga) {
       var ok = req.params.manga_title + ' found!';
       var notOk = req.params.manga_title + ' not found.';
       if (err) {
@@ -67,7 +67,7 @@ exports.putManga = function(req, res) {
     Manga.findOne({
       title: req.params.manga_title,
       username: req.params.user
-    }, 'userId', function(err, manga) {
+    }, function(err, manga) {
       if (err) {
         var notOk = req.params.manga_title + ' not found.';
         res.status(404).json({
@@ -86,8 +86,9 @@ exports.putManga = function(req, res) {
         manga.plot = req.body.plot || manga.plot;
         manga.altName = req.body.altName ? dbHelper.objItemize(req.body.altName) : dbHelper.objItemize(manga.altName);
         manga.direction = req.body.direction || manga.direction;
-        manga.userId = req.body.id || manga.userId;
-        manga.username = manga.username;
+        manga.userId = req.user.username === req.params.user ? req.user._id : manga.userId;
+        manga.username = req.params.user || manga.username;
+        
         // update the manga
         var msg = req.params.manga_title + ' manga updated.';
         var errMsg = 'Error updating ' + req.params.manga_title;
@@ -144,9 +145,9 @@ exports.postMangas = function(req, res) {
     manga.chapter = req.body.chapter;
     manga.seriesStatus = req.body.seriesStatus;
     manga.plot = req.body.plot;
-    manga.altName = req.body.altName.split(',');
+    manga.altName = req.body.altName ? dbHelper.objItemize(req.body.altName) : dbHelper.objItemize(manga.altName);
     manga.direction = req.body.direction;
-    manga.userId = req.user.username === process.env.ADMIN ? '' : req.user._id;
+    manga.userId = req.user.username === req.params.user ? req.user._id : '';
     manga.username = req.params.user;
     
     // Call function to save manga
