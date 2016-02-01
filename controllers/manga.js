@@ -35,10 +35,10 @@ exports.getIndex = function(req, res) {
 // FIND MANGA BY TITLE
 // Get the manga with that title (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title)
 exports.getManga = function(req, res) {
-  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user) {
+  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user.toLowerCase()) {
     Manga.findOne({
-      title: req.params.manga_title,
-      username: req.params.user
+      title: req.params.manga_title.toLowerCase(),
+      username: req.params.user.toLowerCase()
     }, function(err, manga) {
       var ok = req.params.manga_title + ' found!';
       var notOk = req.params.manga_title + ' not found.';
@@ -54,7 +54,7 @@ exports.getManga = function(req, res) {
     });
   } else {
     res.json({
-      error: 'You are not ' + req.params.user + ' or an admin!'
+      error: 'You are not ' + req.params.user.toLowerCase() + ' or an admin!'
     });
   }
 };
@@ -63,10 +63,10 @@ exports.getManga = function(req, res) {
 // Update the manga with this title (accessed at PUT https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title)
 exports.putManga = function(req, res) {
   // use our manga model to find the manga we want
-  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user) {
+  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user.toLowerCase()) {
     Manga.findOne({
-      title: req.params.manga_title,
-      username: req.params.user
+      title: req.params.manga_title.toLowerCase(),
+      username: req.params.user.toLowerCase()
     }, function(err, manga) {
       if (err) {
         var notOk = req.params.manga_title + ' not found.';
@@ -97,7 +97,7 @@ exports.putManga = function(req, res) {
     });
   } else {
     res.json({
-      error: 'You are not ' + req.params.user + ' or an admin!'
+      error: 'You are not ' + req.params.user.toLowerCase() + ' or an admin!'
     });
   }
 };
@@ -105,10 +105,10 @@ exports.putManga = function(req, res) {
 // DELETE MANGA BY TITLE
 // Delete the manga with this title (accessed at DELETE https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title)
 exports.delManga = function(req, res) {
-  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user) {
+  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user.toLowerCase()) {
     Manga.remove({
-      title: req.params.manga_title,
-      username: req.params.user
+      title: req.params.manga_title.toLowerCase(),
+      username: req.params.user.toLowerCase()
     }, function(err, manga) {
       var ok = 'Successfully deleted ' + req.params.manga_title;
       var notOk = 'Could not find manga ' + req.params.manga_title;
@@ -126,7 +126,7 @@ exports.delManga = function(req, res) {
     });
   } else {
     res.json({
-      error: 'You are not ' + req.params.user + ' or an admin!'
+      error: 'You are not ' + req.params.user.toLowerCase() + ' or an admin!'
     });
   }
 };
@@ -134,7 +134,7 @@ exports.delManga = function(req, res) {
 // CREATE NEW MANGA
 // Create a manga (accessed at POST https://mangadb-r282.herokuapp.com/api/mangas/:user)
 exports.postManga = function(req, res) {
-  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user) {
+  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user.toLowerCase()) {
     var manga = new Manga(); // create a new instance of the Manga model
     manga.title = req.body.title; // set the manga name (comes from the request)
     manga.author = req.body.author;
@@ -156,7 +156,7 @@ exports.postManga = function(req, res) {
     dbHelper.objSave(manga, res, msg, errMsg);
   } else {
     res.json({
-      error: 'You are not ' + req.params.user + ' or an admin!'
+      error: 'You are not ' + req.params.user.toLowerCase() + ' or an admin!'
     });
   }
 };
@@ -164,8 +164,8 @@ exports.postManga = function(req, res) {
 // FIND ALL MANGAS BY USER.
 // Get all the mangas (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas/:user)
 exports.getMangas = function(req, res) {
-  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user) {
-    var userName = req.user.username === process.env.ADMIN ? req.params.user : req.user.username;
+  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user.toLowerCase()) {
+    var userName = req.user.username === process.env.ADMIN ? req.params.user.toLowerCase() : req.user.username;
     Manga.find({
       username: userName
     }, function(err, mangas) {
@@ -183,7 +183,7 @@ exports.getMangas = function(req, res) {
     });
   } else {
     res.json({
-      error: 'You are not ' + req.params.user + ' or an admin!'
+      error: 'You are not ' + req.params.user.toLowerCase() + ' or an admin!'
     });
   }
 };
