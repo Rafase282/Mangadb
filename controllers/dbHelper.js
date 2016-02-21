@@ -17,6 +17,23 @@ exports.objSave = function save(object, res, msg, errMsg) {
   });
 };
 
+exports.objUpdate = function update(object, res, msg, errMsg) {
+  // save the object and check for errors
+  object.update(function(err) {
+    if (err) {
+      res.status(409).json({
+        error: errMsg
+      });
+      console.log(errMsg);
+    } else {
+      console.log(msg);
+      res.json({
+        message: msg
+      });
+    }
+  });
+};
+
 exports.objItemize = function itemize(arr) {
   var item;
   switch (true) {
