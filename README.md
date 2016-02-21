@@ -174,3 +174,5 @@ Keep in mine that for creating and updating all fields are required. Also `Conte
   }
 }
 ```
+## To Do:
+- [ ] Add thumbnail property to Mongoose Schema and make it work with current data.
