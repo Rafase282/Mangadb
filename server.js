@@ -33,25 +33,17 @@ app.use(bodyParser.json());
 // Use the passport package in our application
 app.use(passport.initialize());
 
-app.all('/*', function(req, res, next) {
-  // CORS headers
-  res.header("Access-Control-Allow-Origin", "*"); // restrict it to the required domain
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  // Set custom headers for CORS
-  res.header('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
-  if (req.method == 'OPTIONS') {
-    res.status(200).end();
-  } else {
-    next();
-  }
-});
-
 // configure the view
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // REGISTER OUR ROUTES -------------------------------
 var router = express.Router(); // get an instance of the express Router
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 // all of our routes will be prefixed with /api
 app.use('/api', router);
