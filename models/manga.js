@@ -22,9 +22,16 @@ var MangaSchema = new mongoose.Schema({
   },
   url: {
     type: String,
-    lowercase: true,
+    lowercase: false,
     trim: true,
     required: true,
+    unique: false
+  },
+  thumbnail: {
+    type: String,
+    lowercase: false,
+    trim: true,
+    required: false,
     unique: false
   },
   userStatus: {
