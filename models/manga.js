@@ -105,19 +105,17 @@ var MangaSchema = new mongoose.Schema({
     required: false,
     unique: false,
     match: /[a-z-0-9]+/
-  }
-}).set('toObject', {
-  retainKeyOrder: true
-});
-
-// For when New properties need to be added.
-MangaSchema.add({thumbnail: {
+  },
+  thumbnail: {
     type: String,
     lowercase: false,
     trim: true,
     required: false,
     unique: false
-  }});
+  }
+}).set('toObject', {
+  retainKeyOrder: true
+});
 
 // Export the Mongoose model
 module.exports = mongoose.model('Manga', MangaSchema);
