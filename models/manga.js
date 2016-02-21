@@ -27,13 +27,6 @@ var MangaSchema = new mongoose.Schema({
     required: true,
     unique: false
   },
-  thumbnail: {
-    type: String,
-    lowercase: false,
-    trim: true,
-    required: false,
-    unique: false
-  },
   userStatus: {
     type: String,
     lowercase: true,
@@ -117,5 +110,16 @@ var MangaSchema = new mongoose.Schema({
   retainKeyOrder: true
 });
 
+// For when New properties need to be added.
+MangaSchema.add({thumbnail: {
+    type: String,
+    lowercase: false,
+    trim: true,
+    required: false,
+    unique: false
+  }});
+
 // Export the Mongoose model
 module.exports = mongoose.model('Manga', MangaSchema);
+
+
