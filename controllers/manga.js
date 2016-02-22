@@ -93,7 +93,7 @@ exports.putManga = function(req, res) {
         // update the manga
         var msg = req.params.manga_title + ' manga updated.';
         var errMsg = 'Error updating ' + req.params.manga_title;
-        dbHelper.objUpdate(manga, res, msg, errMsg);
+        dbHelper.objSave(manga, res, msg, errMsg);
       }
     });
   } else {
