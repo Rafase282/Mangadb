@@ -17,8 +17,26 @@ exports.objSave = function save(object, res, msg, errMsg) {
   });
 };
 
+
+exports.newObjUpdate = function update(objectModel, id, obj, res, msg, errMsg) {
+  objectModel.update({_id: id}, obj, function(err, newObj) {
+    if (err) {
+      res.status(409).json({
+        error: err
+      });
+      console.log(err);
+    } else {
+      console.log(newObj);
+      res.json({
+        message: newObj
+      });
+    }
+  });
+};
+
 exports.objUpdate = function update(object, res, msg, errMsg) {
   // save the object and check for errors
+
   object.update(function(err) {
     if (err) {
       res.status(409).json({
