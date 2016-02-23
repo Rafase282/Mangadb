@@ -88,7 +88,7 @@ exports.putManga = function(req, res) {
         manga.direction = req.body.direction || manga.direction;
         manga.userId = req.user.username === req.params.user ? req.user._id : manga.userId;
         manga.username = req.params.user || manga.username;
-        manga.thumbnail = req.params.thumbnail || manga.thumbnail;
+        manga.thumbnail = req.body.thumbnail || manga.thumbnail;
         
         // update the manga
         var msg = req.params.manga_title + ' manga updated.';
