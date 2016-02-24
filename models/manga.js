@@ -109,7 +109,7 @@ var MangaSchema = new mongoose.Schema({
   thumbnail: {
     type: String,
     lowercase: false,
-    trim: true,
+    trim: false,
     required: false,
     unique: false
   }
