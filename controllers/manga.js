@@ -75,7 +75,7 @@ exports.putManga = function(req, res) {
         });
         console.log(notOk);
       } else {
-        manga.title = req.params.manga_title;
+        manga.title = req.body.title || req.params.manga_title;
         manga.author = req.body.author || manga.author;
         manga.url = req.body.url || manga.url;
         manga.userStatus = req.body.userStatus || manga.userStatus;

@@ -10,10 +10,12 @@ var app = express(); // define our app using express
 var bodyParser = require('body-parser');
 var path = require('path');
 var mongoose = require('mongoose');
-var passport = require('passport');
-var authController = require('./controllers/auth');
+var passport = require('passport');   // Might remove
+var authController = require('./controllers/auth'); //Might remove
 var mangaController = require('./controllers/manga');
 var userController = require('./controllers/user');
+var expressJwt = require('express-jwt');
+var jwt = require('jsonwebtoken');
 require('dotenv').config({
   silent: true
 });
@@ -30,6 +32,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+//app.set('superSecret', process.env.secret); // secret variable
 // Use the passport package in our application
 app.use(passport.initialize());
 
@@ -50,6 +53,9 @@ app.use('/api', router);
 
 // middleware to use for all requests
 router.use(mangaController.logConnection);
+
+// We are going to protect /api routes with JWT
+app.use('/api', expressJwt({secret: process.env.secret}));
 
 // test route to make sure everything is working (accessed at GET https://mangadb-r282.herokuapp.com/api)
 router.route('/')
