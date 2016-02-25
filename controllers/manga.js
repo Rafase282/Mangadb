@@ -165,9 +165,8 @@ exports.postManga = function(req, res) {
 // FIND ALL MANGAS BY USER.
 // Get all the mangas (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas/:user)
 exports.getMangas = function(req, res) {
-  var token = req.decoded;
-  if (token._doc.username === process.env.ADMIN || token._doc.username === req.params.user.toLowerCase()) {
-    var userName = token._doc.username === process.env.ADMIN ? req.params.user.toLowerCase() : token._doc.username;
+  if (req.decoded.sub === process.env.ADMIN || req.decoded.sub === req.params.user.toLowerCase()) {
+    var userName = req.decoded.sub === process.env.ADMIN ? req.params.user.toLowerCase() : req.decoded.sub;
     Manga.find({
       username: userName
     }, function(err, mangas) {
