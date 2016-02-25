@@ -43,7 +43,11 @@ exports.generateToken = function(req, res) {
   User.findOne({
     username: req.body.username
   }, function(err, user) {
-    if (err) throw err;
+    if (err) {
+      res.json({
+        message: err
+      });
+    }
     if (!user) {
       res.json({
         success: false,
@@ -62,7 +66,8 @@ exports.generateToken = function(req, res) {
           var expTime = 60 * 60; // expires in 1 hour "seconds X Minutes"
           // Create object for teh token
           var info = {
-            sub: user.username
+            sub: user.username,
+            jti: user._id
           };
           // if user is found and password is right
           // create a token

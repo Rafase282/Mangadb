@@ -41,16 +41,17 @@ exports.getManga = function(req, res) {
       title: req.params.manga_title.toLowerCase(),
       username: req.params.user.toLowerCase()
     }, function(err, manga) {
+      var noOK = req.params.manga_title + ' not found!';
       var ok = req.params.manga_title + ' found!';
-      var notOk = req.params.manga_title + ' not found.';
       if (err) {
-        res.status(404).json({
-          error: notOk
+        res.status(400).json({
+          error: err
         });
-        console.log(notOk);
+        console.log(err);
       } else {
-        console.log(ok);
-        res.json(manga);
+        var out = manga == null ? {msg: noOK, info: {message: noOK}} : {msg: ok, info: manga};
+        console.log(out.msg);
+        res.json(out.info);
       }
     });
   } else {
@@ -70,11 +71,10 @@ exports.putManga = function(req, res) {
       username: req.params.user.toLowerCase()
     }, function(err, manga) {
       if (err) {
-        var notOk = req.params.manga_title + ' not found.';
-        res.status(404).json({
-          error: notOk
+        res.status(400).json({
+          error: err
         });
-        console.log(notOk);
+        console.log(err);
       } else {
         manga.title = req.body.title || req.params.manga_title;
         manga.author = req.body.author || manga.author;
@@ -87,13 +87,12 @@ exports.putManga = function(req, res) {
         manga.plot = req.body.plot || manga.plot;
         manga.altName = req.body.altName ? dbHelper.objItemize(req.body.altName) : dbHelper.objItemize(manga.altName);
         manga.direction = req.body.direction || manga.direction;
-        manga.userId = req.user.username === req.params.user ? req.user._id : manga.userId;
+        manga.userId = req.decoded.sub === req.params.user ? req.decoded.jti : manga.userId;
         manga.username = req.params.user || manga.username;
         manga.thumbnail = req.body.thumbnail || manga.thumbnail;
         // update the manga
         var msg = req.params.manga_title + ' manga updated.';
-        var errMsg = 'Error updating ' + req.params.manga_title;
-        dbHelper.objSave(manga, res, msg, errMsg);
+        dbHelper.objSave(manga, res, msg);
       }
     });
   } else {
@@ -112,17 +111,16 @@ exports.delManga = function(req, res) {
       username: req.params.user.toLowerCase()
     }, function(err, manga) {
       var ok = 'Successfully deleted ' + req.params.manga_title;
-      var notOk = 'Could not find manga ' + req.params.manga_title;
+      var noOK = req.params.manga_title + ' not found!';
       if (err) {
-        res.status(404).json({
-          error: notOk
+        res.status(400).json({
+          error: err
         });
-        console.log(notOk);
+        console.log(err);
       } else {
-        console.log(ok);
-        res.json({
-          message: ok
-        });
+        var msg = manga == null ? noOK : ok;
+        console.log(msg);
+        res.json({message: msg});
       }
     });
   } else {
@@ -148,13 +146,12 @@ exports.postManga = function(req, res) {
     manga.plot = req.body.plot;
     manga.altName = req.body.altName.split(',');
     manga.direction = req.body.direction;
-    manga.userId = req.user.username === req.params.user ? req.user._id : '';
+    manga.userId = req.decoded.sub === req.params.user ? req.decoded.jti : '';
     manga.username = req.params.user;
-    manga.thumbnail = req.params.thumbnail;
+    manga.thumbnail = req.body.thumbnail;
     // Call function to save manga
     var msg = req.body.title + ' manga created.';
-    var errMsg = 'Error creating ' + req.body.title;
-    dbHelper.objSave(manga, res, msg, errMsg);
+    dbHelper.objSave(manga, res, msg);
   } else {
     res.json({
       error: 'You are not ' + req.params.user.toLowerCase() + ' or an admin!'
@@ -170,16 +167,17 @@ exports.getMangas = function(req, res) {
     Manga.find({
       username: userName
     }, function(err, mangas) {
-      var ok = 'Manga List Generated';
-      var notOk = 'No mangas found';
+      var ok = 'Manga List Generated.';
+      var noOK = req.params.user + ' has not added any mangas yet.';
       if (err) {
-        res.status(404).json({
-          error: notOk
+        res.status(400).json({
+          error: err
         });
-        console.log(notOk);
+        console.log(err);
       } else {
-        console.log(ok);
-        res.json(mangas);
+        var out = mangas == null || mangas.length < 1 ? {msg: noOK, info: {message: noOK}} : {msg: ok, info: mangas};
+        console.log(out.msg);
+        res.json(out.info);
       }
     });
   } else {
@@ -195,15 +193,16 @@ exports.getAllMangas = function(req, res) {
   if (req.decoded.sub === process.env.ADMIN) {
     Manga.find({}, function(err, mangas) {
       var ok = 'Manga List Generated';
-      var notOk = 'No mangas found';
+      var noOK = 'No Mangas has been added yet.';
       if (err) {
-        res.status(404).json({
-          error: notOk
+        res.status(400).json({
+          error: err
         });
-        console.log(notOk);
+        console.log(err);
       } else {
-        console.log(ok);
-        res.json(mangas);
+        var out = mangas == null || mangas < 1 ? {msg: noOK, info: {message: noOK}} : {msg: ok, info: mangas};
+        console.log(out.msg);
+        res.json(out.info);
       }
     });
   } else {
@@ -219,17 +218,16 @@ exports.delMangas = function(req, res) {
   if (req.decoded.sub === process.env.ADMIN) {
     Manga.remove({}, function(err, manga) {
       var ok = 'Successfully deleted all mangas.';
-      var notOk = 'Could not find mangas';
+      var noOK = 'No mangas were found!';
       if (err) {
-        res.status(404).json({
-          error: notOk
+        res.status(400).json({
+          error: err
         });
-        console.log(notOk);
+        console.log(err);
       } else {
-        console.log(ok);
-        res.json({
-          message: ok
-        });
+        var msg = manga == null ? noOK : ok;
+        console.log(msg);
+        res.json({message: msg});
       }
     });
   } else {

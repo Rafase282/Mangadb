@@ -1,13 +1,13 @@
 'use strict';
 
-exports.objSave = function save(object, res, msg, errMsg) {
+exports.objSave = function save(object, res, msg) {
   // save the object and check for errors
   object.save(function(err) {
     if (err) {
       res.status(409).json({
-        error: errMsg
+        error: err
       });
-      console.log(errMsg);
+      console.log(err);
     } else {
       console.log(msg);
       res.json({
