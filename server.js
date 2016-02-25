@@ -10,7 +10,7 @@ var app = express(); // define our app using express
 var bodyParser = require('body-parser');
 var path = require('path');
 var mongoose = require('mongoose');
-var passport = require('passport'); // Might remove
+//var passport = require('passport'); // Might remove
 var authController = require('./controllers/auth');
 var mangaController = require('./controllers/manga');
 var userController = require('./controllers/user');
@@ -34,7 +34,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // Use the passport package in our application
-app.use(passport.initialize());
+//app.use(passport.initialize());
 
 // configure the view
 app.set('views', path.join(__dirname, 'views'));

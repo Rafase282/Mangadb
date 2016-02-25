@@ -32,8 +32,6 @@
     "geoip-lite": "^1.1.6",
     "jade": "^1.11.0",
     "jsonwebtoken": "^5.7.0",
-    "mongoose": "^4.3.7",
-    "passport": "^0.3.2",
-    "passport-http": "^0.3.0"
+    "mongoose": "^4.3.7"
   }
 }
