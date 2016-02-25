@@ -20,7 +20,7 @@ There is an admin account that is declared onteh envarioment variables that basi
 7. Admin can delete all users including itself, this requires the admin to be re-created: **DELETE** `https://mangadb-r282.herokuapp.com/api/mangas`
 8. Admin can get a list of all the mangas across the user base: **GET** `https://mangadb-r282.herokuapp.com/api/mangas`
 
-Keep in mine that for creating and updating all fields are required. Also `Content-Type: application/x-www-form-urlencoded`
+Remember to use `Content-Type: application/x-www-form-urlencoded`, the API will tell you what field are required in case you dont want to take a look at the schema.
 
 ## The Manga Schema:
 
@@ -44,7 +44,6 @@ Keep in mine that for creating and updating all fields are required. Also `Conte
   },
   url: {
     type: String,
-    lowercase: true,
     trim: true,
     required: true,
     unique: false
@@ -127,6 +126,12 @@ Keep in mine that for creating and updating all fields are required. Also `Conte
     required: false,
     unique: false,
     match: /[a-z-0-9]+/
+  },
+  thumbnail: {
+    type: String,
+    trim: true,
+    required: true,
+    unique: false
   }
 }
 ```
@@ -156,7 +161,7 @@ Keep in mine that for creating and updating all fields are required. Also `Conte
     required: true,
     unique: true
   },
-  name: {
+  firstname: {
     type: String,
     lowercase: true,
     trim: true,
@@ -175,4 +180,7 @@ Keep in mine that for creating and updating all fields are required. Also `Conte
 }
 ```
 ## To Do:
-- [ ] Add thumbnail property to Mongoose Schema and make it work with current data.
+- [X] Add thumbnail property to Mongoose Schema and make it work with current data.
+- [ ] Validate E-mails.
+- [ ] Implement password reset mechanism.
+- [ ] Implement email support to send new passwords when a request for a forgotten password is made.
