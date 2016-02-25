@@ -4,6 +4,7 @@ var BasicStrategy = require('passport-http').BasicStrategy;
 var User = require('../models/user');
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
+// USED FOR LOCAL AUTHENTICATION WITH PASSPORT
 passport.use(new BasicStrategy(
   function(username, password, callback) {
     User.findOne({
@@ -36,6 +37,7 @@ exports.isAuthenticated = passport.authenticate('basic', {
   session: false
 });
 
+// GENERATE TOKEN FOR THE USER.
 exports.generateToken = function(req, res) {
   // find the user
   User.findOne({
@@ -57,17 +59,21 @@ exports.generateToken = function(req, res) {
             message: 'Authentication failed. Wrong password.'
           });
         } else {
-          // Hide real password
-          user.password = "You don't need to know!";
+          var expTime = 60 * 60; // expires in 1 hour "seconds X Minutes"
+          // Create object for teh token
+          var info = {
+            sub: user.username
+          };
           // if user is found and password is right
           // create a token
-          var token = jwt.sign(user, req.app.get('superSecret'), {
-            expiresIn: 60 * 60 // expires in 1 hour "seconds X Minutes"
+          var token = jwt.sign(info, req.app.get('superSecret'), {
+            expiresIn: expTime,
+            issuer: 'MangaDB by Rafase282'
           });
           // return the information including token as JSON
           res.json({
             success: true,
-            message: 'Enjoy your token!',
+            message: 'Enjoy your token for the next ' + expTime / 60 + ' minutes!',
             token: token
           });
         }
@@ -76,6 +82,7 @@ exports.generateToken = function(req, res) {
   });
 };
 
+// VALIDATE TOKEN FOR AUTHENTICATION
 exports.validateToken = function(req, res, next) {
   // check header or url parameters or post parameters for token
   var token = req.body.token || req.query.token || req.headers['x-access-token'];

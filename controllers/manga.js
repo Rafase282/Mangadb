@@ -4,6 +4,7 @@ var geoip = require('geoip-lite');
 var Manga = require('../models/manga');
 var dbHelper = require('./dbHelper');
 
+// NOT NEEDED BUT DISPLAY CONNECTION INFORMATION
 exports.logConnection = function(req, res, next) {
   // do logging
   var ip = req.headers['x-forwarded-for'] ||
@@ -35,7 +36,7 @@ exports.getIndex = function(req, res) {
 // FIND MANGA BY TITLE
 // Get the manga with that title (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title)
 exports.getManga = function(req, res) {
-  if (req.decoded._doc.username === process.env.ADMIN || req.decoded._doc.username === req.params.user.toLowerCase()) {
+  if (req.decoded.sub === process.env.ADMIN || req.decoded.sub === req.params.user.toLowerCase()) {
     Manga.findOne({
       title: req.params.manga_title.toLowerCase(),
       username: req.params.user.toLowerCase()
@@ -63,7 +64,7 @@ exports.getManga = function(req, res) {
 // Update the manga with this title (accessed at PUT https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title)
 exports.putManga = function(req, res) {
   // use our manga model to find the manga we want
-  if (req.decoded._doc.username === process.env.ADMIN || req.decoded._doc.username === req.params.user.toLowerCase()) {
+  if (req.decoded.sub === process.env.ADMIN || req.decoded.sub === req.params.user.toLowerCase()) {
     Manga.findOne({
       title: req.params.manga_title.toLowerCase(),
       username: req.params.user.toLowerCase()
@@ -80,7 +81,7 @@ exports.putManga = function(req, res) {
         manga.url = req.body.url || manga.url;
         manga.userStatus = req.body.userStatus || manga.userStatus;
         manga.type = req.body.type || manga.type;
-        manga.categories = req.body.categories  ? dbHelper.objItemize(req.body.categories) : dbHelper.objItemize(manga.categories);
+        manga.categories = req.body.categories ? dbHelper.objItemize(req.body.categories) : dbHelper.objItemize(manga.categories);
         manga.chapter = req.body.chapter || manga.chapter;
         manga.seriesStatus = req.body.seriesStatus || manga.seriesStatus;
         manga.plot = req.body.plot || manga.plot;
@@ -89,7 +90,6 @@ exports.putManga = function(req, res) {
         manga.userId = req.user.username === req.params.user ? req.user._id : manga.userId;
         manga.username = req.params.user || manga.username;
         manga.thumbnail = req.body.thumbnail || manga.thumbnail;
-        
         // update the manga
         var msg = req.params.manga_title + ' manga updated.';
         var errMsg = 'Error updating ' + req.params.manga_title;
@@ -106,7 +106,7 @@ exports.putManga = function(req, res) {
 // DELETE MANGA BY TITLE
 // Delete the manga with this title (accessed at DELETE https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title)
 exports.delManga = function(req, res) {
-  if (req.decoded._doc.username === process.env.ADMIN || req.decoded._doc.username === req.params.user.toLowerCase()) {
+  if (req.decoded.sub === process.env.ADMIN || req.decoded.sub === req.params.user.toLowerCase()) {
     Manga.remove({
       title: req.params.manga_title.toLowerCase(),
       username: req.params.user.toLowerCase()
@@ -135,23 +135,22 @@ exports.delManga = function(req, res) {
 // CREATE NEW MANGA
 // Create a manga (accessed at POST https://mangadb-r282.herokuapp.com/api/mangas/:user)
 exports.postManga = function(req, res) {
-  if (req.decoded._doc.username === process.env.ADMIN || req.decoded._doc.username === req.params.user.toLowerCase()) {
+  if (req.decoded.sub === process.env.ADMIN || req.decoded.sub === req.params.user.toLowerCase()) {
     var manga = new Manga(); // create a new instance of the Manga model
     manga.title = req.body.title; // set the manga name (comes from the request)
     manga.author = req.body.author;
     manga.url = req.body.url;
     manga.userStatus = req.body.userStatus;
     manga.type = req.body.type;
-    manga.categories = req.body.categories.split(','); 
+    manga.categories = req.body.categories.split(',');
     manga.chapter = req.body.chapter;
     manga.seriesStatus = req.body.seriesStatus;
     manga.plot = req.body.plot;
-    manga.altName = req.body.altName.split(','); 
+    manga.altName = req.body.altName.split(',');
     manga.direction = req.body.direction;
     manga.userId = req.user.username === req.params.user ? req.user._id : '';
     manga.username = req.params.user;
     manga.thumbnail = req.params.thumbnail;
-    
     // Call function to save manga
     var msg = req.body.title + ' manga created.';
     var errMsg = 'Error creating ' + req.body.title;
@@ -194,7 +193,7 @@ exports.getMangas = function(req, res) {
 // FIND ALL MANGAS via admin.
 // Get all the mangas (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas)
 exports.getAllMangas = function(req, res) {
-  if (req.decoded._doc.username === process.env.ADMIN) {
+  if (req.decoded.sub === process.env.ADMIN) {
     Manga.find({}, function(err, mangas) {
       var ok = 'Manga List Generated';
       var notOk = 'No mangas found';
@@ -218,7 +217,7 @@ exports.getAllMangas = function(req, res) {
 // DELETE ALL MANGAS VIA ADMIN
 // Delete all mangas (accessed at DELETE https://mangadb-r282.herokuapp.com/api/mangas/)
 exports.delMangas = function(req, res) {
-  if (req.decoded._doc.username === process.env.ADMIN) {
+  if (req.decoded.sub === process.env.ADMIN) {
     Manga.remove({}, function(err, manga) {
       var ok = 'Successfully deleted all mangas.';
       var notOk = 'Could not find mangas';

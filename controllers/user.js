@@ -141,7 +141,6 @@ exports.putUser = function(req, res) {
         user.email = req.body.email || user.email;
         user.name = req.body.name || user.name;
         user.lastname = req.body.lastname || user.lastname;
-        
         // update the user
         var msg = req.params.username + ' user updated.';
         var errMsg = 'All fields are required for creating new user, the title is required for updating though.';

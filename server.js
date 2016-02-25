@@ -15,8 +15,6 @@ var authController = require('./controllers/auth');
 var mangaController = require('./controllers/manga');
 var userController = require('./controllers/user');
 
-//var expressJwt = require('express-jwt');
-//var jwt = require('jsonwebtoken');
 require('dotenv').config({
   silent: true
 });
@@ -46,7 +44,7 @@ app.set('view engine', 'jade');
 var router = express.Router(); // get an instance of the express Router
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization,  Accept, x-access-token");
+  res.header("Access-Control-Allow-Headers", "Authorization,  x-access-token");
   next();
 });
 
