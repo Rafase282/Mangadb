@@ -35,7 +35,7 @@ exports.getIndex = function(req, res) {
 // FIND MANGA BY TITLE
 // Get the manga with that title (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title)
 exports.getManga = function(req, res) {
-  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user.toLowerCase()) {
+  if (req.decoded._doc.username === process.env.ADMIN || req.decoded._doc.username === req.params.user.toLowerCase()) {
     Manga.findOne({
       title: req.params.manga_title.toLowerCase(),
       username: req.params.user.toLowerCase()
@@ -63,7 +63,7 @@ exports.getManga = function(req, res) {
 // Update the manga with this title (accessed at PUT https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title)
 exports.putManga = function(req, res) {
   // use our manga model to find the manga we want
-  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user.toLowerCase()) {
+  if (req.decoded._doc.username === process.env.ADMIN || req.decoded._doc.username === req.params.user.toLowerCase()) {
     Manga.findOne({
       title: req.params.manga_title.toLowerCase(),
       username: req.params.user.toLowerCase()
@@ -106,7 +106,7 @@ exports.putManga = function(req, res) {
 // DELETE MANGA BY TITLE
 // Delete the manga with this title (accessed at DELETE https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title)
 exports.delManga = function(req, res) {
-  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user.toLowerCase()) {
+  if (req.decoded._doc.username === process.env.ADMIN || req.decoded._doc.username === req.params.user.toLowerCase()) {
     Manga.remove({
       title: req.params.manga_title.toLowerCase(),
       username: req.params.user.toLowerCase()
@@ -135,7 +135,7 @@ exports.delManga = function(req, res) {
 // CREATE NEW MANGA
 // Create a manga (accessed at POST https://mangadb-r282.herokuapp.com/api/mangas/:user)
 exports.postManga = function(req, res) {
-  if (req.user.username === process.env.ADMIN || req.user.username === req.params.user.toLowerCase()) {
+  if (req.decoded._doc.username === process.env.ADMIN || req.decoded._doc.username === req.params.user.toLowerCase()) {
     var manga = new Manga(); // create a new instance of the Manga model
     manga.title = req.body.title; // set the manga name (comes from the request)
     manga.author = req.body.author;
@@ -194,7 +194,7 @@ exports.getMangas = function(req, res) {
 // FIND ALL MANGAS via admin.
 // Get all the mangas (accessed at GET https://mangadb-r282.herokuapp.com/api/mangas)
 exports.getAllMangas = function(req, res) {
-  if (req.user.username === process.env.ADMIN) {
+  if (req.decoded._doc.username === process.env.ADMIN) {
     Manga.find({}, function(err, mangas) {
       var ok = 'Manga List Generated';
       var notOk = 'No mangas found';
@@ -218,7 +218,7 @@ exports.getAllMangas = function(req, res) {
 // DELETE ALL MANGAS VIA ADMIN
 // Delete all mangas (accessed at DELETE https://mangadb-r282.herokuapp.com/api/mangas/)
 exports.delMangas = function(req, res) {
-  if (req.user.username === process.env.ADMIN) {
+  if (req.decoded._doc.username === process.env.ADMIN) {
     Manga.remove({}, function(err, manga) {
       var ok = 'Successfully deleted all mangas.';
       var notOk = 'Could not find mangas';
