@@ -10,11 +10,9 @@ var app = express(); // define our app using express
 var bodyParser = require('body-parser');
 var path = require('path');
 var mongoose = require('mongoose');
-var passport = require('passport'); // Might remove
 var authController = require('./controllers/auth');
 var mangaController = require('./controllers/manga');
 var userController = require('./controllers/user');
-
 require('dotenv').config({
   silent: true
 });
@@ -33,9 +31,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-// Use the passport package in our application
-app.use(passport.initialize());
-
 // configure the view
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -51,20 +46,16 @@ app.use(function(req, res, next) {
 // all of our routes will be prefixed with /api
 app.use('/api', router);
 
+// Serve index.jade at ttps://mangadb-r282.herokuapp.com
+app.route('/')
+  .get(mangaController.getIndex);
+  
 // middleware to use for all requests
 router.use(mangaController.logConnection);
 
 // test route to make sure everything is working (accessed at GET https://mangadb-r282.herokuapp.com/api)
 router.route('/')
   .get(mangaController.getWelcome);
-
-// Serve index.jade
-app.route('/')
-  .get(mangaController.getIndex);
-
-//Create endpoint handler for /mangas/auth  
-router.route('/auth')
-  .post(authController.generateToken); //Get token
 
 //Create endpoint handlers for /mangas/:user/:manga_tile   
 router.route('/mangas/:user/:manga_title')
@@ -81,6 +72,13 @@ router.route('/mangas/:user')
 router.route('/mangas')
   .get(authController.validateToken, mangaController.getAllMangas) //admin get all mangas
   .delete(authController.validateToken, mangaController.delMangas); // admin delete all mangas
+
+// HANDLE USER RELATED ROUTES
+// =============================================================================
+
+// Request token generator at /mangas/auth  
+router.route('/auth')
+  .post(authController.generateToken); //Get token
 
 // Create endpoint handlers for /users
 router.route('/users')

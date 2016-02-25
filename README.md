@@ -5,6 +5,7 @@ Created by Rafase282
 
 [Github](https://github.com/Rafase282) | [FreeCodeCamp](http://www.freecodecamp.com/rafase282) | [CodePen](http://codepen.io/Rafase282/) | [LinkedIn](https://www.linkedin.com/in/rafase282) | [Blog/Site](https://rafase282.wordpress.com/) | [E-Mail](mailto:rafase282@gmail.com)
 
+[![Gitter](https://badges.gitter.im/Rafase282/Mangadb.svg)](https://gitter.im/Rafase282/Mangadb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 # Manga Record Microservice
 This is an API created to store crucial information for any manga an authenticated user might read. Wtheer you want to keep track of the manga you will rea, already finished or are currently reading this microservice will help you get your data together. In the Future I intend on adding more features but meanwhile the user interface will be separated and this stays as the core backend.
 
@@ -20,7 +21,7 @@ There is an admin account that is declared onteh envarioment variables that basi
 7. Admin can delete all users including itself, this requires the admin to be re-created: **DELETE** `https://mangadb-r282.herokuapp.com/api/mangas`
 8. Admin can get a list of all the mangas across the user base: **GET** `https://mangadb-r282.herokuapp.com/api/mangas`
 
-Keep in mine that for creating and updating all fields are required. Also `Content-Type: application/x-www-form-urlencoded`
+Remember to use `Content-Type: application/x-www-form-urlencoded`, the API will tell you what field are required in case you dont want to take a look at the schema.
 
 ## The Manga Schema:
 
@@ -44,7 +45,6 @@ Keep in mine that for creating and updating all fields are required. Also `Conte
   },
   url: {
     type: String,
-    lowercase: true,
     trim: true,
     required: true,
     unique: false
@@ -127,6 +127,12 @@ Keep in mine that for creating and updating all fields are required. Also `Conte
     required: false,
     unique: false,
     match: /[a-z-0-9]+/
+  },
+  thumbnail: {
+    type: String,
+    trim: true,
+    required: true,
+    unique: false
   }
 }
 ```
@@ -156,7 +162,7 @@ Keep in mine that for creating and updating all fields are required. Also `Conte
     required: true,
     unique: true
   },
-  name: {
+  firstname: {
     type: String,
     lowercase: true,
     trim: true,
@@ -175,4 +181,9 @@ Keep in mine that for creating and updating all fields are required. Also `Conte
 }
 ```
 ## To Do:
-- [ ] Add thumbnail property to Mongoose Schema and make it work with current data.
+- [X] Add thumbnail property to Mongoose Schema and make it work with current data.
+- [X] Switch to JSON Web Tokens.
+- [X] Validate E-mails.
+- [ ] Verify E-mails.
+- [ ] Implement password reset mechanism.
+- [ ] Implement email support to send new passwords when a request for a forgotten password is made.
