@@ -10,10 +10,11 @@ var app = express(); // define our app using express
 var bodyParser = require('body-parser');
 var path = require('path');
 var mongoose = require('mongoose');
-var passport = require('passport');   // Might remove
-var authController = require('./controllers/auth'); //Might remove
+var passport = require('passport'); // Might remove
+var authController = require('./controllers/auth');
 var mangaController = require('./controllers/manga');
 var userController = require('./controllers/user');
+
 //var expressJwt = require('express-jwt');
 //var jwt = require('jsonwebtoken');
 require('dotenv').config({
@@ -25,6 +26,8 @@ var mongouri = process.env.MONGOLAB_URI ||
   "mongodb://" + process.env.IP + ":27017/mangadb";
 mongoose.connect(mongouri);
 
+app.set('superSecret', process.env.SECRET); // secret variable
+
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({
@@ -32,7 +35,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-//app.set('superSecret', process.env.secret); // secret variable
 // Use the passport package in our application
 app.use(passport.initialize());
 
@@ -54,9 +56,6 @@ app.use('/api', router);
 // middleware to use for all requests
 router.use(mangaController.logConnection);
 
-// We are going to protect /api routes with JWT
-//app.use('/api', expressJwt({secret: process.env.secret}));
-
 // test route to make sure everything is working (accessed at GET https://mangadb-r282.herokuapp.com/api)
 router.route('/')
   .get(mangaController.getWelcome);
@@ -65,33 +64,37 @@ router.route('/')
 app.route('/')
   .get(mangaController.getIndex);
 
+//Create endpoint handler for /mangas/auth  
+router.route('/auth')
+  .post(authController.generateToken); //Get token
+
 //Create endpoint handlers for /mangas/:user/:manga_tile   
 router.route('/mangas/:user/:manga_title')
-  .get(authController.isAuthenticated, mangaController.getManga) // get user's manga info
-  .put(authController.isAuthenticated, mangaController.putManga) // update user's manga info
-  .delete(authController.isAuthenticated, mangaController.delManga); // deletes user's manga
+  .get(authController.validateToken, mangaController.getManga) // get user's manga info
+  .put(authController.validateToken, mangaController.putManga) // update user's manga info
+  .delete(authController.validateToken, mangaController.delManga); // deletes user's manga
 
 // Create endpoint handlers for /mangas/:user  
 router.route('/mangas/:user')
-  .get(authController.isAuthenticated, mangaController.getMangas) //get all user's manga
-  .post(authController.isAuthenticated, mangaController.postManga); //create new manga
+  .get(authController.validateToken, mangaController.getMangas) //get all user's manga
+  .post(authController.validateToken, mangaController.postManga); //create new manga
 
 // Get all mangas by admin
 router.route('/mangas')
-  .get(authController.isAuthenticated, mangaController.getAllMangas) //admin get all mangas
-  .delete(authController.isAuthenticated, mangaController.delMangas); // admin delete all mangas
+  .get(authController.validateToken, mangaController.getAllMangas) //admin get all mangas
+  .delete(authController.validateToken, mangaController.delMangas); // admin delete all mangas
 
 // Create endpoint handlers for /users
 router.route('/users')
   .post(userController.postUsers) // Creates new user
-  .get(authController.isAuthenticated, userController.getUsers) //admin get all users
-  .delete(authController.isAuthenticated, userController.delUsers); //admin delete all users
+  .get(authController.validateToken, userController.getUsers) //admin get all users
+  .delete(authController.validateToken, userController.delUsers); //admin delete all users
 
 //Create endpoint handlers for /mangas/:username    
 router.route('/users/:username')
-  .get(authController.isAuthenticated, userController.getUser) // get user info
-  .put(authController.isAuthenticated, userController.putUser) // update user info
-  .delete(authController.isAuthenticated, userController.delUser); // deletes user
+  .get(authController.validateToken, userController.getUser) // get user info
+  .put(authController.validateToken, userController.putUser) // update user info
+  .delete(authController.validateToken, userController.delUser); // deletes user
 
 // CONFIGURE & START THE SERVER
 // =============================================================================
