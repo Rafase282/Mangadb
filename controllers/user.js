@@ -2,6 +2,7 @@
 var User = require('../models/user');
 var dbHelper = require('./dbHelper');
 var emailRegEx = /^[a-zA-Z]([a-zA-Z0-9_\-])+([\.][a-zA-Z0-9_]+)*\@((([a-zA-Z0-9\-])+\.){1,2})([a-zA-Z0-9]{2,40})$/gi;
+var nev = require('email-verification')(require('mongoose'));
 
 // Create new user
 exports.postUsers = function(req, res) {
@@ -16,6 +17,62 @@ exports.postUsers = function(req, res) {
       firstname: req.body.firstname,
       lastname: req.body.lastname
     });
+    
+    //if (req.body.type === 'register') {
+    nev.createTempUser(user, function(err, existingPersistentUser, newTempUser) {
+      if (err) {
+        return res.status(404).send('ERROR: creating temp user FAILED');
+      }
+
+      // user already exists in persistent collection
+      if (existingPersistentUser) {
+        return res.json({
+          msg: 'You have already signed up and confirmed your account. Did you forget your password?'
+        });
+      }
+
+      // new user created
+      if (newTempUser) {
+        var URL = newTempUser[nev.options.URLFieldName];
+
+        nev.sendVerificationEmail(email, URL, function(err, info) {
+          if (err) {
+            return res.status(404).send('ERROR: sending verification email FAILED');
+          }
+          res.json({
+            msg: 'An email has been sent to you. Please check it to verify your account.',
+            info: info
+          });
+        });
+
+        // user already exists in temporary collection!
+      } else {
+        res.json({
+          msg: 'You have already signed up. Please check your email to verify your account.'
+        });
+      }
+    });
+    /*
+              // resend verification button was clicked
+            } else {
+              nev.resendVerificationEmail(email, function(err, userFound) {
+                if (err) {
+                  return res.status(404).send('ERROR: resending verification email FAILED');
+                }
+                if (userFound) {
+                  res.json({
+                    msg: 'An email has been sent to you, yet again. Please check it to verify your account.'
+                  });
+                } else {
+                  res.json({
+                    msg: 'Your verification code has expired. Please sign up again.'
+                  });
+                }
+              });
+            }
+    */
+    
+    
     var msg = 'New manga reader ' + req.body.username + ' has been added.';
     dbHelper.objSave(user, res, msg);
   } else {
