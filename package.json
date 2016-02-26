@@ -25,18 +25,13 @@
     "nodemon": "^1.8.1"
   },
   "dependencies": {
-    "async": "^1.5.2",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.14.2",
-    "crypto": "0.0.3",
     "dotenv": "^2.0.0",
-    "email-verification": "^0.3.1",
     "express": "^4.13.4",
     "geoip-lite": "^1.1.6",
     "jade": "^1.11.0",
     "jsonwebtoken": "^5.7.0",
-    "mongoose": "^4.3.7",
-    "nodemailer": "^2.2.1",
-    "quickemailverification": "^1.0.0"
+    "mongoose": "^4.3.7"
   }
 }
