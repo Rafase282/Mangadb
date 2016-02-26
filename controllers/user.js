@@ -1,4 +1,7 @@
-// Load required packages
+// Load required packages  USER
+var nodemailer = require('nodemailer');
+var async = require('async');
+var crypto = require('crypto');
 var User = require('../models/user');
 var dbHelper = require('./dbHelper');
 var emailRegEx = /^[a-zA-Z]([a-zA-Z0-9_\-])+([\.][a-zA-Z0-9_]+)*\@((([a-zA-Z0-9\-])+\.){1,2})([a-zA-Z0-9]{2,40})$/gi;
@@ -8,7 +11,8 @@ exports.postUsers = function(req, res) {
   // Make sure that it has a valid email adress.
   var email = req.body.email;
   if (emailRegEx.test(email)) {
-    // It is a valid e-mail.
+    
+    // It is a valid e-mail, generate the new user object
     var user = new User({
       username: req.body.username,
       password: req.body.password,
@@ -23,6 +27,7 @@ exports.postUsers = function(req, res) {
       err: 'Invalid E-mail'
     });
   }
+
 };
 
 // FIND ALL USERS
@@ -178,4 +183,157 @@ exports.putUser = function(req, res) {
       error: 'You are not ' + req.params.username + ' or an admin!'
     });
   }
+};
+
+// ISSUE RESET PASSWORD TOKEN
+exports.postForgotPWD = function(req, res, next) {
+  async.waterfall([
+    function(done) {
+      crypto.randomBytes(20, function(err, buf) {
+        var token = buf.toString('hex');
+        done(err, token);
+      });
+    },
+    function(token, done) {
+      User.findOne({
+        email: req.body.email
+      }, function(err, user) {
+        if (err) {
+          res.status(400).json({
+            error: err
+          });
+        }
+        if (!user) {
+          console.log('No account with that email address exists.');
+          return res.redirect('/forgot');
+        }
+
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+        user.save(function(err) {
+          done(err, token, user);
+        });
+      });
+    },
+    function(token, user, done) {
+      var smtpTransport = nodemailer.createTransport('SMTP', {
+        service: 'SendGrid',
+        auth: {
+          api_user: process.env.EMAIL,
+          api_key: process.env.PWD
+        }
+      });
+      var mailOptions = {
+        from: 'passwordreset@demo.com',
+        to: user.email,
+        subject: 'Node.js Password Reset',
+        text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+          'If you did not request this, please ignore this email and your password will remain unchanged.\n',
+        html: '<b>Hello world</b>'
+      };
+      smtpTransport.sendMail(mailOptions, function(err) {
+        if (err) {
+          console.log('Error occurred');
+          console.log(err.message);
+          return;
+        }
+        console.log('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+        done(err, 'done');
+      });
+    }
+  ], function(err) {
+    if (err) return next(err);
+    res.redirect('/forgot');
+  });
+};
+
+// CHECK IS PASSWORD RESET TOKEN WAS ISSUED
+exports.findPWDresetToken = function(req, res) {
+  User.findOne({
+    resetPasswordToken: req.params.token,
+    resetPasswordExpires: {
+      $gt: Date.now()
+    }
+  }, function(err, user) {
+    if (err) {
+      res.status(400).json({
+        error: err
+      });
+    }
+    if (!user) {
+      console.log('Password reset token is invalid or has expired.');
+      return res.redirect('/forgot');
+    }
+    res.render('reset', {
+      user: req.user
+    });
+  });
+};
+
+// RESET THE PASSWORD
+exports.resetPWD = function(req, res) {
+  async.waterfall([
+    function(done) {
+      User.findOne({
+        resetPasswordToken: req.params.token,
+        resetPasswordExpires: {
+          $gt: Date.now()
+        }
+      }, function(err, user) {
+        if (err) {
+          res.status(400).json({
+            error: err
+          });
+        }
+        if (!user) {
+          console.log('error', 'Password reset token is invalid or has expired.');
+          return res.redirect('back');
+        }
+        
+        // Set new password
+        user.password = req.body.password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        
+        // Save changes
+        user.save(function(err) {
+          if (err) {
+            res.status(400).json({
+              error: err
+            });
+          }
+          req.logIn(user, function(err) {
+            done(err, user);
+          });
+        });
+      });
+    },
+    function(user, done) {
+      var smtpTransport = nodemailer.createTransport('SMTP', {
+        service: 'SendGrid',
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.PWD
+        }
+      });
+      var mailOptions = {
+        to: user.email,
+        from: 'passwordreset@demo.com',
+        subject: 'Your password has been changed',
+        text: 'Hello,\n\n' +
+          'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
+      };
+      smtpTransport.sendMail(mailOptions, function(err) {
+        console.log('success', 'Success! Your password has been changed.');
+        done(err);
+      });
+    }
+  ], function(err) {
+    res.status(400).json({
+      error: err
+    });
+  });
 };

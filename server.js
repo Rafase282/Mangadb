@@ -13,6 +13,7 @@ var mongoose = require('mongoose');
 var authController = require('./controllers/auth');
 var mangaController = require('./controllers/manga');
 var userController = require('./controllers/user');
+var emailController = require('./controllers/email');
 require('dotenv').config({
   silent: true
 });
@@ -82,7 +83,7 @@ router.route('/auth')
 
 // Create endpoint handlers for /users
 router.route('/users')
-  .post(userController.postUsers) // Creates new user
+  .post(emailController.confEmailValidation, userController.postUsers) // Creates new user
   .get(authController.validateToken, userController.getUsers) //admin get all users
   .delete(authController.validateToken, userController.delUsers); //admin delete all users
 
@@ -91,6 +92,19 @@ router.route('/users/:username')
   .get(authController.validateToken, userController.getUser) // get user info
   .put(authController.validateToken, userController.putUser) // update user info
   .delete(authController.validateToken, userController.delUser); // deletes user
+  
+// Handle Forgotten password request
+router.route('/forgot')
+  .post(userController.postForgotPWD);
+
+// Handle forgotten passwords
+router.route('/reset/:token')
+  .get(userController.findPWDresetToken)
+  .post(userController.resetPWD);
+
+// Handle email verification of new users.
+router.route('/email-verification/:URL')
+  .get(emailController.verify);
 
 // CONFIGURE & START THE SERVER
 // =============================================================================
