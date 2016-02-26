@@ -1,19 +1,28 @@
 // Load required packages
 var User = require('../models/user');
 var dbHelper = require('./dbHelper');
+var emailRegEx = /^[a-zA-Z]([a-zA-Z0-9_\-])+([\.][a-zA-Z0-9_]+)*\@((([a-zA-Z0-9\-])+\.){1,2})([a-zA-Z0-9]{2,40})$/gi;
 
-// Create endpoint /api/users for POST
+// Create new user
 exports.postUsers = function(req, res) {
-  var user = new User({
-    username: req.body.username,
-    password: req.body.password,
-    email: req.body.email,
-    firstname: req.body.firstname,
-    lastname: req.body.lastname
-  });
-
-  var msg = 'New manga reader ' + req.body.username + ' has been added.';
-  dbHelper.objSave(user, res, msg);
+  // Make sure that it has a valid email adress.
+  var email = req.body.email;
+  if (emailRegEx.test(email)) {
+    // It is a valid e-mail.
+    var user = new User({
+      username: req.body.username,
+      password: req.body.password,
+      email: email,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname
+    });
+    var msg = 'New manga reader ' + req.body.username + ' has been added.';
+    dbHelper.objSave(user, res, msg);
+  } else {
+    res.json({
+      err: 'Invalid E-mail'
+    });
+  }
 };
 
 // FIND ALL USERS
@@ -29,7 +38,15 @@ exports.getUsers = function(req, res) {
         });
         console.log(err);
       } else {
-        var out = users == null || users.length < 1 ? {msg: noOK, info: {message: noOK}} : {msg: ok, info: users};
+        var out = users == null || users.length < 1 ? {
+          msg: noOK,
+          info: {
+            message: noOK
+          }
+        } : {
+          msg: ok,
+          info: users
+        };
         console.log(out.msg);
         res.json(out.info);
       }
@@ -56,7 +73,15 @@ exports.getUser = function(req, res) {
         });
         console.log(err);
       } else {
-        var out = user == null ? {msg: noOK, info: {message: noOK}} : {msg: ok, info: user};
+        var out = user == null ? {
+          msg: noOK,
+          info: {
+            message: noOK
+          }
+        } : {
+          msg: ok,
+          info: user
+        };
         console.log(out.msg);
         res.json(out.info);
       }
@@ -85,7 +110,9 @@ exports.delUser = function(req, res) {
       } else {
         var msg = user == null ? noOK : ok;
         console.log(msg);
-        res.json({message: msg});
+        res.json({
+          message: msg
+        });
       }
     });
   } else {
@@ -110,7 +137,9 @@ exports.delUsers = function(req, res) {
       } else {
         var msg = user == null ? noOK : ok;
         console.log(msg);
-        res.json({message: msg});
+        res.json({
+          message: msg
+        });
       }
     });
   } else {
