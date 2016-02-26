@@ -5,26 +5,37 @@ var emailRegEx = /^[a-zA-Z]([a-zA-Z0-9_\-])+([\.][a-zA-Z0-9_]+)*\@((([a-zA-Z0-9\
 
 // Create new user
 exports.postUsers = function(req, res) {
-  // Make sure that it has a valid email adress.
+  // Make sure that it has a valid email adress, redundant but it alo uses regex for email systen validation.
+  var quickemailverification = require('quickemailverification').client(process.env.EV_KEY).quickemailverification();
   var email = req.body.email;
-  if (emailRegEx.test(email)) {
-    // It is a valid e-mail.
-    var user = new User({
-      username: req.body.username,
-      password: req.body.password,
-      email: email,
-      firstname: req.body.firstname,
-      lastname: req.body.lastname
-    });
-    var msg = 'New manga reader ' + req.body.username + ' has been added.';
-    dbHelper.objSave(user, res, msg);
-  } else {
-    res.json({
-      err: 'Invalid E-mail'
-    });
-  }
-};
+  quickemailverification.verify(email, function(err, response) {
+    if (err) {
+      console.log(err);
+      res.json({
+        message: err
+      });
+    } else {
+      // Print response object
+      if (emailRegEx.test(email) == true && response.body.result == 'valid') {
+        // It is a valid e-mail.
+        var user = new User({
+          username: req.body.username,
+          password: req.body.password,
+          email: email,
+          firstname: req.body.firstname,
+          lastname: req.body.lastname
+        });
+        var msg = 'New manga reader ' + req.body.username + ' has been added.';
+        dbHelper.objSave(user, res, msg);
+      } else {
+        res.json({
+          err: 'Invalid E-mail'
+        });
+      }
+    }
+  });
 
+};
 // FIND ALL USERS
 // Create endpoint /api/users for GET
 exports.getUsers = function(req, res) {
