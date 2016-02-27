@@ -1,4 +1,3 @@
-// ./models/manga.js
 // Load required packages
 var mongoose = require('mongoose');
 
@@ -117,5 +116,3 @@ var MangaSchema = new mongoose.Schema({
 
 // Export the Mongoose model
 module.exports = mongoose.model('Manga', MangaSchema);
-
-

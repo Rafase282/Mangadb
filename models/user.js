@@ -40,7 +40,9 @@ var UserSchema = new mongoose.Schema({
     required: false,
     unique: false,
     match: /[a-z]/
-  }
+  },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date
 }).set('toObject', {
   retainKeyOrder: true
 });
