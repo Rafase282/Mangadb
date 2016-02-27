@@ -13,6 +13,7 @@ var mongoose = require('mongoose');
 var authController = require('./controllers/auth');
 var mangaController = require('./controllers/manga');
 var userController = require('./controllers/user');
+var emailController = require('./controllers/email');
 require('dotenv').config({
   silent: true
 });
@@ -49,7 +50,7 @@ app.use('/api', router);
 // Serve index.jade at ttps://mangadb-r282.herokuapp.com
 app.route('/')
   .get(mangaController.getIndex);
-  
+
 // middleware to use for all requests
 router.use(mangaController.logConnection);
 
@@ -57,13 +58,13 @@ router.use(mangaController.logConnection);
 router.route('/')
   .get(mangaController.getWelcome);
 
-//Create endpoint handlers for /mangas/:user/:manga_tile   
+//Create endpoint handlers for /mangas/:user/:manga_tile
 router.route('/mangas/:user/:manga_title')
   .get(authController.validateToken, mangaController.getManga) // get user's manga info
   .put(authController.validateToken, mangaController.putManga) // update user's manga info
   .delete(authController.validateToken, mangaController.delManga); // deletes user's manga
 
-// Create endpoint handlers for /mangas/:user  
+// Create endpoint handlers for /mangas/:user
 router.route('/mangas/:user')
   .get(authController.validateToken, mangaController.getMangas) //get all user's manga
   .post(authController.validateToken, mangaController.postManga); //create new manga
@@ -76,21 +77,34 @@ router.route('/mangas')
 // HANDLE USER RELATED ROUTES
 // =============================================================================
 
-// Request token generator at /mangas/auth  
+// Request token generator at /mangas/auth
 router.route('/auth')
   .post(authController.generateToken); //Get token
 
 // Create endpoint handlers for /users
 router.route('/users')
-  .post(userController.postUsers) // Creates new user
+  .post(emailController.confEmailValidation, userController.postUsers) // Creates new user
   .get(authController.validateToken, userController.getUsers) //admin get all users
   .delete(authController.validateToken, userController.delUsers); //admin delete all users
 
-//Create endpoint handlers for /mangas/:username    
+//Create endpoint handlers for /mangas/:username
 router.route('/users/:username')
   .get(authController.validateToken, userController.getUser) // get user info
   .put(authController.validateToken, userController.putUser) // update user info
   .delete(authController.validateToken, userController.delUser); // deletes user
+
+// Handle Forgotten password request
+router.route('/forgot')
+  .post(userController.postForgotPWD);
+
+// Handle forgotten passwords
+router.route('/reset/:token')
+  .get(userController.findPWDresetToken)
+  .post(userController.resetPWD);
+
+// Handle email verification of new users.
+router.route('/email-verification/:URL')
+  .get(emailController.verify);
 
 // CONFIGURE & START THE SERVER
 // =============================================================================
