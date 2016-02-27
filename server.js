@@ -49,7 +49,7 @@ app.use('/api', router);
 // Serve index.jade at ttps://mangadb-r282.herokuapp.com
 app.route('/')
   .get(mangaController.getIndex);
-  
+
 // middleware to use for all requests
 router.use(mangaController.logConnection);
 
@@ -57,13 +57,13 @@ router.use(mangaController.logConnection);
 router.route('/')
   .get(mangaController.getWelcome);
 
-//Create endpoint handlers for /mangas/:user/:manga_tile   
+//Create endpoint handlers for /mangas/:user/:manga_tile
 router.route('/mangas/:user/:manga_title')
   .get(authController.validateToken, mangaController.getManga) // get user's manga info
   .put(authController.validateToken, mangaController.putManga) // update user's manga info
   .delete(authController.validateToken, mangaController.delManga); // deletes user's manga
 
-// Create endpoint handlers for /mangas/:user  
+// Create endpoint handlers for /mangas/:user
 router.route('/mangas/:user')
   .get(authController.validateToken, mangaController.getMangas) //get all user's manga
   .post(authController.validateToken, mangaController.postManga); //create new manga
@@ -76,7 +76,7 @@ router.route('/mangas')
 // HANDLE USER RELATED ROUTES
 // =============================================================================
 
-// Request token generator at /mangas/auth  
+// Request token generator at /mangas/auth
 router.route('/auth')
   .post(authController.generateToken); //Get token
 
@@ -86,7 +86,7 @@ router.route('/users')
   .get(authController.validateToken, userController.getUsers) //admin get all users
   .delete(authController.validateToken, userController.delUsers); //admin delete all users
 
-//Create endpoint handlers for /mangas/:username    
+//Create endpoint handlers for /mangas/:username
 router.route('/users/:username')
   .get(authController.validateToken, userController.getUser) // get user info
   .put(authController.validateToken, userController.putUser) // update user info

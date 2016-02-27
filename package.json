@@ -28,6 +28,7 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.14.2",
     "dotenv": "^2.0.0",
+    "email-verification": "^0.3.1",
     "express": "^4.13.4",
     "geoip-lite": "^1.1.6",
     "jade": "^1.11.0",
