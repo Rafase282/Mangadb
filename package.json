@@ -4,7 +4,7 @@
   "description": "A service to help users keep a good record of their favorite manga series",
   "main": "server.js",
   "scripts": {
-    "test": "node server.js && exit 0"
+    "test": "echo \"Need to create a test\" && exit 0"
   },
   "repository": {
     "type": "git",
