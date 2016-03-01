@@ -14,6 +14,9 @@ Created by Rafase282
 [![bitHound Dev Dependencies](https://www.bithound.io/github/Rafase282/Mangadb/badges/devDependencies.svg)](https://www.bithound.io/github/Rafase282/Mangadb/master/dependencies/npm)
 [![bitHound Code](https://www.bithound.io/github/Rafase282/Mangadb/badges/code.svg)](https://www.bithound.io/github/Rafase282/Mangadb)
 [![codecov.io](https://codecov.io/github/Rafase282/Mangadb/coverage.svg?branch=master)](https://codecov.io/github/Rafase282/Mangadb?branch=master)
+[![Code Climate](https://codeclimate.com/github/Rafase282/Mangadb/badges/gpa.svg)](https://codeclimate.com/github/Rafase282/Mangadb)
+[![Issue Count](https://codeclimate.com/github/Rafase282/Mangadb/badges/issue_count.svg)](https://codeclimate.com/github/Rafase282/Mangadb)
+[![Test Coverage](https://codeclimate.com/github/Rafase282/Mangadb/badges/coverage.svg)](https://codeclimate.com/github/Rafase282/Mangadb/coverage)
 # Manga Record Microservice
 This is an API created to store crucial information for any manga an authenticated user might read. Wtheer you want to keep track of the manga you will rea, already finished or are currently reading this microservice will help you get your data together. In the Future I intend on adding more features but meanwhile the user interface will be separated and this stays as the core backend.
 
