@@ -6,6 +6,9 @@ Created by Rafase282
 [Github](https://github.com/Rafase282) | [FreeCodeCamp](http://www.freecodecamp.com/rafase282) | [CodePen](http://codepen.io/Rafase282/) | [LinkedIn](https://www.linkedin.com/in/rafase282) | [Blog/Site](https://rafase282.wordpress.com/) | [E-Mail](mailto:rafase282@gmail.com)
 
 [![Gitter](https://badges.gitter.im/Rafase282/Mangadb.svg)](https://gitter.im/Rafase282/Mangadb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Build Status](https://travis-ci.org/Rafase282/Mangadb.svg?branch=master)](https://travis-ci.org/Rafase282/Mangadb)
+[![Dependency Status](https://david-dm.org/Rafase282/Mangadb.svg)](https://david-dm.org/Rafase282/Mangadb)
+[![devDependency Status](https://david-dm.org/Rafase282/Mangadb/dev-status.svg)](https://david-dm.org/Rafase282/Mangadb#info=devDependencies)
 # Manga Record Microservice
 This is an API created to store crucial information for any manga an authenticated user might read. Wtheer you want to keep track of the manga you will rea, already finished or are currently reading this microservice will help you get your data together. In the Future I intend on adding more features but meanwhile the user interface will be separated and this stays as the core backend.
 
