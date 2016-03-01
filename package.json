@@ -23,6 +23,7 @@
   "homepage": "https://github.com/Rafase282/Mangadb#readme",
   "devDependencies": {
     "codecov": "^1.0.1",
+    "istanbul": "^0.4.2",
     "nodemon": "^1.8.1"
   },
   "dependencies": {
