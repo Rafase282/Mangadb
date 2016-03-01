@@ -4,7 +4,7 @@
   "description": "A service to help users keep a good record of their favorite manga series",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node server.js && exit 0"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/Rafase282/Mangadb#readme",
   "devDependencies": {
+    "codecov": "^1.0.1",
+    "istanbul": "^0.4.2",
     "nodemon": "^1.8.1"
   },
   "dependencies": {
