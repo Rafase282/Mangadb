@@ -51,7 +51,7 @@ app.route('/')
   .get(mangaController.getIndex);
   
 // middleware to use for all requests
-router.use(mangaController.logConnection);
+//router.use(mangaController.logConnection);
 
 // test route to make sure everything is working (accessed at GET https://mangadb-r282.herokuapp.com/api)
 router.route('/')
