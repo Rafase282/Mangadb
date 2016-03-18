@@ -110,19 +110,17 @@ exports.delUser = function(req, res) {
     User.remove({
       username: req.params.username
     }, function(err, user) {
-      var ok = 'Successfully deleted ' + req.params.username;
-      var noOK = 'Could not find ' + req.params.username;
+      var ok = {message: 'Successfully deleted ' + req.params.username};
+      var noOK = {err: 'Could not find ' + req.params.username};
       if (err) {
         res.status(400).json({
-          error: err
+          err: err
         });
         console.log(err);
       } else {
-        var msg = user == null ? noOK : ok;
-        console.log(msg);
-        res.json({
-          message: msg
-        });
+        var result = user.result.n === 0 ? noOK : ok;
+        console.log(result);
+        res.json(result);
       }
     });
   } else {
@@ -137,15 +135,15 @@ exports.delUser = function(req, res) {
 exports.delUsers = function(req, res) {
   if (req.decoded.sub === process.env.ADMIN) {
     User.remove({}, function(err, user) {
-      var ok = 'Successfully deleted all users, remember to create admin again.';
-      var noOK = 'Could not delete users.';
+      var ok = {message: 'Successfully deleted all users, remember to create admin again.'};
+      var noOK = {err: 'Could not delete users.'};
       if (err) {
         res.status(400).json({
           error: err
         });
         console.log(err);
       } else {
-        var msg = user == null ? noOK : ok;
+        var msg = user.result.n === 0 ? noOK : ok;
         console.log(msg);
         res.json({
           message: msg

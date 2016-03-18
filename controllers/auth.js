@@ -43,7 +43,7 @@ exports.generateToken = function(req, res) {
           // return the information including token as JSON
           res.json({
             success: true,
-            message: 'Enjoy your token for the next ' + expTime / 60 + ' minutes!',
+            message: 'Log in succesfull, enjoy your session for the next ' + expTime / 60 + ' minutes!',
             token: token
           });
         }
