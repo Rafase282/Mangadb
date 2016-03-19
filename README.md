@@ -195,6 +195,6 @@ Remember to use `Content-Type: application/x-www-form-urlencoded`, the API will 
 - [X] Add thumbnail property to Mongoose Schema and make it work with current data.
 - [X] Switch to JSON Web Tokens.
 - [X] Validate E-mails.
-- [ ] Verify E-mails.
+- [-] Verify E-mails.
 - [ ] Implement password reset mechanism.
 - [ ] Implement email support to send new passwords when a request for a forgotten password is made.
