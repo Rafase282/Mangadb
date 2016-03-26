@@ -7,14 +7,12 @@ exports.postUsers = function (req, res) {
   // Make sure that it has a valid email adress.
   var quickemailverification = require('quickemailverification')
     .client(process.env.EV_KEY).quickemailverification();
+
   var email = req.body.email;
+
   quickemailverification.verify(email, function (err, response) {
     if (err) {
-      res.json({
-        success: false,
-        message: err,
-        data: null
-      });
+      dbHelper.resMsg(res, 400, false, err, null);
     } else {
       // Print response object
       if (response.body.result === 'valid') {
@@ -29,11 +27,8 @@ exports.postUsers = function (req, res) {
         var msg = 'New manga reader ' + req.body.username + ' has been added.';
         dbHelper.objSave(user, res, msg);
       } else {
-        res.json({
-          success: false,
-          message: 'Invalid E-Mail.',
-          data: null
-        });
+        var msg = 'Invalid E-Mail.';
+        dbHelper.resMsg(res, 400, false, msg, null);
       }
     }
   });
@@ -45,32 +40,19 @@ exports.getUsers = function (req, res) {
   if (req.decoded.sub === process.env.ADMIN) {
     User.find(function (err, users) {
       if (err) {
-        res.status(400).json({
-          success: false,
-          message: err,
-          data: null
-        });
+        dbHelper.resMsg(res, 400, false, err, null);
       }
       if (users === null || users.length < 1) {
-        res.status(404).json({
-          success: false,
-          message: 'No users has been created yet.',
-          data: null
-        })
+        var msg = 'No users has been created yet.';
+        dbHelper.resMsg(res, 404, false, msg, null);
       } else {
-        res.json({
-          success: true,
-          message: 'The list of users has been succesfully generated.',
-          data: users
-        })
+        var msg = 'The list of users has been succesfully generated.';
+        dbHelper.resMsg(res, 200, true, msg, users);
       }
     });
   } else {
-    res.json({
-      success: false,
-      message: 'You are not an admin.',
-      data: null
-    });
+    var msg = 'You are not an admin.';
+    dbHelper.resMsg(res, 403, false, msg, null);
   }
 };
 
@@ -83,32 +65,19 @@ exports.getUser = function (req, res) {
       username: req.params.username
     }, function (err, user) {
       if (err) {
-        res.status(400).json({
-          success: false,
-          message: err,
-          data: null
-        });
+        dbHelper.resMsg(res, 400, false, err, null);
       }
       if (users === null || users.length < 1) {
-        res.status(404).json({
-          success: false,
-          message: req.params.username + ' not found.',
-          data: null
-        })
+        var msg = req.params.username + ' not found.';
+        dbHelper.resMsg(res, 404, false, msg, null);
       } else {
-        res.json({
-          success: true,
-          message: req.params.username + ' found!',
-          data: user
-        })
+        var msg = req.params.username + ' found!';
+        dbHelper.resMsg(res, 200, true, msg, user);
       }
     });
   } else {
-    res.json({
-      success: false,
-      message: 'You are not ' + req.params.username + ' or an admin!',
-      data: null
-    });
+    var msg = 'You are not ' + req.params.username + ' or an admin!';
+    dbHelper.resMsg(res, 403, false, msg, null);
   }
 };
 
@@ -121,32 +90,19 @@ exports.delUser = function (req, res) {
       username: req.params.username
     }, function (err, user) {
       if (err) {
-        res.status(400).json({
-          success: false,
-          message: err,
-          data: null
-        });
+        dbHelper.resMsg(res, 400, false, err, null);
       }
       if (user.result.n === 0) {
-        res.status(404).json({
-          success: false,
-          message: 'Could not find ' + req.params.username,
-          data: null
-        })
+        var msg = 'Could not find ' + req.params.username;
+        dbHelper.resMsg(res, 404, false, msg, null);
       } else {
-        res.json({
-          success: true,
-          message: 'Successfully deleted ' + req.params.username,
-          data: user
-        })
+        var msg = 'Successfully deleted ' + req.params.username;
+        dbHelper.resMsg(res, 200, true, msg, user);
       }
     });
   } else {
-    res.json({
-      success: false,
-      message: 'You are not ' + req.params.username + ' or an admin!',
-      data: null
-    });
+    var msg = 'You are not ' + req.params.username + ' or an admin!';
+    dbHelper.resMsg(res, 403, false, msg, null);
   }
 };
 
@@ -161,32 +117,19 @@ exports.delUsers = function (req, res) {
       }
     }, function (err, user) {
       if (err) {
-        res.status(400).json({
-          success: false,
-          message: err,
-          data: null
-        });
+        dbHelper.resMsg(res, 400, false, err, null);
       }
       if (user.result.n === 0) {
-        res.status(404).json({
-          success: false,
-          message: 'There are no users to delete besides the admin account.',
-          data: null
-        })
+        var msg = 'There are no users to delete besides the admin account.';
+        dbHelper.resMsg(res, 404, false, msg, null);
       } else {
-        res.json({
-          success: true,
-          message: 'Successfully deleted all users but the admin.',
-          data: user
-        })
+        var msg = 'Successfully deleted all users but the admin.';
+        dbHelper.resMsg(res, 200, true, msg, user);
       }
     });
   } else {
-    res.json({
-      success: false,
-      message: 'You are not ' + req.params.username + ' or an admin!',
-      data: null
-    });
+    var msg = 'You are not ' + req.params.username + ' or an admin!';
+    dbHelper.resMsg(res, 403, false, msg, null);
   }
 };
 
@@ -200,10 +143,7 @@ exports.putUser = function (req, res) {
       username: req.params.username
     }, function (err, user) {
       if (err) {
-        res.status(400).json({
-          error: err
-        });
-        console.log(err);
+        dbHelper.resMsg(res, 400, false, err, null);
       } else {
         user.username = req.params.username || user.username;
         user.password = req.body.password || user.password;
@@ -211,13 +151,12 @@ exports.putUser = function (req, res) {
         user.firstname = req.body.firstname || user.firstname;
         user.lastname = req.body.lastname || user.lastname;
         // update the user
-        var msg = req.params.username + ' user updated.';
+        var msg = req.params.username + ' information has been updated.';
         dbHelper.objSave(user, res, msg);
       }
     });
   } else {
-    res.json({
-      error: 'You are not ' + req.params.username + ' or an admin!'
-    });
+    var msg = 'You are not ' + req.params.username + ' or an admin!';
+    dbHelper.resMsg(res, 403, false, msg, null);
   }
 };

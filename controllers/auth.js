@@ -9,7 +9,7 @@ exports.generateToken = function (req, res) {
     username: req.body.username
   }, function (err, user) {
     if (err) {
-      res.json({
+      res.status(400).json({
         success: false,
         message: err,
         data: null
@@ -25,7 +25,7 @@ exports.generateToken = function (req, res) {
       // check if password matches
       user.verifyPassword(req.body.password, function (err, isMatch) {
         if (err) {
-          res.json({
+          res.status(400).json({
             success: false,
             message: err,
             data: null
@@ -51,7 +51,7 @@ exports.generateToken = function (req, res) {
             issuer: 'MangaDB by Rafase282'
           });
           // return the information including token as JSON
-          res.json({
+          res.status(200).json({
             success: true,
             message: 'Log in succesfull, enjoy your session for the next ' + expTime / 60 + ' minutes!',
             data: token
