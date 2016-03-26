@@ -2,16 +2,18 @@
 
 exports.objSave = function save(object, res, msg) {
   // save the object and check for errors
-  object.save(function(err) {
+  object.save(function (err) {
     if (err) {
       res.status(409).json({
-        error: err
+        success: false,
+        message: err,
+        data: null
       });
-      console.log(err);
     } else {
-      console.log(msg);
-      res.json({
-        message: msg
+      res.status(200).json({
+        success: true,
+        message: msg,
+        data: object
       });
     }
   });
@@ -20,21 +22,21 @@ exports.objSave = function save(object, res, msg) {
 exports.objItemize = function itemize(arr) {
   var item;
   switch (true) {
-    case arr === null || arr === undefined:
-      item = [];
-      break;
-    case arr === ['']:
-      item = arr;
-      break;
-    case arr.slice(0).length < 1:
-      item = '';
-      break;
-    case arr.slice(0).length > 1:
-      item = arr.slice(0);
-      break;
-    case arr.slice(0).length === 1:
-      item = arr.slice(0)[0].split(',');
-      break;
+  case arr === null || arr === undefined:
+    item = [];
+    break;
+  case arr === ['']:
+    item = arr;
+    break;
+  case arr.slice(0).length < 1:
+    item = '';
+    break;
+  case arr.slice(0).length > 1:
+    item = arr.slice(0);
+    break;
+  case arr.slice(0).length === 1:
+    item = arr.slice(0)[0].split(',');
+    break;
   }
   return item;
 };

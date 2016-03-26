@@ -3,29 +3,39 @@ var User = require('../models/user');
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
 // GENERATE TOKEN FOR THE USER.
-exports.generateToken = function(req, res) {
+exports.generateToken = function (req, res) {
   // find the user
   User.findOne({
     username: req.body.username
-  }, function(err, user) {
+  }, function (err, user) {
     if (err) {
       res.json({
-        message: err
+        success: false,
+        message: err,
+        data: null
       });
     }
     if (!user) {
-      res.json({
+      res.status(404).json({
         success: false,
-        message: 'Authentication failed. User not found.'
+        message: 'Authentication failed. User not found.',
+        data: null
       });
     } else if (user) {
       // check if password matches
-      user.verifyPassword(req.body.password, function(err, isMatch) {
-        if (err) throw err;
-        if (!isMatch) {
+      user.verifyPassword(req.body.password, function (err, isMatch) {
+        if (err) {
           res.json({
             success: false,
-            message: 'Authentication failed. Wrong password.'
+            message: err,
+            data: null
+          });
+        }
+        if (!isMatch) {
+          res.status(404).json({
+            success: false,
+            message: 'Authentication failed. Wrong password.',
+            data: null
           });
         } else {
           var expTime = 60 * 60; // expires in 1 hour "seconds X Minutes"
@@ -44,7 +54,7 @@ exports.generateToken = function(req, res) {
           res.json({
             success: true,
             message: 'Log in succesfull, enjoy your session for the next ' + expTime / 60 + ' minutes!',
-            token: token
+            data: token
           });
         }
       });
@@ -53,18 +63,19 @@ exports.generateToken = function(req, res) {
 };
 
 // VALIDATE TOKEN FOR AUTHENTICATION
-exports.validateToken = function(req, res, next) {
+exports.validateToken = function (req, res, next) {
   // check header or url parameters or post parameters for token
   var token = req.headers['x-access-token'];
 
   // decode token
   if (token) {
     // verifies secret and checks exp
-    jwt.verify(token, req.app.get('superSecret'), function(err, decoded) {
+    jwt.verify(token, req.app.get('superSecret'), function (err, decoded) {
       if (err) {
-        return res.json({
+        return res.status(400).json({
           success: false,
-          message: 'Failed to authenticate token.'
+          message: 'Failed to authenticate token.',
+          data: null
         });
       } else {
         // if everything is good, save to request for use in other routes
@@ -77,7 +88,8 @@ exports.validateToken = function(req, res, next) {
     // return an error
     return res.status(403).send({
       success: false,
-      message: 'No token provided.'
+      message: 'No token provided.',
+      data: null
     });
   }
 };

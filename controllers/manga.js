@@ -49,7 +49,7 @@ exports.getManga = function(req, res) {
         });
         console.log(err);
       } else {
-        var out = manga == null ? {msg: noOK, info: {message: noOK}} : {msg: ok, info: manga};
+        var out = manga === null ? {msg: noOK, info: {message: noOK}} : {msg: ok, info: manga};
         console.log(out.msg);
         res.json(out.info);
       }
@@ -118,7 +118,7 @@ exports.delManga = function(req, res) {
         });
         console.log(err);
       } else {
-        var msg = manga == null ? noOK : ok;
+        var msg = manga === null ? noOK : ok;
         console.log(msg);
         res.json({message: msg});
       }
@@ -175,7 +175,7 @@ exports.getMangas = function(req, res) {
         });
         console.log(err);
       } else {
-        var out = mangas == null || mangas.length < 1 ? {msg: noOK, info: {message: noOK}} : {msg: ok, info: mangas};
+        var out = mangas === null || mangas.length < 1 ? {msg: noOK, info: {message: noOK}} : {msg: ok, info: mangas};
         console.log(out.msg);
         res.json(out.info);
       }
@@ -200,7 +200,7 @@ exports.getAllMangas = function(req, res) {
         });
         console.log(err);
       } else {
-        var out = mangas == null || mangas < 1 ? {msg: noOK, info: {message: noOK}} : {msg: ok, info: mangas};
+        var out = mangas === null || mangas < 1 ? {msg: noOK, info: {message: noOK}} : {msg: ok, info: mangas};
         console.log(out.msg);
         res.json(out.info);
       }
@@ -225,7 +225,7 @@ exports.delMangas = function(req, res) {
         });
         console.log(err);
       } else {
-        var msg = manga == null ? noOK : ok;
+        var msg = manga === null ? noOK : ok;
         console.log(msg);
         res.json({message: msg});
       }

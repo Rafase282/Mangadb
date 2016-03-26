@@ -3,19 +3,21 @@ var User = require('../models/user');
 var dbHelper = require('./dbHelper');
 
 // Create new user
-exports.postUsers = function(req, res) {
+exports.postUsers = function (req, res) {
   // Make sure that it has a valid email adress.
-  var quickemailverification = require('quickemailverification').client(process.env.EV_KEY).quickemailverification();
+  var quickemailverification = require('quickemailverification')
+    .client(process.env.EV_KEY).quickemailverification();
   var email = req.body.email;
-  quickemailverification.verify(email, function(err, response) {
+  quickemailverification.verify(email, function (err, response) {
     if (err) {
-      console.log(err);
       res.json({
-        message: err
+        success: false,
+        message: err,
+        data: null
       });
     } else {
       // Print response object
-      if (response.body.result == 'valid') {
+      if (response.body.result === 'valid') {
         // It is a valid e-mail.
         var user = new User({
           username: req.body.username,
@@ -28,7 +30,9 @@ exports.postUsers = function(req, res) {
         dbHelper.objSave(user, res, msg);
       } else {
         res.json({
-          err: 'Invalid E-mail'
+          success: false,
+          message: 'Invalid E-Mail.',
+          data: null
         });
       }
     }
@@ -37,134 +41,164 @@ exports.postUsers = function(req, res) {
 
 // FIND ALL USERS
 // Create endpoint /api/users for GET
-exports.getUsers = function(req, res) {
+exports.getUsers = function (req, res) {
   if (req.decoded.sub === process.env.ADMIN) {
-    User.find(function(err, users) {
-      var ok = 'List of users succesfully generated.';
-      var noOK = 'No users has been created yet.';
+    User.find(function (err, users) {
       if (err) {
         res.status(400).json({
-          error: err
+          success: false,
+          message: err,
+          data: null
         });
-        console.log(err);
+      }
+      if (users === null || users.length < 1) {
+        res.status(404).json({
+          success: false,
+          message: 'No users has been created yet.',
+          data: null
+        })
       } else {
-        var out = users == null || users.length < 1 ? {
-          msg: noOK,
-          info: {
-            message: noOK
-          }
-        } : {
-          msg: ok,
-          info: users
-        };
-        console.log(out.msg);
-        res.json(out.info);
+        res.json({
+          success: true,
+          message: 'The list of users has been succesfully generated.',
+          data: users
+        })
       }
     });
   } else {
     res.json({
-      error: "You are not an admin!"
+      success: false,
+      message: 'You are not an admin.',
+      data: null
     });
   }
 };
 
 // FIND USER BY USERNAME
 // Get the user (accessed at GET https://mangadb-r282.herokuapp.com/api/users/:username)
-exports.getUser = function(req, res) {
-  if (req.decoded.sub === process.env.ADMIN || req.decoded.sub === req.params.username) {
+exports.getUser = function (req, res) {
+  if (req.decoded.sub === process.env.ADMIN ||
+    req.decoded.sub === req.params.username) {
     User.findOne({
       username: req.params.username
-    }, function(err, user) {
-      var ok = req.params.username + ' found!';
-      var noOK = req.params.username + ' not found.';
+    }, function (err, user) {
       if (err) {
         res.status(400).json({
-          error: err
+          success: false,
+          message: err,
+          data: null
         });
-        console.log(err);
+      }
+      if (users === null || users.length < 1) {
+        res.status(404).json({
+          success: false,
+          message: req.params.username + ' not found.',
+          data: null
+        })
       } else {
-        var out = user == null ? {
-          msg: noOK,
-          info: {
-            message: noOK
-          }
-        } : {
-          msg: ok,
-          info: user
-        };
-        console.log(out.msg);
-        res.json(out.info);
+        res.json({
+          success: true,
+          message: req.params.username + ' found!',
+          data: user
+        })
       }
     });
   } else {
     res.json({
-      error: 'You are not ' + req.params.username + ' or an admin!'
+      success: false,
+      message: 'You are not ' + req.params.username + ' or an admin!',
+      data: null
     });
   }
 };
 
 // DELETE USER BY USERNAME
 // Delete the user with this title (accessed at DELETE https://mangadb-r282.herokuapp.com/api/users/:username)
-exports.delUser = function(req, res) {
-  if (req.decoded.sub === process.env.ADMIN || req.decoded.sub === req.params.username) {
+exports.delUser = function (req, res) {
+  if (req.decoded.sub === process.env.ADMIN ||
+    req.decoded.sub === req.params.username) {
     User.remove({
       username: req.params.username
-    }, function(err, user) {
-      var ok = {message: 'Successfully deleted ' + req.params.username};
-      var noOK = {err: 'Could not find ' + req.params.username};
+    }, function (err, user) {
       if (err) {
         res.status(400).json({
-          err: err
+          success: false,
+          message: err,
+          data: null
         });
-        console.log(err);
+      }
+      if (user.result.n === 0) {
+        res.status(404).json({
+          success: false,
+          message: 'Could not find ' + req.params.username,
+          data: null
+        })
       } else {
-        var result = user.result.n === 0 ? noOK : ok;
-        console.log(result);
-        res.json(result);
+        res.json({
+          success: true,
+          message: 'Successfully deleted ' + req.params.username,
+          data: user
+        })
       }
     });
   } else {
     res.json({
-      error: 'You are not ' + req.params.username + ' or an admin!'
+      success: false,
+      message: 'You are not ' + req.params.username + ' or an admin!',
+      data: null
     });
   }
 };
 
 // DELETE ALL USER VIA ADMIN
-// Delete all users via admin rights (accessed at DELETE https://mangadb-r282.herokuapp.com/api/users)
-exports.delUsers = function(req, res) {
+// Delete all users via admin rights 
+// (accessed at DELETE https://mangadb-r282.herokuapp.com/api/users)
+exports.delUsers = function (req, res) {
   if (req.decoded.sub === process.env.ADMIN) {
-    User.remove({}, function(err, user) {
-      var ok = {message: 'Successfully deleted all users, remember to create admin again.'};
-      var noOK = {err: 'Could not delete users.'};
+    User.remove({
+      username: {
+        $ne: process.env.ADMIN
+      }
+    }, function (err, user) {
       if (err) {
         res.status(400).json({
-          error: err
+          success: false,
+          message: err,
+          data: null
         });
-        console.log(err);
+      }
+      if (user.result.n === 0) {
+        res.status(404).json({
+          success: false,
+          message: 'There are no users to delete besides the admin account.',
+          data: null
+        })
       } else {
-        var msg = user.result.n === 0 ? noOK : ok;
-        console.log(msg);
         res.json({
-          message: msg
-        });
+          success: true,
+          message: 'Successfully deleted all users but the admin.',
+          data: user
+        })
       }
     });
   } else {
     res.json({
-      error: 'You are not an admin!'
+      success: false,
+      message: 'You are not ' + req.params.username + ' or an admin!',
+      data: null
     });
   }
 };
 
 // UPDATE USER BY USERNAME
 // Update the user by username (accessed at PUT https://mangadb-r282.herokuapp.com/api/users/:username)
-exports.putUser = function(req, res) {
+exports.putUser = function (req, res) {
   // use our user model to find the user we want
-  if (req.decoded.sub === process.env.ADMIN || req.decoded.sub === req.params.username) {
+  if (req.decoded.sub === process.env.ADMIN ||
+    req.decoded.sub === req.params.username) {
     User.findOne({
       username: req.params.username
-    }, function(err, user) {
+    }, function (err, user) {
       if (err) {
         res.status(400).json({
           error: err
