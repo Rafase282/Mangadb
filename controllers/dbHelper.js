@@ -100,3 +100,25 @@ var getData = function (req, res, db, obj, ok, noOk, auth) {
   }
 };
 exports.getData = getData;
+
+var updateMangaObj = function (req, manga) {
+  manga.title = req.body.title || req.params.manga_title;
+  manga.author = req.body.author || manga.author;
+  manga.url = req.body.url || manga.url;
+  manga.userStatus = req.body.userStatus || manga.userStatus;
+  manga.type = req.body.type || manga.type;
+  manga.categories = req.body.categories ?
+    objItemize(req.body.categories) : objItemize(manga.categories);
+  manga.chapter = req.body.chapter || manga.chapter;
+  manga.seriesStatus = req.body.seriesStatus || manga.seriesStatus;
+  manga.plot = req.body.plot || manga.plot;
+  manga.altName = req.body.altName ? objItemize(req.body.altName) :
+    objItemize(manga.altName);
+  manga.direction = req.body.direction || manga.direction;
+  manga.userId = req.decoded.sub === req.params.user ? req.decoded.jti :
+    manga.userId;
+  manga.username = req.params.user || manga.username;
+  manga.thumbnail = req.body.thumbnail || manga.thumbnail;
+  return manga;
+};
+exports.updateMangaObj = updateMangaObj;

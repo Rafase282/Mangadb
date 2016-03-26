@@ -78,7 +78,7 @@ exports.postManga = function (req, res) {
     var msg = req.body.title + ' manga created.';
     dbHelper.objSave(manga, res, msg);
   } else {
-    var msg = 'You are not ' + req.params.username.toLowerCase() +
+    msg = 'You are not ' + req.params.username.toLowerCase() +
       ' or an admin!';
     dbHelper.resMsg(res, 403, false, msg, null);
   }
@@ -115,25 +115,7 @@ exports.putManga = function (req, res) {
       if (err) {
         dbHelper.resMsg(res, 400, false, err, null);
       } else {
-        manga.title = req.body.title || req.params.manga_title;
-        manga.author = req.body.author || manga.author;
-        manga.url = req.body.url || manga.url;
-        manga.userStatus = req.body.userStatus || manga.userStatus;
-        manga.type = req.body.type || manga.type;
-        manga.categories = req.body.categories ?
-          dbHelper.objItemize(req.body.categories) :
-          dbHelper.objItemize(manga.categories);
-        manga.chapter = req.body.chapter || manga.chapter;
-        manga.seriesStatus = req.body.seriesStatus || manga.seriesStatus;
-        manga.plot = req.body.plot || manga.plot;
-        manga.altName = req.body.altName ?
-          dbHelper.objItemize(req.body.altName) :
-          dbHelper.objItemize(manga.altName);
-        manga.direction = req.body.direction || manga.direction;
-        manga.userId = req.decoded.sub === req.params.user ? req.decoded.jti :
-          manga.userId;
-        manga.username = req.params.user || manga.username;
-        manga.thumbnail = req.body.thumbnail || manga.thumbnail;
+        manga = dbHelper.updateMangaObj(req, manga)
         // update the manga
         var msg = req.params.manga_title + ' manga updated.';
         dbHelper.objSave(manga, res, msg);
