@@ -38,8 +38,8 @@ exports.postUsers = function (req, res) {
 };
 
 /* Finds All Users
- * Returns a list of all usrs when found.
- * returns standard result object acordingly.
+ * Returns a list of all users when found.
+ * Accessed at GET /api/users
  */
 exports.getUsers = function (req, res) {
   if (req.decoded.sub === process.env.ADMIN) {
@@ -61,13 +61,15 @@ exports.getUsers = function (req, res) {
   }
 };
 
-// FIND USER BY USERNAME
-// Get the user (accessed at GET https://mangadb-r282.herokuapp.com/api/users/:username)
+/* Finds User By Username
+ * Returns the user information with a hashd password.
+ * Accessed at GET /api/users/:username
+ */
 exports.getUser = function (req, res) {
   if (req.decoded.sub === process.env.ADMIN ||
-    req.decoded.sub === req.params.username) {
+    req.decoded.sub === req.params.username.toLowerCase()) {
     User.findOne({
-      username: req.params.username
+      username: req.params.username.toLowerCase()
     }, function (err, user) {
       if (err) {
         dbHelper.resMsg(res, 400, false, err, null);
@@ -81,18 +83,21 @@ exports.getUser = function (req, res) {
       }
     });
   } else {
-    var msg = 'You are not ' + req.params.username + ' or an admin!';
+    var msg = 'You are not ' + req.params.username.toLowerCase() +
+      ' or an admin!';
     dbHelper.resMsg(res, 403, false, msg, null);
   }
 };
 
-// DELETE USER BY USERNAME
-// Delete the user with this title (accessed at DELETE https://mangadb-r282.herokuapp.com/api/users/:username)
+/* Deletes User By Username
+ * Returns the message along with database output.
+ * Accessed at DELETE /api/users/:username
+ */
 exports.delUser = function (req, res) {
   if (req.decoded.sub === process.env.ADMIN ||
-    req.decoded.sub === req.params.username) {
+    req.decoded.sub === req.params.username.toLowerCase()) {
     User.remove({
-      username: req.params.username
+      username: req.params.username.toLowerCase()
     }, function (err, user) {
       if (err) {
         dbHelper.resMsg(res, 400, false, err, null);
@@ -106,19 +111,21 @@ exports.delUser = function (req, res) {
       }
     });
   } else {
-    var msg = 'You are not ' + req.params.username + ' or an admin!';
+    var msg = 'You are not ' + req.params.username.toLowerCase() +
+      ' or an admin!';
     dbHelper.resMsg(res, 403, false, msg, null);
   }
 };
 
-// DELETE ALL USER VIA ADMIN
-// Delete all users via admin rights 
-// (accessed at DELETE https://mangadb-r282.herokuapp.com/api/users)
+/* Deletes All Users Except The Admin
+ * Returns the message along with database output.
+ * Accessed at DELETE /api/users
+ */
 exports.delUsers = function (req, res) {
   if (req.decoded.sub === process.env.ADMIN) {
     User.remove({
       username: {
-        $ne: process.env.ADMIN
+        $ne: process.env.ADMIN.toLowerCase()
       }
     }, function (err, user) {
       if (err) {
@@ -133,19 +140,22 @@ exports.delUsers = function (req, res) {
       }
     });
   } else {
-    var msg = 'You are not ' + req.params.username + ' or an admin!';
+    var msg = 'You are not ' + req.params.username.toLowerCase() +
+      ' or an admin!';
     dbHelper.resMsg(res, 403, false, msg, null);
   }
 };
 
-// UPDATE USER BY USERNAME
-// Update the user by username (accessed at PUT https://mangadb-r282.herokuapp.com/api/users/:username)
+/* Updates User By Username
+ * Returns the message along with database output.
+ * Accessed at PUT /api/users/:username
+ */
 exports.putUser = function (req, res) {
   // use our user model to find the user we want
   if (req.decoded.sub === process.env.ADMIN ||
-    req.decoded.sub === req.params.username) {
+    req.decoded.sub === req.params.username.toLowerCase()) {
     User.findOne({
-      username: req.params.username
+      username: req.params.username.toLowerCase()
     }, function (err, user) {
       if (err) {
         dbHelper.resMsg(res, 400, false, err, null);
@@ -161,7 +171,8 @@ exports.putUser = function (req, res) {
       }
     });
   } else {
-    var msg = 'You are not ' + req.params.username + ' or an admin!';
+    var msg = 'You are not ' + req.params.username.toLowerCase() +
+      ' or an admin!';
     dbHelper.resMsg(res, 403, false, msg, null);
   }
 };

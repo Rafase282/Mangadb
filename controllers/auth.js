@@ -10,7 +10,7 @@ var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 exports.generateToken = function (req, res) {
   // find the user
   User.findOne({
-    username: req.body.username
+    username: req.body.username.toLowerCase()
   }, function (err, user) {
     if (err) {
       dbHelper.resMsg(res, 400, false, err, null);
