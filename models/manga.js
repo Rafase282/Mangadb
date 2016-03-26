@@ -85,7 +85,7 @@ var MangaSchema = new mongoose.Schema({
     type: String,
     lowercase: true,
     trim: true,
-    required: false,
+    required: true,
     unique: false,
     match: /[a-z]/
   },
