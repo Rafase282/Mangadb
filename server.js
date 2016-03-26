@@ -37,7 +37,7 @@ app.set('view engine', 'jade');
 
 // REGISTER OUR ROUTES -------------------------------
 var router = express.Router(); // get an instance of the express Router
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
   res.header("Access-Control-Allow-Headers", "x-access-token");
@@ -50,29 +50,39 @@ app.use('/api', router);
 // Serve index.jade at ttps://mangadb-r282.herokuapp.com
 app.route('/')
   .get(mangaController.getIndex);
-  
+
 // middleware to use for all requests
 //router.use(mangaController.logConnection);
 
-// test route to make sure everything is working (accessed at GET https://mangadb-r282.herokuapp.com/api)
+// test route to make sure everything is working 
+//(accessed at GET https://mangadb-r282.herokuapp.com/api)
 router.route('/')
   .get(mangaController.getWelcome);
 
 //Create endpoint handlers for /mangas/:user/:manga_tile   
 router.route('/mangas/:user/:manga_title')
-  .get(authController.validateToken, mangaController.getManga) // get user's manga info
-  .put(authController.validateToken, mangaController.putManga) // update user's manga info
-  .delete(authController.validateToken, mangaController.delManga); // deletes user's manga
+  // get user's manga info
+  .get(authController.validateToken, mangaController.getManga)
+  // update user's manga info
+  .put(authController.validateToken, mangaController.putManga)
+  // deletes user's manga
+  .delete(authController.validateToken, mangaController.delManga);
 
 // Create endpoint handlers for /mangas/:user  
 router.route('/mangas/:user')
-  .get(authController.validateToken, mangaController.getMangas) //get all user's manga
-  .post(authController.validateToken, mangaController.postManga); //create new manga
+  //get all user's manga
+  .get(authController.validateToken, mangaController.getMangas)
+  //create new manga
+  .post(authController.validateToken, mangaController.postManga)
+  // Deletes all user mangas
+  .delete(authController.validateToken, mangaController.delUserMangas);
 
 // Get all mangas by admin
 router.route('/mangas')
-  .get(authController.validateToken, mangaController.getAllMangas) //admin get all mangas
-  .delete(authController.validateToken, mangaController.delMangas); // admin delete all mangas
+  //admin get all mangas
+  .get(authController.validateToken, mangaController.getAllMangas)
+  // admin delete all mangas
+  .delete(authController.validateToken, mangaController.delMangas);
 
 // HANDLE USER RELATED ROUTES
 // =============================================================================
@@ -83,19 +93,25 @@ router.route('/auth')
 
 // Create endpoint handlers for /users
 router.route('/users')
-  .post(userController.postUsers) // Creates new user
-  .get(authController.validateToken, userController.getUsers) //admin get all users
-  .delete(authController.validateToken, userController.delUsers); //admin delete all users
+  // Creates new user
+  .post(userController.postUsers)
+  //admin get all users
+  .get(authController.validateToken, userController.getUsers)
+  //admin delete all users
+  .delete(authController.validateToken, userController.delUsers);
 
 //Create endpoint handlers for /mangas/:username    
 router.route('/users/:username')
-  .get(authController.validateToken, userController.getUser) // get user info
-  .put(authController.validateToken, userController.putUser) // update user info
-  .delete(authController.validateToken, userController.delUser); // deletes user
+  // get user info
+  .get(authController.validateToken, userController.getUser)
+  // update user info
+  .put(authController.validateToken, userController.putUser)
+  // deletes user
+  .delete(authController.validateToken, userController.delUser);
 
 // CONFIGURE & START THE SERVER
 // =============================================================================
 var port = process.env.PORT || 8080; // set our port
-app.listen(port, function() {
+app.listen(port, function () {
   console.log('Node.js listening on port ' + port);
 });

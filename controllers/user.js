@@ -42,23 +42,12 @@ exports.postUsers = function (req, res) {
  * Accessed at GET /api/users
  */
 exports.getUsers = function (req, res) {
-  if (req.decoded.sub === process.env.ADMIN) {
-    User.find(function (err, users) {
-      if (err) {
-        dbHelper.resMsg(res, 400, false, err, null);
-      }
-      if (users === null || users.length < 1) {
-        var msg = 'No users has been created yet.';
-        dbHelper.resMsg(res, 404, false, msg, null);
-      } else {
-        var msg = 'The list of users has been succesfully generated.';
-        dbHelper.resMsg(res, 200, true, msg, users);
-      }
-    });
-  } else {
-    var msg = 'You are not an admin.';
-    dbHelper.resMsg(res, 403, false, msg, null);
-  }
+  var ok = 'The list of users has been succesfully generated.';
+  var noOk = 'No users has been created yet.';
+  var auth = 'You are not an admin.';
+  var obj = {};
+
+  dbHelper.getData(req, res, User, obj, ok, noOk, auth);
 };
 
 /* Finds User By Username
@@ -66,27 +55,15 @@ exports.getUsers = function (req, res) {
  * Accessed at GET /api/users/:username
  */
 exports.getUser = function (req, res) {
-  if (req.decoded.sub === process.env.ADMIN ||
-    req.decoded.sub === req.params.username.toLowerCase()) {
-    User.findOne({
-      username: req.params.username.toLowerCase()
-    }, function (err, user) {
-      if (err) {
-        dbHelper.resMsg(res, 400, false, err, null);
-      }
-      if (users === null || users.length < 1) {
-        var msg = req.params.username + ' not found.';
-        dbHelper.resMsg(res, 404, false, msg, null);
-      } else {
-        var msg = req.params.username + ' found!';
-        dbHelper.resMsg(res, 200, true, msg, user);
-      }
-    });
-  } else {
-    var msg = 'You are not ' + req.params.username.toLowerCase() +
-      ' or an admin!';
-    dbHelper.resMsg(res, 403, false, msg, null);
-  }
+  var ok = req.params.username + ' found!';
+  var noOk = req.params.username + ' not found.';
+  var auth = 'You are not ' + req.params.username.toLowerCase() +
+    ' or an admin!';
+  var obj = {
+    username: req.params.username.toLowerCase()
+  };
+
+  dbHelper.getData(req, res, User, obj, ok, noOk, auth);
 };
 
 /* Deletes User By Username
@@ -94,27 +71,15 @@ exports.getUser = function (req, res) {
  * Accessed at DELETE /api/users/:username
  */
 exports.delUser = function (req, res) {
-  if (req.decoded.sub === process.env.ADMIN ||
-    req.decoded.sub === req.params.username.toLowerCase()) {
-    User.remove({
-      username: req.params.username.toLowerCase()
-    }, function (err, user) {
-      if (err) {
-        dbHelper.resMsg(res, 400, false, err, null);
-      }
-      if (user.result.n === 0) {
-        var msg = 'Could not find ' + req.params.username;
-        dbHelper.resMsg(res, 404, false, msg, null);
-      } else {
-        var msg = 'Successfully deleted ' + req.params.username;
-        dbHelper.resMsg(res, 200, true, msg, user);
-      }
-    });
-  } else {
-    var msg = 'You are not ' + req.params.username.toLowerCase() +
-      ' or an admin!';
-    dbHelper.resMsg(res, 403, false, msg, null);
-  }
+  var noOk = 'Could not find ' + req.params.username;
+  var ok = 'Successfully deleted ' + req.params.username;
+  var auth = 'You are not ' + req.params.username.toLowerCase() +
+    ' or an admin!';
+  var obj = {
+    username: req.params.username.toLowerCase()
+  };
+
+  dbHelper.delData(req, res, User, obj, ok, noOk, auth);
 };
 
 /* Deletes All Users Except The Admin
@@ -122,28 +87,16 @@ exports.delUser = function (req, res) {
  * Accessed at DELETE /api/users
  */
 exports.delUsers = function (req, res) {
-  if (req.decoded.sub === process.env.ADMIN) {
-    User.remove({
-      username: {
-        $ne: process.env.ADMIN.toLowerCase()
-      }
-    }, function (err, user) {
-      if (err) {
-        dbHelper.resMsg(res, 400, false, err, null);
-      }
-      if (user.result.n === 0) {
-        var msg = 'There are no users to delete besides the admin account.';
-        dbHelper.resMsg(res, 404, false, msg, null);
-      } else {
-        var msg = 'Successfully deleted all users but the admin.';
-        dbHelper.resMsg(res, 200, true, msg, user);
-      }
-    });
-  } else {
-    var msg = 'You are not ' + req.params.username.toLowerCase() +
-      ' or an admin!';
-    dbHelper.resMsg(res, 403, false, msg, null);
-  }
+  var noOk = 'There are no users to delete besides the admin account.';
+  var ok = 'Successfully deleted all users but the admin.';
+  var auth = 'You are not an admin!';
+  var obj = {
+    username: {
+      $ne: process.env.ADMIN.toLowerCase()
+    }
+  };
+
+  dbHelper.delData(req, res, User, obj, ok, noOk, auth);
 };
 
 /* Updates User By Username

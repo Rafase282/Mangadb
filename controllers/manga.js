@@ -79,28 +79,15 @@ exports.postManga = function (req, res) {
  * Accessed at GET /api/mangas/:user/:manga_title
  */
 exports.getManga = function (req, res) {
-  if (req.decoded.sub === process.env.ADMIN ||
-    req.decoded.sub === req.params.user.toLowerCase()) {
-    Manga.findOne({
-      title: req.params.manga_title.toLowerCase(),
-      username: req.params.user.toLowerCase()
-    }, function (err, manga) {
-      if (err) {
-        dbHelper.resMsg(res, 400, false, err, null);
-      }
-      if (mangas === null || mangas.length < 1) {
-        var msg = req.params.manga_title + ' not found!';
-        dbHelper.resMsg(res, 404, false, msg, null);
-      } else {
-        var msg = req.params.manga_title + ' found!';
-        dbHelper.resMsg(res, 200, true, msg, manga);
-      }
-    });
-  } else {
-    var msg = 'You are not ' + req.params.username.toLowerCase() +
-      ' or an admin!';
-    dbHelper.resMsg(res, 403, false, msg, null);
-  }
+  var ok = req.params.manga_title + ' found!';
+  var noOk = req.params.manga_title + ' not found!';
+  var auth = 'You are not ' + req.params.user.toLowerCase() +
+    ' or an admin!';
+  var obj = {
+    title: req.params.manga_title.toLowerCase(),
+    username: req.params.user.toLowerCase()
+  };
+  dbHelper.getData(req, res, Manga, obj, ok, noOk, auth);
 };
 
 /* Updates Manga By Title
@@ -154,28 +141,16 @@ exports.putManga = function (req, res) {
  * Accessed at DELETE /api/mangas/:user/:manga_title
  */
 exports.delManga = function (req, res) {
-  if (req.decoded.sub === process.env.ADMIN ||
-    req.decoded.sub === req.params.user.toLowerCase()) {
-    Manga.remove({
-      title: req.params.manga_title.toLowerCase(),
-      username: req.params.user.toLowerCase()
-    }, function (err, manga) {
-      if (err) {
-        dbHelper.resMsg(res, 400, false, err, null);
-      }
-      if (manga.result.n === 0) {
-        var msg = 'Could not find ' + req.params.manga_title;
-        dbHelper.resMsg(res, 404, false, msg, null);
-      } else {
-        var msg = 'Successfully deleted ' + req.params.manga_title;
-        dbHelper.resMsg(res, 200, true, msg, manga);
-      }
-    });
-  } else {
-    var msg = 'You are not ' + req.params.username.toLowerCase() +
-      ' or an admin!';
-    dbHelper.resMsg(res, 403, false, msg, null);
-  }
+  var noOk = 'Could not find ' + req.params.manga_title;
+  var ok = 'Successfully deleted ' + req.params.manga_title;
+  var auth = 'You are not ' + req.params.user.toLowerCase() +
+    ' or an admin!';
+  var obj = {
+    title: req.params.manga_title.toLowerCase(),
+    username: req.params.user.toLowerCase()
+  };
+
+  dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
 };
 
 /* Finds All Mangas By User
@@ -183,29 +158,17 @@ exports.delManga = function (req, res) {
  * Accessed at GET /api/mangas/:user
  */
 exports.getMangas = function (req, res) {
-  if (req.decoded.sub === process.env.ADMIN ||
-    req.decoded.sub === req.params.user.toLowerCase()) {
-    var userName = req.decoded.sub === process.env.ADMIN ?
-      req.params.user.toLowerCase() : req.decoded.sub;
-    Manga.find({
-      username: userName
-    }, function (err, mangas) {
-      if (err) {
-        dbHelper.resMsg(res, 400, false, err, null);
-      }
-      if (mangas === null || mangas.length < 1) {
-        var msg = req.params.user + ' has not added any mangas yet.';
-        dbHelper.resMsg(res, 404, false, msg, null);
-      } else {
-        var msg = 'Manga List Generated.';
-        dbHelper.resMsg(res, 200, true, msg, mangas);
-      }
-    });
-  } else {
-    var msg = 'You are not ' + req.params.username.toLowerCase() +
-      ' or an admin!';
-    dbHelper.resMsg(res, 403, false, msg, null);
-  }
+  var ok = 'Manga List Generated.';
+  var noOk = req.params.user + ' has not added any mangas yet.';
+  var auth = 'You are not ' + req.params.user.toLowerCase() +
+    ' or an admin!';
+  var userName = req.decoded.sub === process.env.ADMIN ?
+    req.params.user.toLowerCase() : req.decoded.sub;
+  var obj = {
+    username: userName
+  };
+
+  dbHelper.getData(req, res, Manga, obj, ok, noOk, auth);
 };
 
 /* Finds All Mangas By All Users Via Admin
@@ -213,23 +176,12 @@ exports.getMangas = function (req, res) {
  * Accessed at GET /api/mangas
  */
 exports.getAllMangas = function (req, res) {
-  if (req.decoded.sub === process.env.ADMIN) {
-    Manga.find({}, function (err, mangas) {
-      if (err) {
-        dbHelper.resMsg(res, 400, false, err, null);
-      }
-      if (mangas === null || mangas.length < 1) {
-        var msg = 'No Mangas has been added yet.';
-        dbHelper.resMsg(res, 404, false, msg, null);
-      } else {
-        var msg = 'Manga List Generated.';
-        dbHelper.resMsg(res, 200, true, msg, mangas);
-      }
-    });
-  } else {
-    var msg = 'You are not an admin!';
-    dbHelper.resMsg(res, 403, false, msg, null);
-  }
+  var ok = 'Manga List Generated.';
+  var noOk = 'No Mangas has been added yet.';
+  var auth = 'You are not an admin!';
+  var obj = {};
+
+  dbHelper.getData(req, res, Manga, obj, ok, noOk, auth);
 };
 
 /* Deletes All Mangas For All Users Via Admin
@@ -237,27 +189,29 @@ exports.getAllMangas = function (req, res) {
  * Accessed at DELETE /api/mangas/
  */
 exports.delMangas = function (req, res) {
-  if (req.decoded.sub === process.env.ADMIN) {
-    Manga.remove({
-      username: {
-        $ne: process.env.ADMIN.toLowerCase()
-      }
-    }, function (err, manga) {
-      var ok = 'Successfully deleted all mangas.';
-      var noOK = 'No mangas were found!';
-      if (err) {
-        dbHelper.resMsg(res, 400, false, err, null);
-      }
-      if (manga.result.n === 0) {
-        var msg = 'No mangas were found!';
-        dbHelper.resMsg(res, 404, false, msg, null);
-      } else {
-        var msg = 'Successfully deleted all mangas.';
-        dbHelper.resMsg(res, 200, true, msg, manga);
-      }
-    });
-  } else {
-    var msg = 'You are not an admin!';
-    dbHelper.resMsg(res, 403, false, msg, null);
-  }
+  var ok = 'Successfully deleted all mangas.';
+  var noOk = 'No mangas were found!';
+  var auth = 'You are not an admin!';
+  var obj = {
+    username: {
+      $ne: process.env.ADMIN.toLowerCase()
+    }
+  };
+
+  dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
+};
+
+/* Deletes All Mangas For All Users Via Admin
+ * Returns the manga information.
+ * Accessed at DELETE /api/mangas/:user
+ */
+exports.delUserMangas = function (req, res) {
+  var noOk = 'No mangas were found!';
+  var ok = 'Successfully deleted all user mangas.';
+  var auth = 'You are not an admin!';
+  var obj = {
+    username: req.params.user.toLowerCase()
+  };
+
+  dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
 };
