@@ -1,42 +1,32 @@
 // Load required packages
 var User = require('../models/user');
+var dbHelper = require('./dbHelper');
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
-// GENERATE TOKEN FOR THE USER.
+/* Generates JWT For User
+ * Returns result code and standard information
+ * containing messages and jwt.
+ */
 exports.generateToken = function (req, res) {
   // find the user
   User.findOne({
     username: req.body.username
   }, function (err, user) {
     if (err) {
-      res.status(400).json({
-        success: false,
-        message: err,
-        data: null
-      });
+      dbHelper.resMsg(res, 400, false, err, null);
     }
     if (!user) {
-      res.status(404).json({
-        success: false,
-        message: 'Authentication failed. User not found.',
-        data: null
-      });
+      var msg = 'Authentication failed. User not found.';
+      dbHelper.resMsg(res, 404, false, msg, null);
     } else if (user) {
       // check if password matches
       user.verifyPassword(req.body.password, function (err, isMatch) {
         if (err) {
-          res.status(400).json({
-            success: false,
-            message: err,
-            data: null
-          });
+          dbHelper.resMsg(res, 400, false, err, null);
         }
         if (!isMatch) {
-          res.status(404).json({
-            success: false,
-            message: 'Authentication failed. Wrong password.',
-            data: null
-          });
+          var msg = 'Authentication failed. Wrong password.';
+          dbHelper.resMsg(res, 404, false, msg, null);
         } else {
           var expTime = 60 * 60; // expires in 1 hour "seconds X Minutes"
           // Create object for teh token
@@ -51,18 +41,20 @@ exports.generateToken = function (req, res) {
             issuer: 'MangaDB by Rafase282'
           });
           // return the information including token as JSON
-          res.status(200).json({
-            success: true,
-            message: 'Log in succesfull, enjoy your session for the next ' + expTime / 60 + ' minutes!',
-            data: token
-          });
+          var msg = 'Log in succesfull, ' + req.body.username +
+            'enjoy your session for the next ' + expTime / 60 + ' minutes!';
+          dbHelper.resMsg(res, 200, true, msg, token);
         }
       });
     }
   });
 };
 
-// VALIDATE TOKEN FOR AUTHENTICATION
+/* Validates JWT For Authentication
+ * Returns result code and standard information
+ * containing error messages when it fails.
+ * or it sets the decoded jwt and continues to the next operation.
+ */
 exports.validateToken = function (req, res, next) {
   // check header or url parameters or post parameters for token
   var token = req.headers['x-access-token'];
@@ -72,11 +64,8 @@ exports.validateToken = function (req, res, next) {
     // verifies secret and checks exp
     jwt.verify(token, req.app.get('superSecret'), function (err, decoded) {
       if (err) {
-        return res.status(400).json({
-          success: false,
-          message: 'Failed to authenticate token.',
-          data: null
-        });
+        var msg = 'Failed to authenticate token.';
+        dbHelper.resMsg(res, 404, false, msg, null);
       } else {
         // if everything is good, save to request for use in other routes
         req.decoded = decoded;
@@ -86,10 +75,7 @@ exports.validateToken = function (req, res, next) {
   } else {
     // if there is no token
     // return an error
-    return res.status(403).send({
-      success: false,
-      message: 'No token provided.',
-      data: null
-    });
+    var msg = 'No token provided.';
+    dbHelper.resMsg(res, 403, false, msg, null);
   }
 };

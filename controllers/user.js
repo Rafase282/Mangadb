@@ -2,7 +2,10 @@
 var User = require('../models/user');
 var dbHelper = require('./dbHelper');
 
-// Create new user
+/* Creates A New User
+ * It first checks for a real email address
+ * then it generates the user object to be saved.
+ */
 exports.postUsers = function (req, res) {
   // Make sure that it has a valid email adress.
   var quickemailverification = require('quickemailverification')
@@ -34,8 +37,10 @@ exports.postUsers = function (req, res) {
   });
 };
 
-// FIND ALL USERS
-// Create endpoint /api/users for GET
+/* Finds All Users
+ * Returns a list of all usrs when found.
+ * returns standard result object acordingly.
+ */
 exports.getUsers = function (req, res) {
   if (req.decoded.sub === process.env.ADMIN) {
     User.find(function (err, users) {
