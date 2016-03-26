@@ -50,31 +50,8 @@ exports.postManga = function (req, res) {
   if (req.decoded.sub === process.env.ADMIN ||
     req.decoded.sub === req.params.user.toLowerCase()) {
     var manga = new Manga(); // create a new instance of the Manga model
-    var userStatus = req.body.userStatus.toLowerCase();
-    if (userStatus === 'reading' || userStatus === 'finished' ||
-      userStatus === 'will read') {
-      manga.userStatus = userStatus;
-    }
-    var seriesStatus = req.body.seriesStatus.toLowerCase();
-    if (seriesStatus === 'ongoing' || seriesStatus === 'completed') {
-      manga.seriesStatus = seriesStatus;
-    }
-    var direction = req.body.direction.toLowerCase();
-    if (direction === 'left to right' || direction === 'right to left') {
-      manga.direction = direction;
-    }
-    manga.title = req.body.title; // set the manga name (comes from the request)
-    manga.author = req.body.author;
-    manga.url = req.body.url;
-    manga.type = req.body.type;
-    manga.categories = req.body.categories.split(',');
-    manga.chapter = req.body.chapter;
-    manga.plot = req.body.plot;
-    manga.altName = req.body.altName.split(',');
-    manga.userId = req.decoded.sub === req.params.user ? req.decoded.jti : '';
-    manga.username = req.params.user;
-    manga.thumbnail = req.body.thumbnail;
-    // Call function to save manga
+    manga = dbHelper.updateMangaObj(req, manga)
+      // Call function to save manga
     var msg = req.body.title + ' manga created.';
     dbHelper.objSave(manga, res, msg);
   } else {
@@ -116,7 +93,7 @@ exports.putManga = function (req, res) {
         dbHelper.resMsg(res, 400, false, err, null);
       } else {
         manga = dbHelper.updateMangaObj(req, manga)
-        // update the manga
+          // update the manga
         var msg = req.params.manga_title + ' manga updated.';
         dbHelper.objSave(manga, res, msg);
       }

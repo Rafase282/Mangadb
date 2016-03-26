@@ -66,7 +66,7 @@ var delData = function (req, res, db, obj, ok, noOk, auth) {
         resMsg(res, 400, false, err, null);
       }
       if (data.result.n === 0) {
-        resMsg(res, 404, false, noOK, null);
+        resMsg(res, 404, false, noOk, null);
       } else {
         resMsg(res, 200, true, ok, data);
       }
@@ -122,3 +122,32 @@ var updateMangaObj = function (req, manga) {
   return manga;
 };
 exports.updateMangaObj = updateMangaObj;
+
+var createMangaObj = function (req, manga) {
+  var userStatus = req.body.userStatus.toLowerCase();
+  if (userStatus === 'reading' || userStatus === 'finished' ||
+    userStatus === 'will read') {
+    manga.userStatus = userStatus;
+  }
+  var seriesStatus = req.body.seriesStatus.toLowerCase();
+  if (seriesStatus === 'ongoing' || seriesStatus === 'completed') {
+    manga.seriesStatus = seriesStatus;
+  }
+  var direction = req.body.direction.toLowerCase();
+  if (direction === 'left to right' || direction === 'right to left') {
+    manga.direction = direction;
+  }
+  manga.title = req.body.title; // set the manga name (comes from the request)
+  manga.author = req.body.author;
+  manga.url = req.body.url;
+  manga.type = req.body.type;
+  manga.categories = req.body.categories.split(',');
+  manga.chapter = req.body.chapter;
+  manga.plot = req.body.plot;
+  manga.altName = req.body.altName.split(',');
+  manga.userId = req.decoded.sub === req.params.user ? req.decoded.jti : '';
+  manga.username = req.params.user;
+  manga.thumbnail = req.body.thumbnail;
+  return manga;
+};
+exports.createMangaObj = createMangaObj;
