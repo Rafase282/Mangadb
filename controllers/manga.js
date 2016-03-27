@@ -1,6 +1,5 @@
 'use strict';
 // Load required packages
-var geoip = require('geoip-lite');
 var Manga = require('../models/manga');
 var dbHelper = require('./dbHelper');
 
@@ -8,24 +7,6 @@ var dbHelper = require('./dbHelper');
  * This is disabled by default but it logs user ip and location
  * based on IP when first connecting to the API.
  */
-exports.logConnection = function (req, res, next) {
-  // do logging
-  var ip = req.headers['x-forwarded-for'] ||
-    req.connection.remoteAddress ||
-    req.socket.remoteAddress ||
-    req.connection.socket.remoteAddress;
-  var info = {
-    'ip-address': ip,
-    'language': req.headers["accept-language"].split(',')[0],
-    'software': req.headers['user-agent'].split(') ')[0].split(' (')[1]
-  };
-  var geo = geoip.lookup(ip);
-  console.log('Someone has connected to the api from ' + geo.city + ', ' +
-    geo.region + ', ' + geo.country + ' using a ' + info.software +
-    ' machine with ' + info.language + ' language. I\'m watching you ' +
-    info['ip-address'] + ' you better behave!');
-  next(); // make sure we go to the next routes and don't stop here
-};
 
 /* Get Welcome Message From Root
  * Displays a welcome message when visiting the root of the API.
@@ -50,7 +31,7 @@ exports.postManga = function (req, res) {
   if (req.decoded.sub === process.env.ADMIN ||
     req.decoded.sub === req.params.user.toLowerCase()) {
     var manga = new Manga(); // create a new instance of the Manga model
-    manga = dbHelper.updateMangaObj(req, manga)
+    manga = dbHelper.updateMangaObj(req, manga);
       // Call function to save manga
     var msg = req.body.title + ' manga created.';
     dbHelper.objSave(manga, res, msg);
@@ -92,7 +73,7 @@ exports.putManga = function (req, res) {
       if (err) {
         dbHelper.resMsg(res, 400, false, err, null);
       } else {
-        manga = dbHelper.updateMangaObj(req, manga)
+        manga = dbHelper.updateMangaObj(req, manga);
           // update the manga
         var msg = req.params.manga_title + ' manga updated.';
         dbHelper.objSave(manga, res, msg);

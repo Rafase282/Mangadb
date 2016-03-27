@@ -30,7 +30,7 @@ exports.postUsers = function (req, res) {
         var msg = 'New manga reader ' + req.body.username + ' has been added.';
         dbHelper.objSave(user, res, msg);
       } else {
-        var msg = 'Invalid E-Mail.';
+        msg = 'Invalid E-Mail.';
         dbHelper.resMsg(res, 400, false, msg, null);
       }
     }

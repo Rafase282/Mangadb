@@ -41,7 +41,7 @@ exports.generateToken = function (req, res) {
             issuer: 'MangaDB by Rafase282'
           });
           // return the information including token as JSON
-          var msg = 'Log in succesfull, ' + req.body.username +
+          msg = 'Log in succesfull, ' + req.body.username +
             ' enjoy your session for the next ' + expTime / 60 + ' minutes!';
           dbHelper.resMsg(res, 200, true, msg, token);
         }

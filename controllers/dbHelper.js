@@ -90,12 +90,10 @@ var getData = function (req, res, db, obj, ok, noOk, auth) {
       if (data === null || data.length < 1) {
         resMsg(res, 404, false, noOk, null);
       } else {
-        var msg = 'Manga List Generated.';
         resMsg(res, 200, true, ok, data);
       }
     });
   } else {
-    var msg = 'You are not an admin!';
     resMsg(res, 403, false, auth, null);
   }
 };
