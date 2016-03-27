@@ -59,8 +59,13 @@ exports.objItemize = objItemize;
  * Used to delete individual or groups of data.
  */
 var delData = function (req, res, db, obj, ok, noOk, auth) {
+  if (req.params.user === undefined) {
+    var user = process.env.ADMIN.toLowerCase();
+  } else {
+    user = req.params.user.toLowerCase();
+  }
   if (req.decoded.sub === process.env.ADMIN.toLowerCase() ||
-    req.decoded.sub === req.params.user.toLowerCase()) {
+    req.decoded.sub === user) {
     db.remove(obj, function (err, data) {
       if (err) {
         resMsg(res, 400, false, err, null);
@@ -81,8 +86,13 @@ exports.delData = delData;
  * Used to get individual or groups of data.
  */
 var getData = function (req, res, db, obj, ok, noOk, auth) {
+  if (req.params.user === undefined) {
+    var user = process.env.ADMIN.toLowerCase();
+  } else {
+    user = req.params.user.toLowerCase();
+  }
   if (req.decoded.sub === process.env.ADMIN.toLowerCase() ||
-    req.decoded.sub === req.params.user.toLowerCase()) {
+    req.decoded.sub === user) {
     db.find(obj, function (err, data) {
       if (err) {
         resMsg(res, 400, false, err, null);
