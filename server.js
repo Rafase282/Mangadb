@@ -65,8 +65,8 @@ router.route('/mangas/:user/:manga_title')
   // deletes user's manga
   .delete(authController.validateToken, mangaController.delManga);
 
-// Create endpoint handlers for /mangas/:user
-router.route('/mangas/:user')
+// Create endpoint handlers for /mangas/:username
+router.route('/mangas/:username')
   //get all user's manga
   .get(authController.validateToken, mangaController.getMangas)
   //create new manga
