@@ -127,9 +127,9 @@ var updateMangaObj = function (req, manga) {
   manga.altName = req.body.altName ? objItemize(req.body.altName) :
     objItemize(manga.altName);
   manga.direction = req.body.direction || manga.direction;
-  manga.userId = req.decoded.sub === req.params.user ? req.decoded.jti :
+  manga.userId = req.decoded.sub === req.params.username ? req.decoded.jti :
     manga.userId;
-  manga.username = req.params.user || manga.username;
+  manga.username = req.params.username || manga.username;
   manga.thumbnail = req.body.thumbnail || manga.thumbnail;
   return manga;
 };
@@ -157,8 +157,8 @@ var createMangaObj = function (req, manga) {
   manga.chapter = req.body.chapter;
   manga.plot = req.body.plot;
   manga.altName = req.body.altName.split(',');
-  manga.userId = req.decoded.sub === req.params.user ? req.decoded.jti : '';
-  manga.username = req.params.user;
+  manga.userId = req.decoded.sub === req.params.username ? req.decoded.jti : '';
+  manga.username = req.params.username;
   manga.thumbnail = req.body.thumbnail;
   return manga;
 };
