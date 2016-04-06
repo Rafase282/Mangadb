@@ -55,15 +55,23 @@ var objItemize = function (arr) {
 };
 exports.objItemize = objItemize;
 
+/* Function To Check Username in URL
+ * Used to verify the current user.
+ */
+var setUser = function (username) {
+  if (username === undefined) {
+    var user = process.env.ADMIN.toLowerCase();
+  } else {
+    user = username.toLowerCase();
+  }
+  return user;
+}
+
 /* Function To Delete Data
  * Used to delete individual or groups of data.
  */
 var delData = function (req, res, db, obj, ok, noOk, auth) {
-  if (req.params.user === undefined) {
-    var user = process.env.ADMIN.toLowerCase();
-  } else {
-    user = req.params.user.toLowerCase();
-  }
+  var user = setUser(req.params.username);
   if (req.decoded.sub === process.env.ADMIN.toLowerCase() ||
     req.decoded.sub === user) {
     db.remove(obj, function (err, data) {
@@ -86,11 +94,7 @@ exports.delData = delData;
  * Used to get individual or groups of data.
  */
 var getData = function (req, res, db, obj, ok, noOk, auth) {
-  if (req.params.user === undefined) {
-    var user = process.env.ADMIN.toLowerCase();
-  } else {
-    user = req.params.user.toLowerCase();
-  }
+  var user = setUser(req.params.username);
   if (req.decoded.sub === process.env.ADMIN.toLowerCase() ||
     req.decoded.sub === user) {
     db.find(obj, function (err, data) {
