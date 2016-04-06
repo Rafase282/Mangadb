@@ -55,12 +55,13 @@ exports.getUsers = function (req, res) {
  * Accessed at GET /api/users/:username
  */
 exports.getUser = function (req, res) {
-  var ok = req.params.username + ' found!';
-  var noOk = req.params.username + ' not found.';
-  var auth = 'You are not ' + req.params.username.toLowerCase() +
+  var targetUser = req.params.username.toLowerCase();
+  var ok = targetUser + ' found!';
+  var noOk = targetUser + ' not found.';
+  var auth = 'You are not ' + targetUser +
     ' or an admin!';
   var obj = {
-    username: req.params.username.toLowerCase()
+    username: targetUser
   };
 
   dbHelper.getData(req, res, User, obj, ok, noOk, auth);
@@ -71,12 +72,12 @@ exports.getUser = function (req, res) {
  * Accessed at DELETE /api/users/:username
  */
 exports.delUser = function (req, res) {
-  var noOk = 'Could not find ' + req.params.username;
-  var ok = 'Successfully deleted ' + req.params.username;
-  var auth = 'You are not ' + req.params.username.toLowerCase() +
-    ' or an admin!';
+  var targetUser = req.params.username.toLowerCase();
+  var noOk = 'Could not find ' + targetUser;
+  var ok = 'Successfully deleted ' + targetUser;
+  var auth = 'You are not ' + targetUser + ' or an admin!';
   var obj = {
-    username: req.params.username.toLowerCase()
+    username: targetUser
   };
 
   dbHelper.delData(req, res, User, obj, ok, noOk, auth);
@@ -105,26 +106,27 @@ exports.delUsers = function (req, res) {
  */
 exports.putUser = function (req, res) {
   // use our user model to find the user we want
+  var targetUser = req.params.username.toLowerCase();
   if (req.decoded.sub === process.env.ADMIN ||
-    req.decoded.sub === req.params.username.toLowerCase()) {
+    req.decoded.sub === targetUser) {
     User.findOne({
-      username: req.params.username.toLowerCase()
+      username: targetUser
     }, function (err, user) {
       if (err) {
         dbHelper.resMsg(res, 400, false, err, null);
       } else {
-        user.username = req.params.username || user.username;
+        user.username = targetUser || user.username;
         user.password = req.body.password || user.password;
         user.email = req.body.email || user.email;
         user.firstname = req.body.firstname || user.firstname;
         user.lastname = req.body.lastname || user.lastname;
         // update the user
-        var msg = req.params.username + ' information has been updated.';
+        var msg = targetUser + ' information has been updated.';
         dbHelper.objSave(user, res, msg);
       }
     });
   } else {
-    var msg = 'You are not ' + req.params.username.toLowerCase() +
+    var msg = 'You are not ' + targetUser +
       ' or an admin!';
     dbHelper.resMsg(res, 403, false, msg, null);
   }

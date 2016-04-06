@@ -25,18 +25,19 @@ exports.getIndex = function (req, res) {
 
 /* Creates New Manga
  * Returns the manga information.
- * Accessed at POST /api/mangas/:user
+ * Accessed at POST /api/mangas/:username
  */
 exports.postManga = function (req, res) {
+  var targetUser = req.params.username.toLowerCase();
   if (req.decoded.sub === process.env.ADMIN ||
-    req.decoded.sub === req.params.username.toLowerCase()) {
+    req.decoded.sub === targetUser) {
     var manga = new Manga(); // create a new instance of the Manga model
     manga = dbHelper.updateMangaObj(req, manga);
       // Call function to save manga
     var msg = req.body.title + ' manga created.';
     dbHelper.objSave(manga, res, msg);
   } else {
-    msg = 'You are not ' + req.params.username.toLowerCase() +
+    msg = 'You are not ' + targetUser +
       ' or an admin!';
     dbHelper.resMsg(res, 403, false, msg, null);
   }
@@ -44,31 +45,33 @@ exports.postManga = function (req, res) {
 
 /* Finds Manga By Title
  * Returns the manga information.
- * Accessed at GET /api/mangas/:user/:manga_title
+ * Accessed at GET /api/mangas/:username/:manga_title
  */
 exports.getManga = function (req, res) {
+  var targetUser = req.params.username.toLowerCase();
   var ok = req.params.manga_title + ' found!';
   var noOk = req.params.manga_title + ' not found!';
-  var auth = 'You are not ' + req.params.username.toLowerCase() +
+  var auth = 'You are not ' + targetUser +
     ' or an admin!';
   var obj = {
     title: req.params.manga_title.toLowerCase(),
-    username: req.params.username.toLowerCase()
+    username: targetUser
   };
   dbHelper.getData(req, res, Manga, obj, ok, noOk, auth);
 };
 
 /* Updates Manga By Title
  * Returns the manga information.
- * Accessed at PUT /api/mangas/:user/:manga_title
+ * Accessed at PUT /api/mangas/:username/:manga_title
  */
 exports.putManga = function (req, res) {
+  var targetUser = req.params.username.toLowerCase();
   // use our manga model to find the manga we want
   if (req.decoded.sub === process.env.ADMIN ||
-    req.decoded.sub === req.params.username.toLowerCase()) {
+    req.decoded.sub === targetUser) {
     Manga.findOne({
       title: req.params.manga_title.toLowerCase(),
-      username: req.params.username.toLowerCase()
+      username: targetUser
     }, function (err, manga) {
       if (err) {
         dbHelper.resMsg(res, 400, false, err, null);
@@ -80,7 +83,7 @@ exports.putManga = function (req, res) {
       }
     });
   } else {
-    var msg = 'You are not ' + req.params.username.toLowerCase() +
+    var msg = 'You are not ' + targetUser +
       ' or an admin!';
     dbHelper.resMsg(res, 403, false, msg, null);
   }
@@ -88,16 +91,16 @@ exports.putManga = function (req, res) {
 
 /* Deletes Manga By Title
  * Returns the manga information.
- * Accessed at DELETE /api/mangas/:user/:manga_title
+ * Accessed at DELETE /api/mangas/:username/:manga_title
  */
 exports.delManga = function (req, res) {
+  var targetUser = req.params.username.toLowerCase();
   var noOk = 'Could not find ' + req.params.manga_title;
   var ok = 'Successfully deleted ' + req.params.manga_title;
-  var auth = 'You are not ' + req.params.username.toLowerCase() +
-    ' or an admin!';
+  var auth = 'You are not ' + targetUser + ' or an admin!';
   var obj = {
     title: req.params.manga_title.toLowerCase(),
-    username: req.params.username.toLowerCase()
+    username: targetUser
   };
 
   dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
@@ -105,15 +108,16 @@ exports.delManga = function (req, res) {
 
 /* Finds All Mangas By User
  * Returns a list of all the mangas the user has.
- * Accessed at GET /api/mangas/:user
+ * Accessed at GET /api/mangas/:username
  */
 exports.getMangas = function (req, res) {
+  var targetUser = req.params.username.toLowerCase();
   var ok = 'Manga List Generated.';
-  var noOk = req.params.username + ' has not added any mangas yet.';
-  var auth = 'You are not ' + req.params.username.toLowerCase() +
+  var noOk = targetUser + ' has not added any mangas yet.';
+  var auth = 'You are not ' + targetUser +
     ' or an admin!';
   var userName = req.decoded.sub === process.env.ADMIN ?
-    req.params.username.toLowerCase() : req.decoded.sub;
+    targetUser : req.decoded.sub;
   var obj = {
     username: userName
   };
@@ -153,14 +157,15 @@ exports.delMangas = function (req, res) {
 
 /* Deletes All Mangas For All Users Via Admin
  * Returns the manga information.
- * Accessed at DELETE /api/mangas/:user
+ * Accessed at DELETE /api/mangas/:username
  */
 exports.delUserMangas = function (req, res) {
+  var targetUser = req.params.username.toLowerCase();
   var noOk = 'No mangas were found!';
   var ok = 'Successfully deleted all user mangas.';
   var auth = 'You are not an admin!';
   var obj = {
-    username: req.params.username.toLowerCase()
+    username: targetUser
   };
 
   dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);

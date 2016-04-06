@@ -57,7 +57,7 @@ router.route('/')
   .get(mangaController.getWelcome);
 
 //Create endpoint handlers for /mangas/:user/:manga_tile
-router.route('/mangas/:user/:manga_title')
+router.route('/mangas/:username/:manga_title')
   // get user's manga info
   .get(authController.validateToken, mangaController.getManga)
   // update user's manga info

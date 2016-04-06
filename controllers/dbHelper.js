@@ -57,6 +57,7 @@ exports.objItemize = objItemize;
 
 /* Function To Check Username in URL
  * Used to verify the current user.
+ * username should be passed as req.params.username
  */
 var setUser = function (username) {
   if (username === undefined) {
@@ -113,6 +114,9 @@ var getData = function (req, res, db, obj, ok, noOk, auth) {
 };
 exports.getData = getData;
 
+/* Function To Update Manga Object
+ * Used to update individual mangas.
+ */
 var updateMangaObj = function (req, manga) {
   manga.title = req.body.title || req.params.manga_title;
   manga.author = req.body.author || manga.author;
@@ -135,6 +139,9 @@ var updateMangaObj = function (req, manga) {
 };
 exports.updateMangaObj = updateMangaObj;
 
+/* Function To Create Manga Object
+ * Used to create individual mangas.
+ */
 var createMangaObj = function (req, manga) {
   var userStatus = req.body.userStatus.toLowerCase();
   if (userStatus === 'reading' || userStatus === 'finished' ||
