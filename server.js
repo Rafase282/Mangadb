@@ -33,7 +33,7 @@ app.use(bodyParser.json());
 
 // configure the view
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 // REGISTER OUR ROUTES -------------------------------
 var router = express.Router(); // get an instance of the express Router
@@ -47,7 +47,7 @@ app.use(function (req, res, next) {
 // all of our routes will be prefixed with /api
 app.use('/api', router);
 
-// Serve index.jade at ttps://mangadb-r282.herokuapp.com
+// Serve index.pug at ttps://mangadb-r282.herokuapp.com
 app.route('/')
   .get(mangaController.getIndex);
 

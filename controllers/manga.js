@@ -18,7 +18,7 @@ exports.getWelcome = function (req, res) {
   dbHelper.resMsg(res, 200, true, msg, null);
 };
 
-// Serve index.jade
+// Serve index.pug
 exports.getIndex = function (req, res) {
   res.render('index');
 };

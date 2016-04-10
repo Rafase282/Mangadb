@@ -66,7 +66,7 @@ var setUser = function (username) {
     user = username.toLowerCase();
   }
   return user;
-}
+};
 
 /* Function To Delete Data
  * Used to delete individual or groups of data.
