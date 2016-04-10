@@ -1,3 +1,4 @@
+/*eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 // server.js
 'use strict';
 
@@ -19,7 +20,7 @@ require('dotenv').config({
 
 // Connect to the database
 var mongouri = process.env.MONGOLAB_URI ||
-  "mongodb://" + process.env.IP + ":27017/mangadb";
+  'mongodb://' + process.env.IP + ':27017/mangadb';
 mongoose.connect(mongouri);
 
 app.set('superSecret', process.env.SECRET); // secret variable
@@ -33,21 +34,21 @@ app.use(bodyParser.json());
 
 // configure the view
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 // REGISTER OUR ROUTES -------------------------------
 var router = express.Router(); // get an instance of the express Router
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header("Access-Control-Allow-Headers", "x-access-token");
+  res.header('Access-Control-Allow-Headers', 'x-access-token');
   next();
 });
 
 // all of our routes will be prefixed with /api
 app.use('/api', router);
 
-// Serve index.jade at ttps://mangadb-r282.herokuapp.com
+// Serve index.pug at ttps://mangadb-r282.herokuapp.com
 app.route('/')
   .get(mangaController.getIndex);
 
