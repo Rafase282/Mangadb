@@ -1,6 +1,5 @@
 'use strict';
-/* Helper Function for Saving
- * Saves object information to database and returns the apropiated results. */
+/* Saves object information to database and returns the apropiated results. */
 var objSave = function (object, res, msg) {
   object.save(function (err) {
     if (err) {
@@ -12,19 +11,13 @@ var objSave = function (object, res, msg) {
 };
 exports.objSave = objSave;
 
-/* Helper Function for Returning Information
- * Returns result code and standard information containing messages and data. */
+/* Returns result code and standard information containing messages and data.*/
 var resMsg = function (res, sCode, succ, msg, data) {
-  res.status(sCode).json({
-    success: succ,
-    message: msg,
-    data: data
-  });
+  res.status(sCode).json({success: succ, message: msg, data: data});
 };
 exports.resMsg = resMsg;
 
-/* Helper Function for Imetizing Arrays
- * Returns a proper array from a string for alternate names and categories. */
+/* Returns a proper array from a string for alternate names and categories. */
 var objItemize = function (arr) {
   var item;
   switch (true) {
@@ -48,8 +41,7 @@ var objItemize = function (arr) {
 };
 exports.objItemize = objItemize;
 
-/* Function To Check Username in URL
- * Username should be passed as req.params.username */
+/* Function To Check Username in URL. Username = req.params.username */
 var setUser = function (username) {
   if (username === undefined) {
     var user = process.env.ADMIN.toLowerCase();

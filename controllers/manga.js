@@ -126,7 +126,7 @@ exports.delMangas = function (req, res) {
   dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
 };
 
-/* Deletes All Mangas For All Users Via Admin
+/* Deletes All Mangas For User
  * Returns the manga information. Accessed at DELETE /api/mangas/:username */
 exports.delUserMangas = function (req, res) {
   var targetUser = req.params.username.toLowerCase();
