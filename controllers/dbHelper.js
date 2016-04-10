@@ -1,9 +1,5 @@
 'use strict';
-
-/* Helper Function for Saving
- * Saves object information to the database
- * and returns the apropiated results.
- */
+/* Saves object information to database and returns the apropiated results. */
 var objSave = function (object, res, msg) {
   object.save(function (err) {
     if (err) {
@@ -15,23 +11,13 @@ var objSave = function (object, res, msg) {
 };
 exports.objSave = objSave;
 
-/* Helper Function for Returning Information
- * Returns result code and standard information
- * containing messages and data.
- */
+/* Returns result code and standard information containing messages and data.*/
 var resMsg = function (res, sCode, succ, msg, data) {
-  res.status(sCode).json({
-    success: succ,
-    message: msg,
-    data: data
-  });
+  res.status(sCode).json({success: succ, message: msg, data: data});
 };
 exports.resMsg = resMsg;
 
-/* Helper Function for Imetizing Arrays
- * Returns a proper array from a string
- * for alternate names and categories.
- */
+/* Returns a proper array from a string for alternate names and categories. */
 var objItemize = function (arr) {
   var item;
   switch (true) {
@@ -55,10 +41,7 @@ var objItemize = function (arr) {
 };
 exports.objItemize = objItemize;
 
-/* Function To Check Username in URL
- * Used to verify the current user.
- * username should be passed as req.params.username
- */
+/* Function To Check Username in URL. Username = req.params.username */
 var setUser = function (username) {
   if (username === undefined) {
     var user = process.env.ADMIN.toLowerCase();
@@ -68,9 +51,7 @@ var setUser = function (username) {
   return user;
 };
 
-/* Function To Delete Data
- * Used to delete individual or groups of data.
- */
+/* Function To Delete Data Used to delete individual or groups of data. */
 var delData = function (req, res, db, obj, ok, noOk, auth) {
   var user = setUser(req.params.username);
   if (req.decoded.sub === process.env.ADMIN.toLowerCase() ||
@@ -91,9 +72,7 @@ var delData = function (req, res, db, obj, ok, noOk, auth) {
 };
 exports.delData = delData;
 
-/* Function To Get Data
- * Used to get individual or groups of data.
- */
+/* Function To Get Data. Used to get individual or groups of data. */
 var getData = function (req, res, db, obj, ok, noOk, auth) {
   var user = setUser(req.params.username);
   if (req.decoded.sub === process.env.ADMIN.toLowerCase() ||
@@ -114,9 +93,7 @@ var getData = function (req, res, db, obj, ok, noOk, auth) {
 };
 exports.getData = getData;
 
-/* Function To Update Manga Object
- * Used to update individual mangas.
- */
+/* Function To Update Manga Object. Used to update individual mangas. */
 var updateMangaObj = function (req, manga) {
   manga.title = req.body.title || req.params.manga_title;
   manga.author = req.body.author || manga.author;
@@ -139,9 +116,7 @@ var updateMangaObj = function (req, manga) {
 };
 exports.updateMangaObj = updateMangaObj;
 
-/* Function To Create Manga Object
- * Used to create individual mangas.
- */
+/* Function To Create Manga Object. Used to create individual mangas. */
 var createMangaObj = function (req, manga) {
   var userStatus = req.body.userStatus.toLowerCase();
   if (userStatus === 'reading' || userStatus === 'finished' ||
