@@ -19,7 +19,7 @@ require('dotenv').config({
 
 // Connect to the database
 var mongouri = process.env.MONGOLAB_URI ||
-  "mongodb://" + process.env.IP + ":27017/mangadb";
+  'mongodb://' + process.env.IP + ':27017/mangadb';
 mongoose.connect(mongouri);
 
 app.set('superSecret', process.env.SECRET); // secret variable
@@ -38,9 +38,9 @@ app.set('view engine', 'pug');
 // REGISTER OUR ROUTES -------------------------------
 var router = express.Router(); // get an instance of the express Router
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header("Access-Control-Allow-Headers", "x-access-token");
+  res.header('Access-Control-Allow-Headers', 'x-access-token');
   next();
 });
 
