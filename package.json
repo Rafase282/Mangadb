@@ -37,7 +37,7 @@
     "express": "^4.13.4",
     "jsonwebtoken": "^5.7.0",
     "mongoose": "^4.3.7",
-    "pug": "^0.1.0",
+    "pug": "^2.0.0-alpha3",
     "quickemailverification": "^1.0.0"
   }
 }
