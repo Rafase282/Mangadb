@@ -27,8 +27,6 @@
     "eslint": "^2.7.0",
     "istanbul": "^0.4.2",
     "mocha": "^2.4.5",
-    "nodemon": "^1.8.1",
-    "pug": "^2.0.0-alpha3",
     "supertest": "^1.2.0"
   },
   "dependencies": {
@@ -38,6 +36,7 @@
     "express": "^4.13.4",
     "jsonwebtoken": "^5.7.0",
     "mongoose": "^4.3.7",
+    "nodemon": "^1.9.1",
     "quickemailverification": "^1.0.0"
   }
 }
