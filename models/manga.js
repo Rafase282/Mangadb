@@ -9,7 +9,7 @@ var MangaSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
     required: true,
-    unique: false,
+    unique: true,
     match: /[a-z]/
   },
   author: {
@@ -24,7 +24,7 @@ var MangaSchema = new mongoose.Schema({
     type: String,
     trim: true,
     required: true,
-    unique: false
+    unique: true
   },
   userStatus: {
     type: String,
