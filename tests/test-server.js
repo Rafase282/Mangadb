@@ -11,7 +11,7 @@ describe('SAMPLE unit test', function() {
   it('GET /: Respond with html site', function(done) {
     server
       .get('/')
-      .expect('Content-Type', 'text/html; charset=utf-8')
+      .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(200, done);
   }); // END JSON MSG
 

@@ -32,10 +32,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-// configure the view
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
 // REGISTER OUR ROUTES -------------------------------
 var router = express.Router(); // get an instance of the express Router
 app.use(function (req, res, next) {

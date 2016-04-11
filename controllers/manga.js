@@ -16,7 +16,8 @@ exports.getWelcome = function (req, res) {
 
 // Serve index.pug
 exports.getIndex = function (req, res) {
-  res.render('index');
+  var msg = 'Welcome! Please see: https://github.com/Rafase282/Mangadb';
+  dbHelper.resMsg(res, 200, true, msg, null);
 };
 
 /* Creates New Manga
