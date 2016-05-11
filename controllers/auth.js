@@ -5,7 +5,7 @@ var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
 /* Generates JWT For User
  * Returns result code and standard information
- * containing messages and jwt.
+ * containing messages and JWT.
  */
 exports.generateToken = function (req, res) {
   // find the user
@@ -29,7 +29,7 @@ exports.generateToken = function (req, res) {
           dbHelper.resMsg(res, 404, false, msg, null);
         } else {
           var expTime = 60 * 60; // expires in 1 hour "seconds X Minutes"
-          // Create object for teh token
+          // Create object for the token
           var info = {
             sub: user.username,
             jti: user._id
@@ -53,7 +53,7 @@ exports.generateToken = function (req, res) {
 /* Validates JWT For Authentication
  * Returns result code and standard information
  * containing error messages when it fails.
- * or it sets the decoded jwt and continues to the next operation.
+ * or it sets the decoded JWT and continues to the next operation.
  */
 exports.validateToken = function (req, res, next) {
   // check header or url parameters or post parameters for token
