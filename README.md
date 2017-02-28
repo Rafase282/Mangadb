@@ -3,7 +3,8 @@
 
 Created by Rafase282
 
-[Github](https://github.com/Rafase282) | [FreeCodeCamp](http://www.freecodecamp.com/rafase282) | [CodePen](http://codepen.io/Rafase282/) | [LinkedIn](https://www.linkedin.com/in/rafase282) | [Blog/Site](https://rafase282.wordpress.com/) | [E-Mail](mailto:rafase282@gmail.com)
+[Github](https://github.com/Rafase282) | [FreeCodeCamp](http://www.freecodecamp.com/rafase282) | [CodePen](http://codepen.io/Rafase282/) | [LinkedIn](https://www.linkedin.com/in/rafase282) | [Site](https://rafase282.github.io/) |
+[E-Mail](mailto:rafase282@gmail.com)
 
 [![Gitter](https://badges.gitter.im/Rafase282/Mangadb.svg)](https://gitter.im/Rafase282/Mangadb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Build Status](https://travis-ci.org/Rafase282/Mangadb.svg?branch=master)](https://travis-ci.org/Rafase282/Mangadb)
@@ -34,6 +35,6 @@ Remember to use `Content-Type: application/x-www-form-urlencoded`, the API will 
 - [X] Add thumbnail property to Mongoose Schema and make it work with current data.
 - [X] Switch to JSON Web Tokens.
 - [X] Validate E-mails.
-- [-] Verify E-mails.
+- [ ] Verify E-mails.
 - [ ] Implement password reset mechanism.
 - [ ] Implement email support to send new passwords when a request for a forgotten password is made.
