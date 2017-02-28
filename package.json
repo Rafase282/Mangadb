@@ -24,19 +24,19 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "codecov": "^1.0.1",
-    "eslint": "^2.7.0",
-    "istanbul": "^0.4.2",
-    "mocha": "^2.4.5",
-    "supertest": "^1.2.0"
+    "eslint": "^3.16.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "supertest": "^3.0.0"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
-    "body-parser": "^1.14.2",
-    "dotenv": "^2.0.0",
-    "express": "^4.13.4",
-    "jsonwebtoken": "^5.7.0",
-    "mongoose": "^4.3.7",
-    "nodemon": "^1.9.1",
+    "body-parser": "^1.16.1",
+    "dotenv": "^4.0.0",
+    "express": "^4.14.1",
+    "jsonwebtoken": "^7.3.0",
+    "mongoose": "^4.8.5",
+    "nodemon": "^1.11.0",
     "quickemailverification": "^1.0.0"
   }
 }
