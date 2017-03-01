@@ -16,14 +16,14 @@ There is an admin account that is declared onteh envarioment variables that basi
 
 ## What you can do:
 
-1. Create a manga accessed at: **POST** `https://mangadb-r282.herokuapp.com/api/mangas/:user/title=Aiki&author=Isutoshi&url=http%3A%2F%2Fwww.readmanga.today%2Faiki&userStatus=reading&type=Japanese&categories=Action%2C+Ecchi%2C+Martial+Arts%2C+Mature%2C+Seinen&chapter=14&seriesStatus=Completed&plot=There+is+fighting+at+the+high+school+due+to+a+power+struggle+for+control.+The+granddaughter+of+the+chief+director+requests+help+from+the+Aikido+fighting+style+genius.+Will+he+help%3F+Or+will+he+show+his+true+colors+with+his+bad+boy+ways%3F`
-2. Get the manga by title: **GET** `https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title`
-3. Update the manga with this title: **PUT** `https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title`
-4. Delete the manga by title: **DELETE** `https://mangadb-r282.herokuapp.com/api/mangas/:user/:manga_title`
-5. Admin can get a list of all the mangas across the user base: **GET** `https://mangadb-r282.herokuapp.com/api/mangas`
-6. Admin can get a list of all users: **GET** `https://mangadb-r282.herokuapp.com/api/users`
-7. Admin can delete all users including itself, this requires the admin to be re-created: **DELETE** `https://mangadb-r282.herokuapp.com/api/mangas`
-8. Admin can get a list of all the mangas across the user base: **GET** `https://mangadb-r282.herokuapp.com/api/mangas`
+1. Create a manga accessed at: **POST** `https://mangadbv1.herokuapp.com/api/v1/mangas/:user/title=Aiki&author=Isutoshi&url=http%3A%2F%2Fwww.readmanga.today%2Faiki&userStatus=reading&type=Japanese&categories=Action%2C+Ecchi%2C+Martial+Arts%2C+Mature%2C+Seinen&chapter=14&seriesStatus=Completed&plot=There+is+fighting+at+the+high+school+due+to+a+power+struggle+for+control.+The+granddaughter+of+the+chief+director+requests+help+from+the+Aikido+fighting+style+genius.+Will+he+help%3F+Or+will+he+show+his+true+colors+with+his+bad+boy+ways%3F`
+2. Get the manga by title: **GET** `https://mangadbv1.herokuapp.com/api/v1/mangas/:user/:manga_title`
+3. Update the manga with this title: **PUT** `https://mangadbv1.herokuapp.com/api/v1/mangas/:user/:manga_title`
+4. Delete the manga by title: **DELETE** `https://mangadbv1.herokuapp.com/api/v1/mangas/:user/:manga_title`
+5. Admin can get a list of all the mangas across the user base: **GET** `https://mangadbv1.herokuapp.com/api/v1/mangas`
+6. Admin can get a list of all users: **GET** `https://mangadbv1.herokuapp.com/api/v1/users`
+7. Admin can delete all users including itself, this requires the admin to be re-created: **DELETE** `https://mangadbv1.herokuapp.com/api/v1/mangas`
+8. Admin can get a list of all the mangas across the user base: **GET** `https://mangadbv1.herokuapp.com/api/v1/mangas`
 
 Remember to use `Content-Type: application/x-www-form-urlencoded`, the API will tell you what field are required in case you dont want to take a look at the schema.
 

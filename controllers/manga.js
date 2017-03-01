@@ -16,7 +16,7 @@ exports.getWelcome = function (req, res) {
 
 // Serve index.pug
 exports.getIndex = function (req, res) {
-  var msg = 'Welcome! Please see: https://github.com/Rafase282/Mangadb';
+  var msg = 'Welcome! Please see: https://github.com/Rafase282/Mangadb/tree/MangaDBv1';
   dbHelper.resMsg(res, 200, true, msg, null);
 };
 
