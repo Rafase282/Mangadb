@@ -42,7 +42,7 @@ app.use(function (req, res, next) {
 });
 
 // all of our routes will be prefixed with /api
-app.use('/api', router);
+app.use('/api/' + process.env.API_VERSION, router);
 
 // Serve index.pug at ttps://mangadb-r282.herokuapp.com
 app.route('/')
