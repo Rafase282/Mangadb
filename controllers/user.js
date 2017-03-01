@@ -67,7 +67,7 @@ exports.getUser = function (req, res) {
   dbHelper.getData(req, res, User, obj, ok, noOk, auth);
 };
 
-/* Deletes User By Username and its data.
+/* Deletes User By Username
  * Returns the message along with database output.
  * Accessed at DELETE /api/users/:username
  */
@@ -81,7 +81,6 @@ exports.delUser = function (req, res) {
   };
 
   dbHelper.delData(req, res, User, obj, ok, noOk, auth);
-  dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
 };
 
 /* Deletes All Users Except The Admin
