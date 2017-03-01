@@ -44,12 +44,12 @@ app.use(function (req, res, next) {
 // all of our routes will be prefixed with /api
 app.use('/api/' + process.env.API_VERSION, router);
 
-// Serve index.pug at ttps://mangadb-r282.herokuapp.com
+// Serve greeting or site at https://mangadbv2.herokuapp.com
 app.route('/')
   .get(mangaController.getIndex);
 
 // test route to make sure everything is working
-//(accessed at GET https://mangadb-r282.herokuapp.com/api)
+//(accessed at GET https://mangadbv2.herokuapp.com/api)
 router.route('/')
   .get(mangaController.getWelcome);
 
