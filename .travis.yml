@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "5"
+  - "7"
 addons:
     code_climate:
         repo_token: 0180b85441674ca550ac7fe3a5f0093c6f069bedc2b7ba6dc43c8769a3a097cb
@@ -8,4 +8,3 @@ before_install:
   - pip install --user codecov
 after_success:
   - codecov --file coverage/lcov.info --disable search
-  
