@@ -28,21 +28,16 @@ securityDefinitions:
     type: apiKey
     name: x-access-token
     in: header
+    description: This is actually a JSON Web Token (JWT) and it is required for all secured routes. There is an admin and regular users.
 paths:
   /auth:
     post:
       tags:
         - mangas
-      summary: Creates User.
-      description: "Handle manga requests"
+      summary: Authenticates existing users for using the API for one hour.
+      description: This route does notrequires a JWT, but instead provides one for the user that expires in one hour. The  response provides the JWT along with some useful information.
       operationId: getToken
       parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
         - in: formData
           name: username
           description: Target username.
@@ -55,10 +50,22 @@ paths:
           type: string
           format: password
       responses:
-        "405":
-          description: Invalid input
-      security:
-        - api_key: []
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Auth'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
   /mangas:
     get:
       tags:
@@ -67,13 +74,6 @@ paths:
       summary: Get a list of all mangas on the database.
       description: "Handle manga requests"
       operationId: getAllMangas
-      parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
       responses:
         "405":
           description: Invalid input
@@ -87,12 +87,6 @@ paths:
       description: "Handle manga requests"
       operationId: getAlluserMangas
       parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
         - in: path
           name: user
           description: Target username.
@@ -110,12 +104,6 @@ paths:
       description: "Handle manga requests"
       operationId: createmanga
       parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
         - in: path
           name: user
           description: Target username.
@@ -194,12 +182,6 @@ paths:
       description: "The passwords are encrypted."
       operationId: deleteMangasbyuser
       parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
         - in: path
           name: user
           description: Target username.
@@ -218,12 +200,6 @@ paths:
       description: "Handle manga requests"
       operationId: getMangabyId
       parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
         - in: path
           name: user
           description: Target username.
@@ -246,12 +222,6 @@ paths:
       description: "Handle manga requests"
       operationId: updateMangabyId
       parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
         - in: path
           name: user
           description: Target username.
@@ -275,12 +245,6 @@ paths:
       description: "The passwords are encrypted."
       operationId: deleteUserbyUsername
       parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
         - in: path
           name: user
           description: Target username.
@@ -304,13 +268,6 @@ paths:
       summary: Get a list of all the users in the database.
       description: "Handle manga requests"
       operationId: getAllusers
-      parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
       responses:
         "405":
           description: Invalid input
@@ -323,12 +280,6 @@ paths:
       description: "Handle manga requests"
       operationId: createuser
       parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
         - in: formData
           name: username
           description: Target username.
@@ -366,13 +317,6 @@ paths:
       summary: Deletes all users.
       description: "The passwords are encrypted."
       operationId: deleteusers
-      parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
       responses:
         "405":
           description: Invalid input
@@ -386,12 +330,6 @@ paths:
       description: "The passwords are encrypted."
       operationId: getUserbyUsername
       parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
         - in: path
           name: user
           description: Target username.
@@ -409,12 +347,6 @@ paths:
       description: "Handle manga requests"
       operationId: updateuser
       parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
         - in: path
           name: user
           description: Target username.
@@ -433,12 +365,6 @@ paths:
       description: "The passwords are encrypted."
       operationId: deleteMangabyTitle
       parameters:
-        - in: header
-          name: x-access-token
-          description: Base64 Encoded JSON Web Token
-          required: true
-          type: string
-          default: xxxxx
         - in: path
           name: user
           description: Target username.
@@ -450,5 +376,101 @@ paths:
       security:
         - api_key: []
 definitions:
-  API_KEY:
-    type: string
+  User:
+    type: object
+    required: [username, password, email, firstname, lastname]
+    properties:
+      username:
+        description: The username has to be unique.
+        type: string
+      password:
+        description: There are no limitations.
+        type: string
+        format: password
+      email:
+        description: There are no limitations.
+        type: string
+      firstname:
+        description: Only letters are allowed.
+        type: string
+      lastname:
+        description: Only letters are allowed.
+        type: string
+  Manga:
+    type: object
+    required: [title, author, url, userStatus, type, categories, chapter, seriesStatus, plot, direction, thumbnail]
+    properties:
+      title:
+        type: string
+      author:
+        type: string
+      url:
+        type: string
+      userStatus:
+        type: string
+        description: It must be either of 'reading', 'finished' or 'will read'.
+      type:
+        type: string
+      categories:
+        type: string
+        description: It will be a string that will be turned into an array separated by commas.
+      chapter:
+        type: integer
+        format: int32
+      seriesStatus:
+        type: string
+        description: It must be either of 'ongoing' or 'completed'.
+      plot:
+        type: string
+      altName:
+        type: string
+        description: It will be a string that will be turned into an array separated by commas.
+      direction:
+        type: string
+        description: It must be either of 'left to right' or 'right to left'.
+      userId:
+        type: string
+        description: This is obtained internally.
+      username:
+        type: string
+        description: This is obtained internally.
+      thumbnail:
+        type: string
+  Auth:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: True or false depending of the code.
+      message:
+        type: string
+        description: Message reporting action status.
+      data:
+        type: string
+        description: It will be either null or the data.
+  Default:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: True or false depending of the code.
+      message:
+        type: string
+        description: Message reporting action status.
+      data:
+        type: array
+        description: It will be either null or the data.
+        items:
+          $ref: '#/definitions/Manga'
+  Error:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: True or false depending of the code.
+      message:
+        type: string
+        description: Message reporting action status.
+      data:
+        type: object
+        description: It is actually null.
