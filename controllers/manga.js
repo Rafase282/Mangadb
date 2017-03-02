@@ -7,7 +7,7 @@ var auth = 'You are not an admin!';
 
 /* Get Welcome Message From Root
  * Displays a welcome message when visiting the root of the API.
- * Accessed at GET /api */
+ * Accessed at GET /api/v# */
 exports.getWelcome = function (req, res) {
   var msg = 'Welcome, check the API usage at ' + process.env.APP_URL +
     ', there is nothing to do here.';
@@ -21,7 +21,8 @@ exports.getIndex = function (req, res) {
 };
 
 /* Creates New Manga
- * Returns the manga information. Accessed at POST /api/mangas/:username */
+ * Returns the manga information.
+   Accessed at POST /api/v#/mangas/:username */
 exports.postManga = function (req, res) {
   var targetUser = req.params.username.toLowerCase();
   if (req.decoded.sub === process.env.ADMIN ||
@@ -38,7 +39,7 @@ exports.postManga = function (req, res) {
 
 /* Finds Manga By Title
  * Returns the manga information.
- * Accessed at GET /api/mangas/:username/:manga_title */
+ * Accessed at GET /api/v#/mangas/:username/:manga_title */
 exports.getManga = function (req, res) {
   var targetUser = req.params.username.toLowerCase();
   var ok = req.params.manga_title + ' found!';
@@ -53,7 +54,7 @@ exports.getManga = function (req, res) {
 
 /* Updates Manga By Title
  * Returns the manga information.
- * Accessed at PUT /api/mangas/:username/:manga_title */
+ * Accessed at PUT /api/v#/mangas/:username/:manga_title */
 exports.putManga = function (req, res) {
   var targetUser = req.params.username.toLowerCase();
   if (req.decoded.sub === process.env.ADMIN ||
@@ -78,7 +79,7 @@ exports.putManga = function (req, res) {
 
 /* Deletes Manga By Title
  * Returns the manga information.
- * Accessed at DELETE /api/mangas/:username/:manga_title */
+ * Accessed at DELETE /api/v#/mangas/:username/:manga_title */
 exports.delManga = function (req, res) {
   var targetUser = req.params.username.toLowerCase();
   var noOk = 'Could not find ' + req.params.manga_title;
@@ -93,7 +94,7 @@ exports.delManga = function (req, res) {
 
 /* Finds All Mangas By User
  * Returns a list of all the mangas the user has.
- * Accessed at GET /api/mangas/:username */
+ * Accessed at GET /api/v#/mangas/:username */
 exports.getMangas = function (req, res) {
   var targetUser = req.params.username.toLowerCase();
   var ok = 'Manga List Generated.';
@@ -108,7 +109,8 @@ exports.getMangas = function (req, res) {
 };
 
 /* Finds All Mangas By All Users Via Admin
- * Returns a list of all the mangas for all users. Accessed at GET /api/mangas*/
+ * Returns a list of all the mangas for all users.
+   Accessed at GET /api/v#/mangas*/
 exports.getAllMangas = function (req, res) {
   var ok = 'Manga List Generated.';
   var obj = {};
@@ -116,7 +118,8 @@ exports.getAllMangas = function (req, res) {
 };
 
 /* Deletes All Mangas For All Users Via Admin
- * Returns the manga information. Accessed at DELETE /api/mangas/ */
+ * Returns the manga information.
+   Accessed at DELETE /api/v#/mangas/ */
 exports.delMangas = function (req, res) {
   var ok = 'Successfully deleted all mangas.';
   var obj = {
@@ -128,7 +131,8 @@ exports.delMangas = function (req, res) {
 };
 
 /* Deletes All Mangas For User
- * Returns the manga information. Accessed at DELETE /api/mangas/:username */
+ * Returns the manga information.
+   Accessed at DELETE /api/v#/mangas/:username */
 exports.delUserMangas = function (req, res) {
   var targetUser = req.params.username.toLowerCase();
   var ok = 'Successfully deleted all user mangas.';
