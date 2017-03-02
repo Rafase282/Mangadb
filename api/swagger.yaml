@@ -339,7 +339,7 @@ paths:
       tags:
         - mangas
       summary: Updates any and all manga fields.
-      description: This route allows to update the whole object or part of it. If you want to update specific fields, then just add the fields you want to update only. However,
+      description: This route allows to update the whole object or part of it. If you want to update specific fields, then just add the fields you want to update only.
       operationId: putManga
       parameters:
         - in: path
@@ -550,13 +550,18 @@ paths:
     put:
       tags:
         - users
-      summary: Get information on a specific user's managa by title.
-      description: "Handle manga requests"
+      summary: Updates user's information.
+      description: This route allows to update the whole object or part of it. If you want to update specific fields, then just add the fields you want to update only.
       operationId: putUser
       parameters:
         - in: path
           name: username
           description: Target username.
+          required: true
+          type: string
+        - in: formData
+          name: varies
+          description: The field can vary depending on what you want to update. use any or all the fields of the `UserObj`
           required: true
           type: string
       responses:
@@ -583,7 +588,7 @@ paths:
         - users
         - admin
       summary: Deletes target user.
-      description: "The passwords are encrypted."
+      description: This route deletes the target user. However, it does not deletes its mangas. So further action should be taken via `/mangas/{username`.
       operationId: delUser
       parameters:
         - in: path
