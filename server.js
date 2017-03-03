@@ -45,6 +45,7 @@ app.use(function (req, res, next) {
 app.use('/api/' + process.env.API_VERSION, router);
 
 // Serve greeting or site at https://mangadbv2.herokuapp.com
+app.use('/', express.static(path.join(__dirname, 'docs')))
 app.route('/')
   .get(mangaController.getIndex);
 
