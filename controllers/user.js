@@ -39,7 +39,7 @@ exports.postUsers = function (req, res) {
 
 /* Finds All Users
  * Returns a list of all users when found.
- * Accessed at GET /api/users
+ * Accessed at GET /api/v#/users
  */
 exports.getUsers = function (req, res) {
   var ok = 'The list of users has been succesfully generated.';
@@ -52,7 +52,7 @@ exports.getUsers = function (req, res) {
 
 /* Finds User By Username
  * Returns the user information with a hashd password.
- * Accessed at GET /api/users/:username
+ * Accessed at GET /api/v#/users/:username
  */
 exports.getUser = function (req, res) {
   var targetUser = req.params.username.toLowerCase();
@@ -69,7 +69,7 @@ exports.getUser = function (req, res) {
 
 /* Deletes User By Username
  * Returns the message along with database output.
- * Accessed at DELETE /api/users/:username
+ * Accessed at DELETE /api/v#/users/:username
  */
 exports.delUser = function (req, res) {
   var targetUser = req.params.username.toLowerCase();
@@ -85,7 +85,7 @@ exports.delUser = function (req, res) {
 
 /* Deletes All Users Except The Admin
  * Returns the message along with database output.
- * Accessed at DELETE /api/users
+ * Accessed at DELETE /api/v#/users
  */
 exports.delUsers = function (req, res) {
   var noOk = 'There are no users to delete besides the admin account.';
@@ -102,7 +102,7 @@ exports.delUsers = function (req, res) {
 
 /* Updates User By Username
  * Returns the message along with database output.
- * Accessed at PUT /api/users/:username
+ * Accessed at PUT /api/v#/users/:username
  */
 exports.putUser = function (req, res) {
   // use our user model to find the user we want
