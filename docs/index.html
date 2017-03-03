@@ -38,7 +38,7 @@
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-        url = "https://raw.githubusercontent.com/Rafase282/Mangadb/master/docs/swagger.yaml";
+        url = "swagger.yaml";
       }
 
       hljs.configure({
@@ -56,10 +56,10 @@
         onComplete: function(swaggerApi, swaggerUi){
           if(typeof initOAuth == "function") {
             initOAuth({
-              clientId: "your-client-id",
+              clientId: "MangaDBv2",
               clientSecret: "your-client-secret-if-required",
-              realm: "your-realms",
-              appName: "your-app-name",
+              realm: "https://mangadbv2.herokuapp.com/",
+              appName: "MangaDB",
               scopeSeparator: " ",
               additionalQueryStringParams: {}
             });
