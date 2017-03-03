@@ -41,16 +41,13 @@ app.use(function (req, res, next) {
   next();
 });
 
-// all of our routes will be prefixed with /api
+// all of our routes will be prefixed with /api/v#
 app.use('/api/' + process.env.API_VERSION, router);
 
-// Serve greeting or site at https://mangadbv2.herokuapp.com
+// Serve Swagger UI at https://mangadbv2.herokuapp.com
 app.use('/', express.static(path.join(__dirname, 'docs')))
-app.route('/')
-  .get(mangaController.getIndex);
 
-// test route to make sure everything is working
-//(accessed at GET https://mangadbv2.herokuapp.com/api)
+//(accessed at GET https://mangadbv2.herokuapp.com/api/v#)
 router.route('/')
   .get(mangaController.getWelcome);
 
