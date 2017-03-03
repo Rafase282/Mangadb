@@ -14,10 +14,11 @@ exports.getWelcome = function (req, res) {
   dbHelper.resMsg(res, 200, true, msg, null);
 };
 
-// Serve index.pug
+// Serve docs
 exports.getIndex = function (req, res) {
-  var msg = 'Welcome! Please see: https://github.com/Rafase282/Mangadb';
-  dbHelper.resMsg(res, 200, true, msg, null);
+  //var msg = 'Welcome! Please see: https://github.com/Rafase282/Mangadb';
+  //dbHelper.resMsg(res, 200, true, msg, null);
+  res.send('index.html');
 };
 
 /* Creates New Manga
