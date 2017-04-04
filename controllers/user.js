@@ -47,8 +47,7 @@ exports.postUsers = (req, res) => {
 exports.getUsers = (req, res) => {
   const ok = 'The list of users has been succesfully generated.';
   const noOk = 'No users has been created yet.';
-  const obj = {};
-  dbHelper.getData(req, res, User, obj, ok, noOk, auth);
+  dbHelper.getData(req, res, User, {}, ok, noOk, auth);
 };
 
 /* Finds User By Username
