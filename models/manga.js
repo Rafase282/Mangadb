@@ -1,9 +1,9 @@
-// ./models/manga.js
+'use strict';
 // Load required packages
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 // Define our user schema
-var MangaSchema = new mongoose.Schema({
+const MangaSchema = new mongoose.Schema({
   title: {
     type: String,
     lowercase: true,
@@ -117,5 +117,3 @@ var MangaSchema = new mongoose.Schema({
 
 // Export the Mongoose model
 module.exports = mongoose.model('Manga', MangaSchema);
-
-
