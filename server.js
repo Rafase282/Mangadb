@@ -104,3 +104,4 @@ router.route('/users/:username')
 // =============================================================================
 const port = process.env.PORT || 8080; // set our port
 app.listen(port, () => console.log(`Node.js listening on port ${port}`));
+module.exports = app;
