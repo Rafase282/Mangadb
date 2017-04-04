@@ -1,7 +1,8 @@
 'use strict';
-/* Saves object information to database and returns the apropiated results. */
-var objSave = function (object, res, msg) {
-  object.save(function (err) {
+/* Saves object information to database and returns the apropiated results.
+*/
+const objSave = exports.objSave = (object, res, msg) => {
+  object.save((err) => {
     if (err) {
       resMsg(res, 400, false, err.errmsg, null);
     } else {
@@ -9,17 +10,15 @@ var objSave = function (object, res, msg) {
     }
   });
 };
-exports.objSave = objSave;
 
 /* Returns result code and standard information containing messages and data.*/
-var resMsg = function (res, sCode, succ, msg, data) {
-  res.status(sCode).json({success: succ, message: msg, data: data});
-};
-exports.resMsg = resMsg;
+const resMsg = exports.resMsg = (res, sCode, success, message, data) => {
+  res.status(sCode).json({success, message, data});
+}
 
 /* Returns a proper array from a string for alternate names and categories. */
-var objItemize = function (arr) {
-  var item;
+const objItemize = exports.objItemize = (arr) => {
+  let item;
   switch (true) {
   case arr === null || arr === undefined:
     item = [];
@@ -39,12 +38,15 @@ var objItemize = function (arr) {
   }
   return item;
 };
-exports.objItemize = objItemize;
 
-/* Function To Check Username in URL. Username = req.params.username */
-var setUser = function (username) {
+/* Function To Check Username in URL. Username = req.params.username
+ *  When it is undefined, the admin takes responsability
+ *  only if the admin actually issuee the request.
+ */
+const setUser = (username) => {
+  let user;
   if (username === undefined) {
-    var user = process.env.ADMIN.toLowerCase();
+    user = process.env.ADMIN.toLowerCase();
   } else {
     user = username.toLowerCase();
   }
@@ -52,11 +54,11 @@ var setUser = function (username) {
 };
 
 /* Function To Delete Data Used to delete individual or groups of data. */
-var delData = function (req, res, db, obj, ok, noOk, auth) {
-  var user = setUser(req.params.username);
+const delData = exports.delData = (req, res, db, obj, ok, noOk, auth) => {
+  const user = setUser(req.params.username);
   if (req.decoded.sub === process.env.ADMIN.toLowerCase() ||
     req.decoded.sub === user) {
-    db.remove(obj, function (err, data) {
+    db.remove(obj, (err, data) => {
       if (err) {
         resMsg(res, 400, false, err, null);
       }
@@ -70,21 +72,19 @@ var delData = function (req, res, db, obj, ok, noOk, auth) {
     resMsg(res, 403, false, auth, null);
   }
 };
-exports.delData = delData;
 
 /* Function To Get Data. Used to get individual or groups of data. */
-var getData = function (req, res, db, obj, ok, noOk, auth) {
-  var user = setUser(req.params.username);
+const getData = exports.getData = (req, res, db, obj, ok, noOk, auth) => {
+  const user = setUser(req.params.username);
   if (req.decoded.sub === process.env.ADMIN.toLowerCase() ||
     req.decoded.sub === user) {
-    db.find(obj, function (err, data) {
+    db.find(obj, (err, data) => {
       if (err) {
         resMsg(res, 400, false, err, null);
       }
       if (data === null || data.length < 1) {
         resMsg(res, 404, false, noOk, null);
       } else {
-        // Display data acordingly to the size.
         data = data.length > 1? data : data[0];
         resMsg(res, 200, true, ok, data);
       }
@@ -93,10 +93,9 @@ var getData = function (req, res, db, obj, ok, noOk, auth) {
     resMsg(res, 403, false, auth, null);
   }
 };
-exports.getData = getData;
 
 /* Function To Update Manga Object. Used to update individual mangas. */
-var updateMangaObj = function (req, manga) {
+const updateMangaObj = exports.updateMangaObj = (req, manga) => {
   manga.title = req.body.title || req.params.manga_title;
   manga.author = req.body.author || manga.author;
   manga.url = req.body.url || manga.url;
@@ -116,20 +115,19 @@ var updateMangaObj = function (req, manga) {
   manga.thumbnail = req.body.thumbnail || manga.thumbnail;
   return manga;
 };
-exports.updateMangaObj = updateMangaObj;
 
 /* Function To Create Manga Object. Used to create individual mangas. */
-var createMangaObj = function (req, manga) {
-  var userStatus = req.body.userStatus.toLowerCase();
+const createMangaObj = exports.createMangaObj = (req, manga) => {
+  const userStatus = req.body.userStatus.toLowerCase();
   if (userStatus === 'reading' || userStatus === 'finished' ||
     userStatus === 'will read') {
     manga.userStatus = userStatus;
   }
-  var seriesStatus = req.body.seriesStatus.toLowerCase();
+  const seriesStatus = req.body.seriesStatus.toLowerCase();
   if (seriesStatus === 'ongoing' || seriesStatus === 'completed') {
     manga.seriesStatus = seriesStatus;
   }
-  var direction = req.body.direction.toLowerCase();
+  const direction = req.body.direction.toLowerCase();
   if (direction === 'left to right' || direction === 'right to left') {
     manga.direction = direction;
   }
@@ -146,4 +144,3 @@ var createMangaObj = function (req, manga) {
   manga.thumbnail = req.body.thumbnail;
   return manga;
 };
-exports.createMangaObj = createMangaObj;
