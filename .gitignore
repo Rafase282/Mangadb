@@ -35,3 +35,5 @@ node_modules
 # Custom
 .env
 *.db
+users.json
+mangas.json
