@@ -1,9 +1,10 @@
+'use strict';
 // Load required packages
-var mongoose = require('mongoose');
-var bcrypt = require('bcrypt-nodejs');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt-nodejs');
 
 // Define our user schema
-var UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     lowercase: true,
@@ -47,7 +48,7 @@ var UserSchema = new mongoose.Schema({
 
 // Execute before each user.save() call
 UserSchema.pre('save', function(callback) {
-  var user = this;
+  const user = this;
 
   // Break out if the password hasn't changed
   if (!user.isModified('password')) return callback();
@@ -58,7 +59,7 @@ UserSchema.pre('save', function(callback) {
     bcrypt.hash(user.password, salt, null, function(err, hash) {
       if (err) return callback(err);
       user.password = hash;
-      callback();
+      return callback();
     });
   });
 });
