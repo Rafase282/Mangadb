@@ -1,27 +1,82 @@
-/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "expect" }]*/
+/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "expect, done" }]*/
 /*global describe it */
-var request = require('supertest');
-var expect = require('chai').expect;
-var server = require('../server.js');
-server = request.agent('http://localhost:' + process.env.PORT);
+'use strict';
 
-describe('SAMPLE unit test', function() {
+//Require the dev-dependencies
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const server = require('../server');
+const expect = require('expect');
+const mongoose = require('mongoose');
+require('dotenv').config({silent: true});
+chai.should();
+chai.use(chaiHttp);
 
+// Gloabls
+const api = `/api/${process.env.API_VERSION}`;
+const mongouri = process.env.MONGOLAB_URI ||
+  `mongodb://${process.env.IP}:27017/mangadb`;
 
-  it('GET /: Respond with html site', function(done) {
-    server
+describe('Test for server response\n', () => {
+  before(() => {
+    mongoose.createConnection(mongouri);
+  });
+
+  beforeEach((done) => {
+    // Populate the DB
+    done();
+  });
+
+  afterEach((done) => {
+    // Delete Populated DB
+    done();
+  });
+
+  after(() => {
+    mongoose.connection.close();
+  });
+
+  it('GET /: Responds with swagger Docs', (done) => {
+    chai.request(server)
       .get('/')
-      .expect('Content-Type', 'application/json; charset=utf-8')
-      .expect(200, done);
-  }); // END JSON MSG
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.should.have.header('content-type', 'text/html; charset=UTF-8');
+        if (err) throw err;
+        done();
+      });
+  });
 
+  it(`GET ${api}: Respond with JSON Greeting`, (done) => {
+    chai.request(server)
+      .get(api)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.should.have.header('content-type', 'application/json; charset=utf-8');
+        if (err) throw err;
+        done();
+      });
+  });
 
-
-  it('GET /api: Respond with Json msg', function(done) {
-    server
-      .get('/api')
-      .expect('Content-Type', /json/)
-      .expect(200, done);
-  }); // END JSON MSG
+  it(`POST ${api}/auth: Should return JSON data containing the JWT`, (done) => {
+    const credentials = {
+      username: "user",
+      password: "user"
+    }
+    chai.request(server)
+      .post(`${api}/auth`)
+      .send(credentials)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.have.property('success');
+        res.body.success.should.be.a('boolean');
+        res.body.should.have.property('message');
+        res.body.message.should.be.a('string');
+        res.body.should.have.property('data');
+        if (err) throw err;
+        done();
+      });
+  });
 
 });
