@@ -1,36 +1,39 @@
+'use strict';
 // Load required packages
-var User = require('../models/user');
-var dbHelper = require('./dbHelper');
+const User = require('../models/user');
+const dbHelper = require('./dbHelper');
+require('dotenv').config({silent: true});
+const checkEmail = require('quickemailverification')
+  .client(process.env.EV_KEY).quickemailverification();
+
+//Gloabls
+const auth = 'You do not have the right permission for this action.';
 
 /* Creates A New User
  * It first checks for a real email address
  * then it generates the user object to be saved.
  */
-exports.postUsers = function (req, res) {
+exports.postUsers = (req, res) => {
   // Make sure that it has a valid email adress.
-  var quickemailverification = require('quickemailverification')
-    .client(process.env.EV_KEY).quickemailverification();
-
-  var email = req.body.email;
-
-  quickemailverification.verify(email, function (err, response) {
+  const email = req.body.email;
+  checkEmail.verify(email, (err, response) => {
     if (err) {
       dbHelper.resMsg(res, 400, false, err, null);
     } else {
       // Print response object
       if (response.body.result === 'valid') {
         // It is a valid e-mail.
-        var user = new User({
+        const user = new User({
           username: req.body.username,
           password: req.body.password,
-          email: email,
+          email,
           firstname: req.body.firstname,
           lastname: req.body.lastname
         });
-        var msg = 'New manga reader ' + req.body.username + ' has been added.';
+        const msg = `New manga reader ${req.body.username} has been added.`;
         dbHelper.objSave(user, res, msg);
       } else {
-        msg = 'Invalid E-Mail.';
+        const msg = 'Invalid E-Mail.';
         dbHelper.resMsg(res, 400, false, msg, null);
       }
     }
@@ -41,12 +44,10 @@ exports.postUsers = function (req, res) {
  * Returns a list of all users when found.
  * Accessed at GET /api/v#/users
  */
-exports.getUsers = function (req, res) {
-  var ok = 'The list of users has been succesfully generated.';
-  var noOk = 'No users has been created yet.';
-  var auth = 'You are not an admin.';
-  var obj = {};
-
+exports.getUsers = (req, res) => {
+  const ok = 'The list of users has been succesfully generated.';
+  const noOk = 'No users has been created yet.';
+  const obj = {};
   dbHelper.getData(req, res, User, obj, ok, noOk, auth);
 };
 
@@ -54,16 +55,11 @@ exports.getUsers = function (req, res) {
  * Returns the user information with a hashd password.
  * Accessed at GET /api/users/:username
  */
-exports.getUser = function (req, res) {
-  var targetUser = req.params.username.toLowerCase();
-  var ok = targetUser + ' found!';
-  var noOk = targetUser + ' not found.';
-  var auth = 'You are not ' + targetUser +
-    ' or an admin!';
-  var obj = {
-    username: targetUser
-  };
-
+exports.getUser = (req, res) => {
+  const username = req.params.username.toLowerCase();
+  const ok = `${username} found!`;
+  const noOk = `${username}  not found.`;
+  const obj = {username};
   dbHelper.getData(req, res, User, obj, ok, noOk, auth);
 };
 
@@ -71,15 +67,11 @@ exports.getUser = function (req, res) {
  * Returns the message along with database output.
  * Accessed at DELETE /api/v#/users/:username
  */
-exports.delUser = function (req, res) {
-  var targetUser = req.params.username.toLowerCase();
-  var noOk = 'Could not find ' + targetUser;
-  var ok = 'Successfully deleted ' + targetUser;
-  var auth = 'You are not ' + targetUser + ' or an admin!';
-  var obj = {
-    username: targetUser
-  };
-
+exports.delUser = (req, res) => {
+  const username = req.params.username.toLowerCase();
+  const noOk = `Could not find ${username}`;
+  const ok = `Successfully deleted ${username}`;
+  const obj = {username};
   dbHelper.delData(req, res, User, obj, ok, noOk, auth);
 };
 
@@ -87,47 +79,38 @@ exports.delUser = function (req, res) {
  * Returns the message along with database output.
  * Accessed at DELETE /api/v#/users
  */
-exports.delUsers = function (req, res) {
-  var noOk = 'There are no users to delete besides the admin account.';
-  var ok = 'Successfully deleted all users but the admin.';
-  var auth = 'You are not an admin!';
-  var obj = {
-    username: {
-      $ne: process.env.ADMIN.toLowerCase()
-    }
-  };
-
-  dbHelper.delData(req, res, User, obj, ok, noOk, auth);
+exports.delUsers = (req, res) => {
+ const noOk = 'There are no users to delete besides the admin account.';
+ const ok = 'Successfully deleted all users but the admin.';
+ const obj = {username: {$ne: process.env.ADMIN.toLowerCase()}};
+ dbHelper.delData(req, res, User, obj, ok, noOk, auth);
 };
 
 /* Updates User By Username
  * Returns the message along with database output.
  * Accessed at PUT /api/v#/users/:username
  */
-exports.putUser = function (req, res) {
+exports.putUser = (req, res) => {
   // use our user model to find the user we want
-  var targetUser = req.params.username.toLowerCase();
+  const username = req.params.username.toLowerCase();
   if (req.decoded.sub === process.env.ADMIN ||
-    req.decoded.sub === targetUser) {
+    req.decoded.sub === username) {
     User.findOne({
-      username: targetUser
-    }, function (err, user) {
+      username
+    }, (err, user) => {
       if (err) {
         dbHelper.resMsg(res, 400, false, err, null);
       } else {
-        user.username = targetUser || user.username;
+        user.username = username || user.username;
         user.password = req.body.password || user.password;
         user.email = req.body.email || user.email;
         user.firstname = req.body.firstname || user.firstname;
         user.lastname = req.body.lastname || user.lastname;
-        // update the user
-        var msg = targetUser + ' information has been updated.';
+        const msg = `${username} information has been updated.`;
         dbHelper.objSave(user, res, msg);
       }
     });
   } else {
-    var msg = 'You are not ' + targetUser +
-      ' or an admin!';
-    dbHelper.resMsg(res, 403, false, msg, null);
+    dbHelper.resMsg(res, 403, false, auth, null);
   }
 };

@@ -3,7 +3,7 @@
 var objSave = function (object, res, msg) {
   object.save(function (err) {
     if (err) {
-      resMsg(res, 400, false, err, null);
+      resMsg(res, 400, false, err.errmsg, null);
     } else {
       resMsg(res, 200, true, msg, object);
     }
@@ -84,6 +84,8 @@ var getData = function (req, res, db, obj, ok, noOk, auth) {
       if (data === null || data.length < 1) {
         resMsg(res, 404, false, noOk, null);
       } else {
+        // Display data acordingly to the size.
+        data = data.length > 1? data : data[0];
         resMsg(res, 200, true, ok, data);
       }
     });
