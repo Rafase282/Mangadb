@@ -6,35 +6,34 @@
 // =============================================================================
 
 // call the packages we need
-var express = require('express'); // call express
-var app = express(); // define our app using express
-var bodyParser = require('body-parser');
-var path = require('path');
-var mongoose = require('mongoose');
-var authController = require('./controllers/auth');
-var mangaController = require('./controllers/manga');
-var userController = require('./controllers/user');
-require('dotenv').config({
-  silent: true
-});
+const express = require('express'); // call express
+const app = express(); // define our app using express
+const bodyParser = require('body-parser');
+const path = require('path');
+const mongoose = require('mongoose');
+const authController = require('./controllers/auth');
+const mangaController = require('./controllers/manga');
+const userController = require('./controllers/user');
+require('dotenv').config({silent: true});
+
+// switching default mongoose promises to global object's promises
+mongoose.Promise = global.Promise;
 
 // Connect to the database
-var mongouri = process.env.MONGOLAB_URI ||
-  'mongodb://' + process.env.IP + ':27017/mangadb';
+const mongouri = process.env.MONGOLAB_URI ||
+  `mongodb://${process.env.IP}:27017/mangadb`;
 mongoose.connect(mongouri);
 
-app.set('superSecret', process.env.SECRET); // secret variable
+app.set('superSecret', process.env.SECRET); // secret constiable
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // REGISTER OUR ROUTES -------------------------------
-var router = express.Router(); // get an instance of the express Router
-app.use(function (req, res, next) {
+const router = express.Router(); // get an instance of the express Router
+app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
   res.header('Access-Control-Allow-Headers', 'x-access-token');
@@ -42,7 +41,7 @@ app.use(function (req, res, next) {
 });
 
 // all of our routes will be prefixed with /api/v#
-app.use('/api/' + process.env.API_VERSION, router);
+app.use(`/api/${process.env.API_VERSION}`, router);
 
 // Serve Swagger UI at https://mangadbv2.herokuapp.com
 app.use('/', express.static(path.join(__dirname, 'docs')))
@@ -103,7 +102,5 @@ router.route('/users/:username')
 
 // CONFIGURE & START THE SERVER
 // =============================================================================
-var port = process.env.PORT || 8080; // set our port
-app.listen(port, function () {
-  console.log('Node.js listening on port ' + port);
-});
+const port = process.env.PORT || 8080; // set our port
+app.listen(port, () => console.log(`Node.js listening on port ${port}`));
