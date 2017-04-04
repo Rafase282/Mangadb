@@ -1,6 +1,6 @@
 {
   "name": "mangadb",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A service to help users keep a good record of their favorite manga series",
   "main": "server.js",
   "scripts": {
