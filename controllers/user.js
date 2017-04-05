@@ -18,7 +18,8 @@ exports.postUsers = (req, res) => {
   const email = req.body.email;
   checkEmail.verify(email, (err, response) => {
     if (err) {
-      dbHelper.resMsg(res, 400, false, err, null);
+      const msg = 'Daily e-mail verification limit reached.';
+      dbHelper.resMsg(res, err.code, false, msg, null);
     } else {
       // Print response object
       if (response.body.result === 'valid') {

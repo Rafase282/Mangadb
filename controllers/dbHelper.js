@@ -85,7 +85,6 @@ const getData = exports.getData = (req, res, db, obj, ok, noOk, auth) => {
       if (data === null || data.length < 1) {
         resMsg(res, 404, false, noOk, null);
       } else {
-        data = data.length > 1? data : data[0];
         resMsg(res, 200, true, ok, data);
       }
     });
