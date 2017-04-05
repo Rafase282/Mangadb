@@ -43,7 +43,7 @@ const user = userObj.username;
 
 // Repeated testing
 function testObj(res, err, type) {
-  res.status.should.be.oneOf([200, 400, 403, 404])
+  res.status.should.be.oneOf([200, 400, 402, 403, 404])
   res.should.have
     .header('content-type', 'application/json; charset=utf-8');
   res.body.should.be.a('object')
@@ -91,7 +91,7 @@ describe('Test for server response', () => {
       });
   });
 
-  describe('Test User Interactions', () => {
+  describe('Test creating, updating and retrieving of Users', () => {
     it(`POST ${api}/users: Creates a new user`, (done) => {
       chai.request(server)
         .post(`${api}/users`)
@@ -161,18 +161,8 @@ describe('Test for server response', () => {
           done();
         });
     });
-    it(`DEL ${api}/users/${user}: Deletes ${user}`, (done) => {
-      chai.request(server)
-        .del(`${api}/users/${user}`)
-        .set('x-access-token', `${token}`)
-        .end((err, res) => {
-          testObj(res, err, 'object');
-          done();
-        });
-    });
-
   });
-  describe('Test Manga Interactions', () => {
+  describe('Test creating, updating and retrieving of Mangas', () => {
     it(`POST ${api}/mangas/${user}: Create ${manga.title} manga for ${user}`,
       (done) => {
         chai.request(server)
@@ -213,7 +203,7 @@ describe('Test for server response', () => {
           done();
         });
     });
-    it(`PUT ${api}/mangas/${user}/${title}: Update ${manga} manga for ${user}`,
+    it(`PUT ${api}/mangas/${user}/${title}: Update ${manga.title} manga for ${user}`,
       (done) => {
         chai.request(server)
           .put(`${api}/mangas/${user}/${title}`)
@@ -225,7 +215,9 @@ describe('Test for server response', () => {
             done();
           });
     });
-    it(`DEL ${api}/mangas/${user}/${title}: Delete ${manga} manga for ${user}`,
+  });
+  describe('Test Manga deletion', () => {
+    it(`DEL ${api}/mangas/${user}/${title}: Delete ${manga.title} manga for ${user}`,
       (done) => {
         chai.request(server)
           .del(`${api}/mangas/${user}/${title}`)
@@ -235,8 +227,49 @@ describe('Test for server response', () => {
             done();
           });
     });
-
+    it(`DEL ${api}/mangas/${user}: Delete all mangas for ${user}`,
+      (done) => {
+        chai.request(server)
+          .del(`${api}/mangas/${user}`)
+          .set('x-access-token', `${token}`)
+          .end((err, res) => {
+            console.log(res.body);
+            testObj(res, err, 'object');
+            done();
+          });
+    });
+    it(`DEL ${api}/mangas: Delete all mangas`,
+      (done) => {
+        chai.request(server)
+          .del(`${api}/mangas`)
+          .set('x-access-token', `${token}`)
+          .end((err, res) => {
+            console.log(res.body);
+            testObj(res, err, 'object');
+            done();
+          });
+    });
   });
-
+  describe('Test User deletion', () => {
+    it(`DEL ${api}/users: Deletes all users`, (done) => {
+      chai.request(server)
+        .del(`${api}/users`)
+        .set('x-access-token', `${token}`)
+        .end((err, res) => {
+          console.log(res.body);
+          testObj(res, err, 'object');
+          done();
+        });
+    });
+    it(`DEL ${api}/users/${user}: Deletes ${user}`, (done) => {
+      chai.request(server)
+        .del(`${api}/users/${user}`)
+        .set('x-access-token', `${token}`)
+        .end((err, res) => {
+          testObj(res, err, 'object');
+          done();
+        });
+    });
+  });
 
 });
