@@ -4,39 +4,51 @@
 
 Created by Rafase282
 
-[Github](https://github.com/Rafase282) | [FreeCodeCamp](http://www.freecodecamp.com/rafase282) | [CodePen](http://codepen.io/Rafase282/) | [LinkedIn](https://www.linkedin.com/in/rafase282) | [Site](https://rafase282.github.io/) | [E-Mail](mailto:rafase282@gmail.com)
+[Github](https://github.com/Rafase282) | [FreeCodeCamp](http://www.freecodecamp.com/rafase282) | [CodePen](http://codepen.io/Rafase282/) | [LinkedIn](https://www.linkedin.com/in/rafase282) | [Portfolio](https://rafase282.github.io/) | [E-Mail](mailto:rafase282@gmail.com)
 
 [![Gitter](https://badges.gitter.im/Rafase282/Mangadb.svg)](https://gitter.im/Rafase282/Mangadb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Build Status](https://travis-ci.org/Rafase282/Mangadb.svg?branch=master)](https://travis-ci.org/Rafase282/Mangadb) [![Dependency Status](https://david-dm.org/Rafase282/Mangadb.svg)](https://david-dm.org/Rafase282/Mangadb) [![devDependency Status](https://david-dm.org/Rafase282/Mangadb/dev-status.svg)](https://david-dm.org/Rafase282/Mangadb#info=devDependencies) [![bitHound Overall Score](https://www.bithound.io/github/Rafase282/Mangadb/badges/score.svg)](https://www.bithound.io/github/Rafase282/Mangadb) [![bitHound Dependencies](https://www.bithound.io/github/Rafase282/Mangadb/badges/dependencies.svg)](https://www.bithound.io/github/Rafase282/Mangadb/master/dependencies/npm) [![bitHound Dev Dependencies](https://www.bithound.io/github/Rafase282/Mangadb/badges/devDependencies.svg)](https://www.bithound.io/github/Rafase282/Mangadb/master/dependencies/npm) [![bitHound Code](https://www.bithound.io/github/Rafase282/Mangadb/badges/code.svg)](https://www.bithound.io/github/Rafase282/Mangadb)
 
-# Manga Record Microservice V2
+# MangaDB Microservice
 
-This is an API created to store crucial information for any manga an authenticated user might read. Wtheer you want to keep track of the manga you will rea, already finished or are currently reading this microservice will help you get your data together. In the Future I intend on adding more features but meanwhile the user interface will be separated and this stays as the core backend.
+This is an API created to store crucial information for any manga an authenticated user might read. Wether you want to keep track of the manga you will read, already finished or are currently reading, this microservice will help you get your data together.
 
-There is an admin account that is declared onteh envarioment variables that basically has root access, it must be created and a secure password used. The admin can override any information if needed including passwords. In the future I will implement email services to mail queries, and particularly to allow for password reset if forgotten.
+In the Future I intend on adding more features but meanwhile the user interface will be separated and this stays as the core backend.
 
-## What you can do:
+There is an admin account that is declared on the envarioment variables that basically has full access, it must be created and a secure password used. The admin can override any information if needed including passwords. In the future I will implement email services to mail queries, and particularly to allow for password reset if forgotten.
 
-1. Create a manga accessed at: **POST** `https://mangadbv2.herokuapp.com/api/v2/mangas/:user/title=Aiki&author=Isutoshi&url=http%3A%2F%2Fwww.readmanga.today%2Faiki&userStatus=reading&type=Japanese&categories=Action%2C+Ecchi%2C+Martial+Arts%2C+Mature%2C+Seinen&chapter=14&seriesStatus=Completed&plot=There+is+fighting+at+the+high+school+due+to+a+power+struggle+for+control.+The+granddaughter+of+the+chief+director+requests+help+from+the+Aikido+fighting+style+genius.+Will+he+help%3F+Or+will+he+show+his+true+colors+with+his+bad+boy+ways%3F`
-2. Get the manga by title: **GET** `https://mangadbv2.herokuapp.com/api/v2/mangas/:user/:manga_title`
-3. Update the manga with this title: **PUT** `https://mangadbv2.herokuapp.com/api/v2/mangas/:user/:manga_title`
-4. Delete the manga by title: **DELETE** `https://mangadbv2.herokuapp.com/api/v2/mangas/:user/:manga_title`
-5. Admin can get a list of all the mangas across the user base: **GET** `https://mangadbv2.herokuapp.com/api/v2/mangas`
-6. Admin can get a list of all users: **GET** `https://mangadbv2.herokuapp.com/api/v2/users`
-7. Admin can delete all users including itself, this requires the admin to be re-created: **DELETE** `https://mangadbv2.herokuapp.com/api/v2/mangas`
-8. Admin can get a list of all the mangas across the user base: **GET** `https://mangadbv2.herokuapp.com/api/v2/mangas`
+## Setup:
 
-Remember to use `Content-Type: application/x-www-form-urlencoded`, the API will tell you what field are required in case you dont want to take a look at the schema.
+To get started just follow these steps.
 
-## To Do:
+1. `git clone https://github.com/Rafase282/Mangadb.git`
+2. `cd Mangadb && npm install`
+3. Open a new console to run mongo. `sudo service mongod start` for Ubuntu users.
+4. Still on the same directory, find `default-env` and rename it to `.env`.
+5. Fill in the variables from the file with the data you want.
 
-- [X] Add thumbnail property to Mongoose Schema and make it work with current data.
-- [X] Switch to JSON Web Tokens.
-- [X] Validate E-mails.
+## Lint, Test, Run:
 
-## Status
+- If you want to lint just run `npm run lint`.
+- If you want test and ensure everythign works, then `npm run test`.<br>
+  It will test all routes. The test are independent of eachother.
+- To run the application use `npm start`.
 
-This project is ongoing. However, I have decided to move to v2 in another branch. The current website will still work with v1 until v2 is release and so on.
+## Documentation and links:
 
-For future reference, the site is at https://manga-client.herokuapp.com/ where you can use the interface. Future versions might or might not use that url as I plan on building multiple clients. However, feel free to build your own based on the code.
+- The [API documentation](http://localhost:3000/) can be found on the root route when you run the app.
+- You can find the current client [here.](https://manga-client.herokuapp.com/)
+- [Project Status.](https://github.com/Rafase282/Mangadb/projects/1)
 
-If you want to provide improvements to the existing codebase, feel free to submit pull requests. If you want to add new functionality, then let me know and we mihgt be able to do it. However, it makes better sense to work with the newer version unless I change teh stack or technologies.
+## Contributing:
+
+If you want to contribute to the project, feel free to pick any of the open issues and work on them in a new branch and submit a pull request.
+
+## Support:
+
+If you have any questions not related to any of the open issues, then you can reach me in my [![Gitter](https://badges.gitter.im/Rafase282/Mangadb.svg)](https://gitter.im/Rafase282/Mangadb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) or via any of my public contact information.
+
+If you like the project, please start it to receive updates and help make it more noticeable.
+
+If you would like to help out with financial support, you are welcome to do so via [paypal.me/rafase282](paypal.me/rafase282).
+
+I'm currently looking to get my career started so any amount helps. If you would like to hire me for a position or work on a project then you may also contact me about that.
