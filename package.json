@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "mocha tests/test-server.js || true",
+    "test": "clear && mocha tests/test-server.js || true",
     "lint": "eslint . || true"
   },
   "repository": {

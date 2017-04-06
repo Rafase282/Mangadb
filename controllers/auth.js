@@ -10,14 +10,15 @@ const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
  */
 exports.generateToken = (req, res) => {
   // find the user
+  const username = req.body.username.toLowerCase();
   User.findOne({
-    username: req.body.username.toLowerCase()
+    username
   }, (err, user) => {
     if (err) {
       dbHelper.resMsg(res, 400, false, err, null);
     }
     if (!user) {
-      const msg = 'Authentication failed. User not found.';
+      const msg = `Authentication failed. ${username} not found.`;
       dbHelper.resMsg(res, 404, false, msg, null);
     } else if (user) {
       // check if password matches
