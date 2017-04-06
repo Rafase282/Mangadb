@@ -13,7 +13,8 @@ chai.use(chaiHttp);
 const api = `/api/${process.env.API_VERSION}`;
 const mongouri = process.env.MONGOLAB_URI ||
   `mongodb://${process.env.IP}:27017/mangadb`;
-const User = require('../models/user');
+/*const User = require('../models/user');
+const Manga = require('../models/manga');*/
 const manga = {
   "categories": [
     "action", "historical"
@@ -40,6 +41,7 @@ const userObj = {
 const title = encodeURI(manga.title);
 const chapter = 282;
 const user = userObj.username;
+const newuser = userObj;
 
 // Repeated testing
 function testObj(res, err, type) {
@@ -58,7 +60,15 @@ describe('Test for server response', () => {
 
   before(() => {
     mongoose.createConnection(mongouri);
-    new User(userObj).save();
+/*    const newmanga = manga;
+    const newuser = userObj;
+    newuser.username = 'seiyas';
+    newuser.email = 'rafase_282@hotmail.com';
+    newmanga.title = 'aiki';
+    newmanga.url = `http://www.readmanga.today/${newmanga.title}`;
+    newmanga.username = newuser.username;
+    new Manga(newmanga).save();
+    new User(newuser).save();*/
   });
   beforeEach((done) => {
     // Populate the DB
@@ -69,6 +79,7 @@ describe('Test for server response', () => {
     done();
   });
   after(() => {
+    mongoose.connection.db.dropDatabase();
     mongoose.connection.close();
   });
 
@@ -96,6 +107,27 @@ describe('Test for server response', () => {
       chai.request(server)
         .post(`${api}/users`)
         .send(userObj)
+        .end((err, res) => {
+          testObj(res, err, 'object');
+          res.body.data.should.have.all
+            .keys([
+              'username',
+              'password',
+              'email',
+              'firstname',
+              'lastname',
+              '_id',
+              '__v'
+            ]);
+          done();
+        });
+    });
+    it(`POST ${api}/users: Creates a second user`, (done) => {
+      newuser.username = 'testuser';
+      newuser.email = 'rafase_282@hotmail.com';
+      chai.request(server)
+        .post(`${api}/users`)
+        .send(newuser)
         .end((err, res) => {
           testObj(res, err, 'object');
           res.body.data.should.have.all
@@ -171,7 +203,34 @@ describe('Test for server response', () => {
           .send(manga)
           .end((err, res) => {
             testObj(res, err, 'object');
-            res.body.data.title.should.equal('kingdom');
+            res.body.data.title.should.equal(manga.title);
+            done();
+          });
+    });
+    it(`POST ${api}/mangas/${user}: Create second manga for ${user}`,
+      (done) => {
+        const manga2 = manga;
+        manga2.title = 'kingdoms';
+        manga2.url = `http://www.readmanga.today/${manga2.title}`
+        chai.request(server)
+          .post(`${api}/mangas/${user}`)
+          .set('x-access-token', `${token}`)
+          .send(manga2)
+          .end((err, res) => {
+            testObj(res, err, 'object');
+            res.body.data.title.should.equal(manga2.title);
+            done();
+          });
+    });
+    it(`POST ${api}/mangas/${user}: Create ${manga.title} manga for ${newuser.username}`,
+      (done) => {
+        chai.request(server)
+          .post(`${api}/mangas/${newuser.username}`)
+          .set('x-access-token', `${token}`)
+          .send(manga)
+          .end((err, res) => {
+            testObj(res, err, 'object');
+            res.body.data.title.should.equal(manga.title);
             done();
           });
     });
@@ -233,7 +292,6 @@ describe('Test for server response', () => {
           .del(`${api}/mangas/${user}`)
           .set('x-access-token', `${token}`)
           .end((err, res) => {
-            console.log(res.body);
             testObj(res, err, 'object');
             done();
           });
@@ -244,7 +302,6 @@ describe('Test for server response', () => {
           .del(`${api}/mangas`)
           .set('x-access-token', `${token}`)
           .end((err, res) => {
-            console.log(res.body);
             testObj(res, err, 'object');
             done();
           });
@@ -256,7 +313,6 @@ describe('Test for server response', () => {
         .del(`${api}/users`)
         .set('x-access-token', `${token}`)
         .end((err, res) => {
-          console.log(res.body);
           testObj(res, err, 'object');
           done();
         });
