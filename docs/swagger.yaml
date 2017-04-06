@@ -286,11 +286,11 @@ paths:
             $ref: '#/definitions/Error'
       security:
         - api_key: []
-  /mangas/{username}/{manga_title}:
+  /mangas/{username}/{id}:
     get:
       tags:
         - mangas
-      summary: Get information on a specific user's managa by title.
+      summary: Get information on a specific user's managa by its ID.
       description: Route for retrivng the a specific manga. For the admin to use these routes, the target username should still be used.
       operationId: getManga
       parameters:
@@ -300,8 +300,8 @@ paths:
           required: true
           type: string
         - in: path
-          name: manga_title
-          description: Target manga title.
+          name: id
+          description: Target manga id.
           required: true
           type: string
       responses:
@@ -336,8 +336,8 @@ paths:
           required: true
           type: string
         - in: path
-          name: manga_title
-          description: Target manga title.
+          name: id
+          description: Target manga id.
           required: true
           type: string
         - in: formData
@@ -377,6 +377,43 @@ paths:
           required: true
           type: string
         - in: path
+          name: id
+          description: Target manga id.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Deleted'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+  /mangas/{username}/title/{manga_title}:
+    get:
+      tags:
+        - mangas
+      summary: Get information on all mangas with the same title.
+      description: Route for retrivng mangas by title for a target user. The respponse will be an array with all mangas with the same title for said user. For the admin to use these routes, the target username should still be used.
+      operationId: getMangasbyTitle
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: path
           name: manga_title
           description: Target manga title.
           required: true
@@ -385,7 +422,7 @@ paths:
         200:
           description: Ok
           schema:
-            $ref: '#/definitions/Deleted'
+            $ref: '#/definitions/Mangas'
         400:
           description: Bad Request
           schema:

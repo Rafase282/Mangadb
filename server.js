@@ -50,14 +50,19 @@ app.use('/', express.static(path.join(__dirname, 'docs')))
 router.route('/')
   .get(mangaController.getWelcome);
 
-//Create endpoint handlers for /mangas/:user/:manga_tile
-router.route('/mangas/:username/:manga_title')
+//Create endpoint handlers for /mangas/:user/:id
+router.route('/mangas/:username/:id')
   // get user's manga info
   .get(authController.validateToken, mangaController.getManga)
   // update user's manga info
   .put(authController.validateToken, mangaController.putManga)
   // deletes user's manga
   .delete(authController.validateToken, mangaController.delManga);
+
+//Create endpoint handlers for /mangas/:user/title/:manga_title
+router.route('/mangas/:username/title/:manga_title')
+  // get user's manga info
+  .get(authController.validateToken, mangaController.getMangasbyTitle);
 
 // Create endpoint handlers for /mangas/:username
 router.route('/mangas/:username')

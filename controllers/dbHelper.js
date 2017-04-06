@@ -95,7 +95,7 @@ const getData = exports.getData = (req, res, db, obj, ok, noOk, auth) => {
 
 /* Function To Update Manga Object. Used to update individual mangas. */
 const updateMangaObj = exports.updateMangaObj = (req, manga) => {
-  manga.title = req.body.title || req.params.manga_title;
+  manga.title = req.body.title || manga.title;
   manga.author = req.body.author || manga.author;
   manga.url = req.body.url || manga.url;
   manga.userStatus = req.body.userStatus || manga.userStatus;
