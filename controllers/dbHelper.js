@@ -48,7 +48,7 @@ const setUser = (username) => {
   if (username === undefined) {
     user = process.env.ADMIN.toLowerCase();
   } else {
-    user = username.toLowerCase();
+    user = lowerCase(username);
   }
   return user;
 };
@@ -56,8 +56,7 @@ const setUser = (username) => {
 /* Function To Delete Data Used to delete individual or groups of data. */
 const delData = exports.delData = (req, res, db, obj, ok, noOk, auth) => {
   const user = setUser(req.params.username);
-  if (req.decoded.sub === process.env.ADMIN.toLowerCase() ||
-    req.decoded.sub === user) {
+  if (checkUser(req.decoded.sub, user)) {
     db.remove(obj, (err, data) => {
       if (err) {
         resMsg(res, 400, false, err, null);
@@ -76,8 +75,7 @@ const delData = exports.delData = (req, res, db, obj, ok, noOk, auth) => {
 /* Function To Get Data. Used to get individual or groups of data. */
 const getData = exports.getData = (req, res, db, obj, ok, noOk, auth) => {
   const user = setUser(req.params.username);
-  if (req.decoded.sub === process.env.ADMIN.toLowerCase() ||
-    req.decoded.sub === user) {
+  if (checkUser(req.decoded.sub, user)) {
     db.find(obj, (err, data) => {
       if (err) {
         resMsg(res, 400, false, err, null);
@@ -93,21 +91,35 @@ const getData = exports.getData = (req, res, db, obj, ok, noOk, auth) => {
   }
 };
 
+const lowerCase = exports.lowerCase = (str) => typeof str === 'undefined'
+  ? str
+  : str.toLowerCase();
 /* Function To Update Manga Object. Used to update individual mangas. */
 const updateMangaObj = exports.updateMangaObj = (req, manga) => {
+  const userStatus = lowerCase(req.body.userStatus);
+  if (userStatus === 'reading' || userStatus === 'finished' ||
+    userStatus === 'will read') {
+    manga.userStatus = userStatus || manga.userStatus;
+  }
+  const seriesStatus = lowerCase(req.body.seriesStatus);
+  if (seriesStatus === 'ongoing' || seriesStatus === 'completed') {
+    manga.seriesStatus = seriesStatus || manga.seriesStatus;
+  }
+  const direction = lowerCase(req.body.direction);
+  if (direction === 'left to right' || direction === 'right to left') {
+    manga.direction = direction || manga.direction;
+  }
+
   manga.title = req.body.title || manga.title;
   manga.author = req.body.author || manga.author;
   manga.url = req.body.url || manga.url;
-  manga.userStatus = req.body.userStatus || manga.userStatus;
   manga.type = req.body.type || manga.type;
   manga.categories = req.body.categories ?
     objItemize(req.body.categories) : objItemize(manga.categories);
   manga.chapter = req.body.chapter || manga.chapter;
-  manga.seriesStatus = req.body.seriesStatus || manga.seriesStatus;
   manga.plot = req.body.plot || manga.plot;
   manga.altName = req.body.altName ? objItemize(req.body.altName) :
     objItemize(manga.altName);
-  manga.direction = req.body.direction || manga.direction;
   manga.userId = req.decoded.sub === req.params.username ? req.decoded.jti :
     manga.userId;
   manga.username = req.params.username || manga.username;
@@ -115,31 +127,6 @@ const updateMangaObj = exports.updateMangaObj = (req, manga) => {
   return manga;
 };
 
-/* Function To Create Manga Object. Used to create individual mangas. */
-const createMangaObj = exports.createMangaObj = (req, manga) => {
-  const userStatus = req.body.userStatus.toLowerCase();
-  if (userStatus === 'reading' || userStatus === 'finished' ||
-    userStatus === 'will read') {
-    manga.userStatus = userStatus;
-  }
-  const seriesStatus = req.body.seriesStatus.toLowerCase();
-  if (seriesStatus === 'ongoing' || seriesStatus === 'completed') {
-    manga.seriesStatus = seriesStatus;
-  }
-  const direction = req.body.direction.toLowerCase();
-  if (direction === 'left to right' || direction === 'right to left') {
-    manga.direction = direction;
-  }
-  manga.title = req.body.title; // set the manga name (comes from the request)
-  manga.author = req.body.author;
-  manga.url = req.body.url;
-  manga.type = req.body.type;
-  manga.categories = req.body.categories.split(',');
-  manga.chapter = req.body.chapter;
-  manga.plot = req.body.plot;
-  manga.altName = req.body.altName.split(',');
-  manga.userId = req.decoded.sub === req.params.username ? req.decoded.jti : '';
-  manga.username = req.params.username;
-  manga.thumbnail = req.body.thumbnail;
-  return manga;
-};
+const checkUser = exports.checkUser = (jwt, user) => {
+  return jwt === process.env.ADMIN.toLowerCase() || jwt === user
+}
