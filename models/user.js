@@ -1,9 +1,11 @@
 'use strict';
-// Load required packages
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
-
-// Define our user schema
+/**
+  * Defines user schema
+  * {username, password, email, firstname, lastname}
+  * @param {Object}
+**/
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -45,8 +47,12 @@ const UserSchema = new mongoose.Schema({
 }).set('toObject', {
   retainKeyOrder: true
 });
-
-// Execute before each user.save() call
+/**
+  * Encrypt password before each save.
+  * @param {String}
+  * @param {Function}
+  * @param {Function}
+**/
 UserSchema.pre('save', function(callback) {
   const user = this;
 
@@ -54,22 +60,25 @@ UserSchema.pre('save', function(callback) {
   if (!user.isModified('password')) return callback();
 
   // Password changed so we need to hash it
-  bcrypt.genSalt(5, function(err, salt) {
+  bcrypt.genSalt(5, (err, salt) => {
     if (err) return callback(err);
-    bcrypt.hash(user.password, salt, null, function(err, hash) {
+    bcrypt.hash(user.password, salt, null, (err, hash) => {
       if (err) return callback(err);
       user.password = hash;
       return callback();
     });
   });
 });
-
+/**
+  * Verify the password.
+  * Password is compared without losing encryption.
+  * @param {Function}
+  * @param {Function}
+**/
 UserSchema.methods.verifyPassword = function(password, cb) {
-  bcrypt.compare(password, this.password, function(err, isMatch) {
+  bcrypt.compare(password, this.password, (err, isMatch) => {
     if (err) return cb(err);
     cb(null, isMatch);
   });
 };
-
-// Export the Mongoose model
 module.exports = mongoose.model('User', UserSchema);

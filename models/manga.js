@@ -1,8 +1,11 @@
 'use strict';
-// Load required packages
 const mongoose = require('mongoose');
-
-// Define our user schema
+/**
+  * Defines manga schema
+  * {title, author, url, userStatus, type,categories, chapter, seriesStatus,
+  * plot, altName, direction, userId, username, thumbnail}
+  * @param {Object}
+**/
 const MangaSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -114,6 +117,4 @@ const MangaSchema = new mongoose.Schema({
 }).set('toObject', {
   retainKeyOrder: true
 });
-
-// Export the Mongoose model
 module.exports = mongoose.model('Manga', MangaSchema);

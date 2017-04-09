@@ -1,13 +1,15 @@
 'use strict';
-// Load required packages
 const User = require('../models/user');
 const dbHelper = require('./dbHelper');
-const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
-
-/* Generates JWT For User
- * Returns result code and standard information
- * containing messages and JWT.
- */
+const jwt = require('jsonwebtoken');
+/**
+  * Generates JWT For User
+  * Returns result code and standard information
+  * Accessed at POST /api/v#/auth
+  * @param {Object} req
+  * @param {Object} res
+  * @param {Null}
+**/
 exports.generateToken = (req, res) => {
   // find the user
   const username = req.body.username.toLowerCase();
@@ -51,12 +53,16 @@ exports.generateToken = (req, res) => {
     }
   });
 };
-
-/* Validates JWT For Authentication
- * Returns result code and standard information
- * containing error messages when it fails.
- * or it sets the decoded JWT and continues to the next operation.
- */
+/**
+  * Validates JWT For Authentication
+  * Returns result code and standard information
+  * containing error messages when it fails.
+  * or it sets the decoded JWT and continues to the next operation.
+  * @param {Object} req
+  * @param {Object} res
+  * @param {Function} next
+  * @param {Null}
+**/
 exports.validateToken = (req, res, next) => {
   // check header or url parameters or post parameters for token
   const token = req.headers['x-access-token'];

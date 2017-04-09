@@ -8,11 +8,14 @@ const checkEmail = require('quickemailverification')
 
 //Gloabls
 const auth = 'You do not have the right permission for this action.';
-
-/* Creates A New User
- * It first checks for a real email address
- * then it generates the user object to be saved.
- */
+/**
+  * Creates a new user.
+  * First validates the email via external package.
+  * Then generates user object to be saved.
+  * @param {Object} req
+  * @param {Object} res
+  * @param {Null}
+**/
 exports.postUsers = (req, res) => {
   // Make sure that it has a valid email adress.
   const email = req.body.email;
@@ -40,21 +43,27 @@ exports.postUsers = (req, res) => {
     }
   });
 };
-
-/* Finds All Users
- * Returns a list of all users when found.
- * Accessed at GET /api/v#/users
- */
+/**
+  * Finds All Users
+  * Returns a list of all users when found.
+  * Accessed at GET /api/v#/users
+  * @param {Object} req
+  * @param {Object} res
+  * @param {Null}
+**/
 exports.getUsers = (req, res) => {
   const ok = 'The list of users has been succesfully generated.';
   const noOk = 'No users has been created yet.';
   dbHelper.getData(req, res, User, {}, ok, noOk, auth);
 };
-
-/* Finds User By Username
- * Returns the user information with a hashd password.
- * Accessed at GET /api/users/:username
- */
+/**
+  * Finds User By Username
+  * Returns the user information with a hashd password.
+  * Accessed at GET /api/users/:username
+  * @param {Object} req
+  * @param {Object} res
+  * @param {Null}
+**/
 exports.getUser = (req, res) => {
   const username = req.params.username.toLowerCase();
   const ok = `${username} found!`;
@@ -62,11 +71,14 @@ exports.getUser = (req, res) => {
   const obj = {username};
   dbHelper.getData(req, res, User, obj, ok, noOk, auth);
 };
-
-/* Deletes User By Username
- * Returns the message along with database output.
- * Accessed at DELETE /api/v#/users/:username
- */
+/**
+  * Deletes User By Username
+  * Returns the message along with database output.
+  * Accessed at DELETE /api/v#/users/:username
+  * @param {Object} req
+  * @param {Object} res
+  * @param {Null}
+**/
 exports.delUser = (req, res) => {
   const username = req.params.username.toLowerCase();
   const noOk = `Could not find ${username}`;
@@ -74,22 +86,28 @@ exports.delUser = (req, res) => {
   const obj = {username};
   dbHelper.delData(req, res, User, obj, ok, noOk, auth);
 };
-
-/* Deletes All Users Except The Admin
- * Returns the message along with database output.
- * Accessed at DELETE /api/v#/users
- */
+/**
+  * Deletes All Users Except The Admin
+  * Returns the message along with database output.
+  * Accessed at DELETE /api/v#/users
+  * @param {Object} req
+  * @param {Object} res
+  * @param {Null}
+**/
 exports.delUsers = (req, res) => {
  const noOk = 'There are no users to delete besides the admin account.';
  const ok = 'Successfully deleted all users but the admin.';
  const obj = {username: {$ne: process.env.ADMIN.toLowerCase()}};
  dbHelper.delData(req, res, User, obj, ok, noOk, auth);
 };
-
-/* Updates User By Username
- * Returns the message along with database output.
- * Accessed at PUT /api/v#/users/:username
- */
+/**
+  * Updates User By Username
+  * Returns the message along with database output.
+  * Accessed at PUT /api/v#/users/:username
+  * @param {Object} req
+  * @param {Object} res
+  * @param {Null}
+**/
 exports.putUser = (req, res) => {
   // use our user model to find the user we want
   const username = req.params.username.toLowerCase();
