@@ -4,9 +4,9 @@
   "description": "A service to help users keep a good record of their favorite manga series",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "clear && nodemon server.js",
     "test": "clear && mocha tests/test-server.js || true",
-    "lint": "eslint . || true"
+    "lint": "clear && eslint . || true"
   },
   "repository": {
     "type": "git",

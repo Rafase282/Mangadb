@@ -37,3 +37,4 @@ node_modules
 *.db
 users.json
 mangas.json
+*.patch
