@@ -1,6 +1,14 @@
 'use strict';
-/* Saves object information to database and returns the apropiated results.
-*/
+
+/**
+ * Saves data in the database.
+ * It takes an object to be saved, the response object fromt he route and
+ * a message to be returned.
+ * @param {Object} object
+ * @param {Object} res
+ * @param {String} msg
+ * @return {String} res
+**/
 const objSave = exports.objSave = (object, res, msg) => {
   object.save((err) => {
     if (err) {
@@ -10,39 +18,52 @@ const objSave = exports.objSave = (object, res, msg) => {
     }
   });
 };
-
-/* Returns result code and standard information containing messages and data.*/
+/**
+ * Returns result code and standard information containing messages and data.
+ * @param {Object} res
+ * @param {Number} sCode
+ * @param {Boolean} success
+ * @param {String} message
+ * @param {Object} data
+ * @return null
+**/
 const resMsg = exports.resMsg = (res, sCode, success, message, data) => {
   res.status(sCode).json({success, message, data});
 }
-
-/* Returns a proper array from a string for alternate names and categories. */
-const objItemize = exports.objItemize = (arr) => {
-  let item;
+/**
+ * Ensures that arrays are proper arrays of 1 or more items instead of a list
+ * as one item.
+ * @param {Array || String} input
+ * @return {Array || String} list
+**/
+const objItemize = exports.objItemize = (input) => {
+  let list;
   switch (true) {
-  case arr === null || arr === undefined:
-    item = [];
+  case input === null || input === undefined:
+    list = [];
     break;
-  case arr === ['']:
-    item = arr;
+  case input === ['']:
+    list = input;
     break;
-  case arr.slice(0).length < 1:
-    item = '';
+  case input.slice(0).length < 1:
+    list = '';
     break;
-  case arr.slice(0).length > 1:
-    item = arr.slice(0);
+  case input.slice(0).length > 1:
+    list = input.slice(0);
     break;
-  case arr.slice(0).length === 1:
-    item = arr.slice(0)[0].split(',');
+  case input.slice(0).length === 1:
+    list = input.slice(0)[0].split(',');
     break;
   }
-  return item;
+  return list;
 };
-
-/* Function To Check Username in URL. Username = req.params.username
- *  When it is undefined, the admin takes responsability
- *  only if the admin actually issuee the request.
- */
+ /**
+  * Function To Check Username in URL. Username = req.params.username.
+  * When it is undefined, the admin takes responsability
+  * only if the admin actually issuee the request.
+  * @param {String} username
+  * @return {String} user
+ **/
 const setUser = (username) => {
   let user;
   if (username === undefined) {
@@ -52,8 +73,18 @@ const setUser = (username) => {
   }
   return user;
 };
-
-/* Function To Delete Data Used to delete individual or groups of data. */
+/**
+ * Deletes data from the database.
+ * It can be used for individual user/manga or group data deletion.
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Object} db
+ * @param {Object} obj
+ * @param {String} ok
+ * @param {String} noOk
+ * @param {String} auth
+ * @return null
+**/
 const delData = exports.delData = (req, res, db, obj, ok, noOk, auth) => {
   const user = setUser(req.params.username);
   if (checkUser(req.decoded.sub, user)) {
@@ -71,8 +102,18 @@ const delData = exports.delData = (req, res, db, obj, ok, noOk, auth) => {
     resMsg(res, 403, false, auth, null);
   }
 };
-
-/* Function To Get Data. Used to get individual or groups of data. */
+/**
+ * Retrieves data from the database.
+ * It can be used for individual user/manga or group data retrieval.
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Object} db
+ * @param {Object} obj
+ * @param {String} ok
+ * @param {String} noOk
+ * @param {String} auth
+ * @return null
+**/
 const getData = exports.getData = (req, res, db, obj, ok, noOk, auth) => {
   const user = setUser(req.params.username);
   if (checkUser(req.decoded.sub, user)) {
@@ -90,11 +131,22 @@ const getData = exports.getData = (req, res, db, obj, ok, noOk, auth) => {
     resMsg(res, 403, false, auth, null);
   }
 };
-
+/**
+ * Function to ensure the string can be turned to lowercase.
+ * It checks to make sure the input is not undefined.
+ * @param {String} str
+ * @return {String} str
+**/
 const lowerCase = exports.lowerCase = (str) => typeof str === 'undefined'
   ? str
   : str.toLowerCase();
-/* Function To Update Manga Object. Used to update individual mangas. */
+/**
+ * Function to update a Manga object.
+ * Used for individual manga update.
+ * @param {Object} req
+ * @param {Object} manga
+ * @param {Object} manga
+**/
 const updateMangaObj = exports.updateMangaObj = (req, manga) => {
   const userStatus = lowerCase(req.body.userStatus);
   if (userStatus === 'reading' || userStatus === 'finished' ||
@@ -126,7 +178,14 @@ const updateMangaObj = exports.updateMangaObj = (req, manga) => {
   manga.thumbnail = req.body.thumbnail || manga.thumbnail;
   return manga;
 };
-
-const checkUser = exports.checkUser = (jwt, user) => {
-  return jwt === process.env.ADMIN.toLowerCase() || jwt === user
+/**
+ * Function to check for username
+ * It checks that the user issuing the request is either an admin
+ * or the same user the changes are for.
+ * @param {String} username
+ * @param {String} user
+ * @param {Boolean}
+**/
+const checkUser = exports.checkUser = (username, user) => {
+  return username === process.env.ADMIN.toLowerCase() || username === user
 }
