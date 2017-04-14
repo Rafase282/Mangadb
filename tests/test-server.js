@@ -100,8 +100,9 @@ describe('Testing email module', () => {
       subject : 'Test',
       text : 'This is a test, powered by Chai!'
     }, (err, msg) => {
+      console.log(msg);
       chai.expect(err).to.equal(null);
-      chai.expect(msg.accepted.slice(1)).to.equal('jenky_nolasco@hotmail.com');
+      chai.expect(msg.accepted[0]).to.equal('jenky_nolasco@hotmail.com');
       chai.expect(msg.response).to.match(/2.0.+OK/);
       done();
     });
