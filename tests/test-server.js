@@ -7,6 +7,7 @@ const server = require('../server');
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const Manga = require('../models/manga');
+const sendEmail = require('../utils/mailModule').sendEmail;
 require('dotenv').config({silent: true});
 chai.should();
 chai.use(chaiHttp);
@@ -89,6 +90,23 @@ function getAuth(cb, username = 'rafase282', password = 'adminpwd') {
       cb();
     });
 }
+
+// Email tests
+describe('Testing email module', () => {
+  it('Email should succeed!', (done) => {
+    sendEmail({
+      from : 'Jenky <jenky.nolasco@gmail.com>',
+      to : 'jenky_nolasco@hotmail.com',
+      subject : 'Test',
+      text : 'This is a test, powered by Chai!'
+    }, (err, msg) => {
+      chai.expect(err).to.equal(null);
+      chai.expect(msg.accepted.slice(1)).to.equal('jenky_nolasco@hotmail.com');
+      chai.expect(msg.response).to.match(/2.0.+OK/);
+      done();
+    });
+  });
+});
 
 // Regular tests
 describe('Test for server response', () => {
