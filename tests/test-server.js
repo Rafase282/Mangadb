@@ -14,8 +14,7 @@ chai.use(chaiHttp);
 // Gloabls
 mongoose.Promise = global.Promise;
 const api = `/api/${process.env.API_VERSION}`;
-const mongouri = process.env.MONGOLAB_URI ||
-  `mongodb://${process.env.IP}:27017/mangadb`;
+const mongouri = `mongodb://${process.env.IP}:27017/testdb`;
 const id = mongoose.Types.ObjectId();
 const manga = new UserManga(id);
 const admin = new MangaUser();
