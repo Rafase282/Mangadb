@@ -1,47 +1,36 @@
 'use strict';
 
-
-const objSave = exports.objSave = (object, callback) => {
+/**
+  * Saves data in the database.
+  * It takes an object to be saved, the response object fromt he route and
+  * a message to be returned.
+  * @param {Object} object
+  * @param {Object} res
+  * @param {String} msg
+  * @return {String} res
+**/
+const objSave = exports.objSave = (object, res, msg) => {
   object.save((err) => {
-    callback({
-      status : err ? 400 : 200,
-      err : err ? err.errmsg : ''
-    });
+    if (err) {
+      console.log(err);
+      resMsg(res, 400, false, err.errmsg || err.message, null);
+    } else {
+      resMsg(res, 200, true, msg, object);
+    }
   });
 };
-
-// /**
-//   * Saves data in the database.
-//   * It takes an object to be saved, the response object fromt he route and
-//   * a message to be returned.
-//   * @param {Object} object
-//   * @param {Object} res
-//   * @param {String} msg
-//   * @return {String} res
-// **/
-// const objSave = exports.objSave = (object, res, msg, callback = null) => {
-//   object.save((err) => {
-//     if (err) {
-//       resMsg(res, 400, false, err.errmsg, null);
-//       if(callback) return callback(err);
-//     } else {
-//       resMsg(res, 200, true, msg, object);
-//       if(callback) return callback('success');
-//     }
-//   });
-// };
-// /**
-//   * Returns result code and standard information containing messages and data.
-//   * @param {Object} res
-//   * @param {Number} sCode
-//   * @param {Boolean} success
-//   * @param {String} message
-//   * @param {Object} data
-//   * @return null
-// **/
-// const resMsg = exports.resMsg = (res, sCode, success, message, data) => {
-//   res.status(sCode).json({success, message, data});
-// }
+/**
+  * Returns result code and standard information containing messages and data.
+  * @param {Object} res
+  * @param {Number} sCode
+  * @param {Boolean} success
+  * @param {String} message
+  * @param {Object} data
+  * @return null
+**/
+const resMsg = exports.resMsg = (res, sCode, success, message, data) => {
+  res.status(sCode).json({success, message, data});
+}
 /**
   * Ensures that arrays are proper arrays of 1 or more items instead of a list
   * as one item.

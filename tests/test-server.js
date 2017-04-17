@@ -15,8 +15,7 @@ chai.use(chaiHttp);
 // Gloabls
 mongoose.Promise = global.Promise;
 const api = `/api/${process.env.API_VERSION}`;
-const mongouri = process.env.MONGOLAB_URI ||
-  `mongodb://${process.env.IP}:27017/mangadb`;
+const mongouri = `mongodb://${process.env.IP}:27017/testdb`;
 const id = mongoose.Types.ObjectId();
 const manga = new UserManga(id);
 const admin = new MangaUser();
@@ -91,26 +90,7 @@ function getAuth(cb, username = 'rafase282', password = 'adminpwd') {
     });
 }
 
-// Email tests
-describe('Testing email module', () => {
-  it('Email should succeed!', (done) => {
-    sendEmail({
-      from : 'Jenky <jenky.nolasco@gmail.com>',
-      to : 'jenky_nolasco@hotmail.com',
-      subject : 'Test',
-      text : 'This is a test, powered by Chai!'
-    }, (err, msg) => {
-      console.log(msg);
-      chai.expect(err).to.equal(null);
-      chai.expect(msg.accepted[0]).to.equal('jenky_nolasco@hotmail.com');
-      chai.expect(msg.response).to.match(/2.0.+OK/);
-      done();
-    });
-  });
-});
-
-// Regular tests
-describe('Test for server response', () => {
+describe('Test server and service functionalities', () => {
 
   before(() => {
     mongoose.createConnection(mongouri);
@@ -155,6 +135,19 @@ describe('Test for server response', () => {
         testObj(res, err, 'null');
         done();
       });
+  });
+  it('Send email to user', (done) => {
+    sendEmail({
+      from : 'MangaDB <rafase282@gmail.com>',
+      to : 'rafase282@gmail.com',
+      subject : 'Test',
+      text : 'This is a test, powered by Chai!'
+    }, (err, msg) => {
+      chai.expect(err).to.equal(null);
+      chai.expect(msg.accepted[0]).to.equal(process.env.mainEmail);
+      chai.expect(msg.response).to.match(/2.0.+OK/);
+      done();
+    });
   });
 
   describe('Test creating, updating and retrieving of Users', () => {

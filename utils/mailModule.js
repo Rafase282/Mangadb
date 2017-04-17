@@ -1,27 +1,34 @@
 const nodemailer = require('nodemailer');
-const mailConfig = require('./mailConfig');
-
+require('dotenv').config({silent: true});
 const transporter = nodemailer.createTransport({
-  service : 'gmail',
-  auth : mailConfig.oauth
+  service: 'Gmail',
+  auth: {
+    type: 'OAuth2',
+    clientId: process.env.CLIENTID,
+    clientSecret: process.env.CLIENTSECRET,
+    refreshToken: process.env.REFRESH,
+    user: process.env.mainEmail
+  }
 });
 
 const sendEmail = exports.sendEmail = (mailOptions, callback) => {
-  if(!mailOptions.to || !mailOptions.text)
+  if (!mailOptions.to || !mailOptions.text)
     return callback('Error on options.', new Error('Error: No text or sender email has been added to options sent.'));
 
-  if(!mailOptions.from)
-    mailOptions.from = `${mailConfig.config.mainUser} <${mailConfig.config.mainEmail}>`; // change this to default email
+  if (!mailOptions.from)
+    mailOptions.from = `${process.env.mainUser} <${process.env.mainEmail}>`; // change this to default email
 
-  if(!mailOptions.subject)
+  if (!mailOptions.subject)
     mailOptions.subject = 'Do not reply - MangaDB'; // change this to default subject
 
-  const verifyMail = (err,success) => {
-    if(err) return callback('Error verifying connection to SMTP server', err);
+  const verifyMail = (err, success) => {
+    if (err)
+      return callback('Error verifying connection to SMTP server', err);
 
     const send = (err, res) => {
-      if(err) return callback('Error', err);
-      
+      if (err)
+        return callback('Error', err);
+
       return callback(null, res); // if it gets here, it means it sent the email successfully
     };
 
@@ -33,13 +40,10 @@ const sendEmail = exports.sendEmail = (mailOptions, callback) => {
 
 const sendMailNewUser = exports.sendMailNewUser = (user, email, callback) => {
   const mailOptions = {
-    to : email,
-    subject : 'Welcome to MangaDB!',
-    from : `${mailConfig.config.mainUser} <${mailConfig.config.mainEmail}>`,
-    text : `Welcome to MangaDB, ${user}. Welcome!\nYour user is already, successfully registered!!` // change this part with HTML
+    to: email,
+    subject: 'Welcome to MangaDB!',
+    from: `${process.env.mainUser} <${process.env.mainEmail}>`,
+    text: `Welcome to MangaDB, ${user}.\nYour user is already, successfully registered!!`
   };
   sendEmail(mailOptions, callback);
 }
-
-
-// sendMailNewUser('jenky', 'jenky_nolasco@1mail.com', console.log)

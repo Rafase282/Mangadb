@@ -1,0 +1,29 @@
+# Environment Config
+
+# store your secrets and configarion variables in here
+# only invited collaborators will be able to see your .env values
+
+# reference these in your code with process.env.SECRET
+
+# Server Variables
+MONGOLAB_URI="localhost:27017/mangadb"
+IP="localhost"
+SECRET="secretsecrets"
+PORT="3000"
+ADMIN="rafase282"
+API_VERSION="v2"
+
+# Email verification
+EV_KEY="quickemailverification account key"
+
+# Gmail Tokens
+CLIENTID="gmail api oauth"
+CLIENTSECRET="gmail api secret"
+REFRESH="gmail api refresh token"
+
+# Nodemailer
+mainEmail="yourusername@gmail.com"
+mainUser="MangaDB"
+
+# note: .env is a shell file so there can't be spaces around =
+Rename this file to .env and adjust the values.

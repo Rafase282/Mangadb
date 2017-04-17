@@ -36,38 +36,12 @@ exports.postUsers = (req, res) => {
           lastname: req.body.lastname
         });
         const msg = `New manga reader ${req.body.username} has been added.`;
-
-        // sendMail(username, email, (err, msg) => {
-        //   if(err) throw new Error(msg);
-        //
-        //   else dbHelper.objSave(user, res, msg);
-        // });
         const emailCallback = (err, msg) => {
-          if(err) throw new Error(msg);
-
-          // else, do something.... Check this part out
-
+          if(err) console.log(msg);
         }
-
-
-        dbHelper.objSave(user, (results) => {
-          const success = results.status === 200;
-          const msg = results.err ? result.err : msg;
-          const data = results.err ? null : user;
-
-          res.status(results.status).json({
-            success,
-            msg,
-            data
-          });
-
-          sendMail(userName, email, emailCallback);
-
-        });
-
-        // dbHelper.objSave(user, res, msg);
-
-
+        dbHelper.objSave(user, res, msg);
+        // Send Welcome email
+        //sendMail(req.body.username, email, emailCallback);
       } else {
         const msg = 'Invalid E-Mail.';
         dbHelper.resMsg(res, 400, false, msg, null);
@@ -157,19 +131,9 @@ exports.putUser = (req, res) => {
         user.firstname = req.body.firstname || user.firstname;
         user.lastname = req.body.lastname || user.lastname;
         const msg = `${username} information has been updated.`;
-        // dbHelper.objSave(user, res, msg);
-
-        dbHelper.objSave(user, (results) => {
-          const success = results.status === 200;
-          const msg = results.err ? result.err : msg;
-          const data = results.err ? null : user;
-
-          res.status(results.status).json({
-            success,
-            msg,
-            data
-          });
-        });
+        dbHelper.objSave(user, res, msg);
+        // Send email about updated info
+        //sendMail(req.body.username, email, emailCallback);
       }
     });
   } else {

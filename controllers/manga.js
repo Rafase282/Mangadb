@@ -34,19 +34,7 @@ exports.postManga = (req, res) => {
     let manga = new Manga(); // create a new instance of the Manga model
     manga = dbHelper.updateMangaObj(req, manga);
     const msg = `${req.body.title} manga created.`;
-    // dbHelper.objSave(manga, res, msg);
-
-    return dbHelper.objSave(manga, (results) => {
-      const success = results.status === 200;
-      const msg = results.err ? result.err : msg;
-      const data = results.err ? null : user;
-
-      res.status(results.status).json({
-        success,
-        msg,
-        data
-      });
-    });
+    dbHelper.objSave(manga, res, msg);
   } else {
     dbHelper.resMsg(res, 403, false, auth, null);
   }
