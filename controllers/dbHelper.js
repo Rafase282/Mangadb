@@ -12,7 +12,8 @@
 const objSave = exports.objSave = (object, res, msg) => {
   object.save((err) => {
     if (err) {
-      resMsg(res, 400, false, err.errmsg, null);
+      console.log(err);
+      resMsg(res, 400, false, err.errmsg || err.message, null);
     } else {
       resMsg(res, 200, true, msg, object);
     }
