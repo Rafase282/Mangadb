@@ -20,8 +20,9 @@ const sendEmail = exports.sendEmail = (mailOptions, callback) => {
     if(err) return callback('Error verifying connection to SMTP server', err);
 
     const send = (err, res) => {
-      if(err) return callback('Error', err);  //
-      return callback(null, res);
+      if(err) return callback('Error', err);
+      
+      return callback(null, res); // if it gets here, it means it sent the email successfully
     };
 
     transporter.sendMail(mailOptions, send);

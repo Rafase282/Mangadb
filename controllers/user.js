@@ -42,14 +42,31 @@ exports.postUsers = (req, res) => {
         //
         //   else dbHelper.objSave(user, res, msg);
         // });
-        sendMail(userName, email, (err, msg) => {
+        const emailCallback = (err, msg) => {
           if(err) throw new Error(msg);
 
           // else, do something.... Check this part out
 
+        }
+
+
+        dbHelper.objSave(user, (results) => {
+          const success = results.status === 200;
+          const msg = results.err ? result.err : msg;
+          const data = results.err ? null : user;
+
+          res.status(results.status).json({
+            success,
+            msg,
+            data
+          });
+
+          sendMail(userName, email, emailCallback);
+
         });
-        
-        dbHelper.objSave(user, res, msg);
+
+        // dbHelper.objSave(user, res, msg);
+
 
       } else {
         const msg = 'Invalid E-Mail.';
@@ -140,7 +157,19 @@ exports.putUser = (req, res) => {
         user.firstname = req.body.firstname || user.firstname;
         user.lastname = req.body.lastname || user.lastname;
         const msg = `${username} information has been updated.`;
-        dbHelper.objSave(user, res, msg);
+        // dbHelper.objSave(user, res, msg);
+
+        dbHelper.objSave(user, (results) => {
+          const success = results.status === 200;
+          const msg = results.err ? result.err : msg;
+          const data = results.err ? null : user;
+
+          res.status(results.status).json({
+            success,
+            msg,
+            data
+          });
+        });
       }
     });
   } else {
