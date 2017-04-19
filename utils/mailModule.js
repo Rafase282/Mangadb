@@ -9,19 +9,25 @@ const transporter = nodemailer.createTransport({
 const sendEmail = exports.sendEmail = (mailOptions, callback) => {
   if(!mailOptions.to || !mailOptions.text)
     return callback('Error on options.', new Error('Error: No text or sender email has been added to options sent.'));
+
   if(!mailOptions.from)
     mailOptions.from = `${mailConfig.config.mainUser} <${mailConfig.config.mainEmail}>`; // change this to default email
-  if(!mailOptions.subject)
-    mailOptions.subject = 'Do not reply -'; // change this to default subject
 
-  transporter.verify((err,success) => {
+  if(!mailOptions.subject)
+    mailOptions.subject = 'Do not reply - MangaDB'; // change this to default subject
+
+  const verifyMail = (err,success) => {
     if(err) return callback('Error verifying connection to SMTP server', err);
 
-    transporter.sendMail(mailOptions, (err, res) => {
+    const send = (err, res) => {
       if(err) return callback('Error', err);  //
       return callback(null, res);
-    });
-  });
+    };
+
+    transporter.sendMail(mailOptions, send);
+  };
+
+  transporter.verify(verifyMail);
 };
 
 const sendMailNewUser = exports.sendMailNewUser = (user, email, callback) => {
