@@ -50,7 +50,7 @@ app.use('/', express.static(path.join(__dirname, 'docs')))
 router.route('/')
   .get(mangaController.getWelcome);
 
-//Create endpoint handlers for /mangas/:user/:id
+//Create endpoint handlers for /mangas/:username/:id
 router.route('/mangas/:username/:id')
   // get user's manga info
   .get(authController.validateToken, mangaController.getManga)

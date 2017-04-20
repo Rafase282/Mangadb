@@ -5,7 +5,7 @@ const objSave = exports.objSave = (object, callback) => {
   object.save((err) => {
     callback({
       status : err ? 400 : 200,
-      err : err ? err.errmsg : ''
+      err : err ? err.errmsg || err.message : ''
     });
   });
 };
