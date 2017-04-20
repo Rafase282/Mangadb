@@ -38,6 +38,7 @@
     "express": "^4.15.2",
     "jsonwebtoken": "^7.3.0",
     "mongoose": "^4.9.3",
+    "nodemailer": "^4.0.1",
     "quickemailverification": "^1.0.0"
   }
 }
