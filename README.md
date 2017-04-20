@@ -26,6 +26,8 @@ To get started just follow these steps.
 4. Still on the same directory, find `default-env` and rename it to `.env`.
 5. Fill in the variables from the file with the data you want.
 
+If you need help generating the Gmail credentials read this [article](https://github.com/Rafase282/Mangadb/wiki/Generate-OAthu-Credentials-for-email).
+
 ## Lint, Test, Run:
 
 - If you want to lint just run `npm run lint`.

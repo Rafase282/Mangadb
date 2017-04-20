@@ -2,13 +2,16 @@
 // Load required packages
 const User = require('../models/user');
 const dbHelper = require('./dbHelper');
-const sendMail = require('../utils/mailModule').sendMailNewUser;
+const sendMail = require('../utils/mailModule').customEmail;
 require('dotenv').config({silent: true});
 const checkEmail = require('quickemailverification')
   .client(process.env.EV_KEY).quickemailverification();
 
 //Gloabls
 const auth = 'You do not have the right permission for this action.';
+const emailCallback = (err, msg) => {
+  if(err) console.log(msg);
+}
 /**
   * Creates a new user.
   * First validates the email via external package.
@@ -36,12 +39,8 @@ exports.postUsers = (req, res) => {
           lastname: req.body.lastname
         });
         const msg = `New manga reader ${req.body.username} has been added.`;
-        const emailCallback = (err, msg) => {
-          if(err) console.log(msg);
-        }
         dbHelper.objSave(user, res, msg);
-        // Send Welcome email
-        //sendMail(req.body.username, email, emailCallback);
+        sendMail(0, req.body.username, email, emailCallback);
       } else {
         const msg = 'Invalid E-Mail.';
         dbHelper.resMsg(res, 400, false, msg, null);
@@ -91,6 +90,7 @@ exports.delUser = (req, res) => {
   const ok = `Successfully deleted ${username}`;
   const obj = {username};
   dbHelper.delData(req, res, User, obj, ok, noOk, auth);
+  sendMail(2, username, req.decoded.email, emailCallback);
 };
 /**
   * Deletes All Users Except The Admin
@@ -105,6 +105,7 @@ exports.delUsers = (req, res) => {
  const ok = 'Successfully deleted all users but the admin.';
  const obj = {username: {$ne: process.env.ADMIN.toLowerCase()}};
  dbHelper.delData(req, res, User, obj, ok, noOk, auth);
+ sendMail(3, req.decoded.sub, req.decoded.email, emailCallback);
 };
 /**
   * Updates User By Username
@@ -132,8 +133,7 @@ exports.putUser = (req, res) => {
         user.lastname = req.body.lastname || user.lastname;
         const msg = `${username} information has been updated.`;
         dbHelper.objSave(user, res, msg);
-        // Send email about updated info
-        //sendMail(req.body.username, email, emailCallback);
+        sendMail(1, user.username, user.email, emailCallback);
       }
     });
   } else {

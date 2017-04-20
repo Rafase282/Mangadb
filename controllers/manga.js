@@ -2,10 +2,13 @@
 // Load required packages
 const Manga = require('../models/manga');
 const dbHelper = require('./dbHelper');
-
+const sendMail = require('../utils/mailModule').customEmail;
 //Gloabls
 const auth = 'You do not have the right permission for this action.';
 const noOk = 'No mangas were found!';
+const emailCallback = (err, msg) => {
+  if(err) console.log(msg);
+}
 /**
   * Get Welcome Message From Root
   * Displays a welcome message when visiting the root of the API.
@@ -152,6 +155,7 @@ exports.delMangas = (req, res) => {
   const ok = 'Successfully deleted all mangas.';
   const obj = {username: {$ne: process.env.ADMIN.toLowerCase()}};
   dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
+  sendMail(5, req.body.username, req.decoded.email, emailCallback);
 };
 /**
   * Deletes All Mangas For User
@@ -166,4 +170,5 @@ exports.delUserMangas = (req, res) => {
   const ok = 'Successfully deleted all user mangas.';
   const obj = {username};
   dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
+  sendMail(4, req.body.username, req.decoded.email, emailCallback);
 };

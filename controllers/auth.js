@@ -36,7 +36,8 @@ exports.generateToken = (req, res) => {
           // Create object for the token
           const info = {
             sub: user.username,
-            jti: user._id
+            jti: user._id,
+            email: user.email
           };
           // if user is found and password is right
           // create a token

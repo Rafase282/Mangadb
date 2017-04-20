@@ -210,7 +210,6 @@ describe('Test server and service functionalities', () => {
 
     });
   });
-
   describe('Test creating, updating and retrieving of Mangas', () => {
     it(`POST ${api}/mangas/${user}: Create ${manga.title} manga for ${user}`,
       (done) => {
