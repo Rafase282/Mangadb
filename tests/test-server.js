@@ -7,6 +7,7 @@ const server = require('../server');
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const Manga = require('../models/manga');
+const sendEmail = require('../utils/mailModule').sendEmail;
 require('dotenv').config({silent: true});
 chai.should();
 chai.use(chaiHttp);
@@ -89,8 +90,7 @@ function getAuth(cb, username = 'rafase282', password = 'adminpwd') {
     });
 }
 
-// Regular tests
-describe('Test for server response', () => {
+describe('Test server and service functionalities', () => {
 
   before(() => {
     mongoose.createConnection(mongouri);
@@ -135,6 +135,19 @@ describe('Test for server response', () => {
         testObj(res, err, 'null');
         done();
       });
+  });
+  it('Send email to user', (done) => {
+    sendEmail({
+      from : 'MangaDB <rafase282@gmail.com>',
+      to : 'rafase282@gmail.com',
+      subject : 'Test',
+      text : 'This is a test, powered by Chai!'
+    }, (err, msg) => {
+      chai.expect(err).to.equal(null);
+      chai.expect(msg.accepted[0]).to.equal(process.env.mainEmail);
+      chai.expect(msg.response).to.match(/2.0.+OK/);
+      done();
+    });
   });
 
   describe('Test creating, updating and retrieving of Users', () => {

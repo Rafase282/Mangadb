@@ -2,6 +2,7 @@
 // Load required packages
 const User = require('../models/user');
 const dbHelper = require('./dbHelper');
+const sendMail = require('../utils/mailModule').sendMailNewUser;
 require('dotenv').config({silent: true});
 const checkEmail = require('quickemailverification')
   .client(process.env.EV_KEY).quickemailverification();
@@ -35,7 +36,12 @@ exports.postUsers = (req, res) => {
           lastname: req.body.lastname
         });
         const msg = `New manga reader ${req.body.username} has been added.`;
+        const emailCallback = (err, msg) => {
+          if(err) console.log(msg);
+        }
         dbHelper.objSave(user, res, msg);
+        // Send Welcome email
+        //sendMail(req.body.username, email, emailCallback);
       } else {
         const msg = 'Invalid E-Mail.';
         dbHelper.resMsg(res, 400, false, msg, null);
@@ -126,6 +132,8 @@ exports.putUser = (req, res) => {
         user.lastname = req.body.lastname || user.lastname;
         const msg = `${username} information has been updated.`;
         dbHelper.objSave(user, res, msg);
+        // Send email about updated info
+        //sendMail(req.body.username, email, emailCallback);
       }
     });
   } else {
