@@ -16,6 +16,14 @@ const mangaController = require('./controllers/manga');
 const userController = require('./controllers/user');
 require('dotenv').config({silent: true});
 
+// switching default mongoose promises to global object's promises
+mongoose.Promise = global.Promise;
+
+// Connect to the database
+const mongouri = process.env.MONGOLAB_URI ||
+  `mongodb://${process.env.IP}:27017/mangadb`;
+mongoose.connect(mongouri);
+
 app.set('superSecret', process.env.SECRET); // secret constiable
 
 // configure app to use bodyParser()
@@ -42,78 +50,60 @@ app.use('/', express.static(path.join(__dirname, 'docs')))
 router.route('/')
   .get(mangaController.getWelcome);
 
-// switching default mongoose promises to global object's promises
-mongoose.Promise = global.Promise;
+//Create endpoint handlers for /mangas/:username/:id
+router.route('/mangas/:username/:id')
+  // get user's manga info
+  .get(authController.validateToken, mangaController.getManga)
+  // update user's manga info
+  .put(authController.validateToken, mangaController.putManga)
+  // deletes user's manga
+  .delete(authController.validateToken, mangaController.delManga);
 
-// Connect to the database
-const mongouri = process.env.MONGOLAB_URI ||
-  `mongodb://${process.env.IP}:27017/mangadb`;
+//Create endpoint handlers for /mangas/:user/title/:manga_title
+router.route('/mangas/:username/title/:manga_title')
+  // get user's manga info
+  .get(authController.validateToken, mangaController.getMangasbyTitle);
 
-mongoose.connect(mongouri, { 
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true
-  });
+// Create endpoint handlers for /mangas/:username
+router.route('/mangas/:username')
+  //get all user's manga
+  .get(authController.validateToken, mangaController.getMangas)
+  //create new manga
+  .post(authController.validateToken, mangaController.postManga)
+  // Deletes all user mangas
+  .delete(authController.validateToken, mangaController.delUserMangas);
 
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  // we're connected!
-  //Create endpoint handlers for /mangas/:username/:id
-  router.route('/mangas/:username/:id')
-    // get user's manga info
-    .get(authController.validateToken, mangaController.getManga)
-    // update user's manga info
-    .put(authController.validateToken, mangaController.putManga)
-    // deletes user's manga
-    .delete(authController.validateToken, mangaController.delManga);
+// Get all mangas by admin
+router.route('/mangas')
+  //admin get all mangas
+  .get(authController.validateToken, mangaController.getAllMangas)
+  // admin delete all mangas
+  .delete(authController.validateToken, mangaController.delMangas);
 
-  //Create endpoint handlers for /mangas/:user/title/:manga_title
-  router.route('/mangas/:username/title/:manga_title')
-    // get user's manga info
-    .get(authController.validateToken, mangaController.getMangasbyTitle);
+// HANDLE USER RELATED ROUTES
+// =============================================================================
 
-  // Create endpoint handlers for /mangas/:username
-  router.route('/mangas/:username')
-    //get all user's manga
-    .get(authController.validateToken, mangaController.getMangas)
-    //create new manga
-    .post(authController.validateToken, mangaController.postManga)
-    // Deletes all user mangas
-    .delete(authController.validateToken, mangaController.delUserMangas);
+// Request token generator at /mangas/auth
+router.route('/auth')
+  .post(authController.generateToken); //Get token
 
-  // Get all mangas by admin
-  router.route('/mangas')
-    //admin get all mangas
-    .get(authController.validateToken, mangaController.getAllMangas)
-    // admin delete all mangas
-    .delete(authController.validateToken, mangaController.delMangas);
+// Create endpoint handlers for /users
+router.route('/users')
+  // Creates new user
+  .post(userController.postUsers)
+  //admin get all users
+  .get(authController.validateToken, userController.getUsers)
+  //admin delete all users
+  .delete(authController.validateToken, userController.delUsers);
 
-  // HANDLE USER RELATED ROUTES
-  // =============================================================================
-
-  // Request token generator at /mangas/auth
-  router.route('/auth')
-    .post(authController.generateToken); //Get token
-
-  // Create endpoint handlers for /users
-  router.route('/users')
-    // Creates new user
-    .post(userController.postUsers)
-    //admin get all users
-    .get(authController.validateToken, userController.getUsers)
-    //admin delete all users
-    .delete(authController.validateToken, userController.delUsers);
-
-  //Create endpoint handlers for /mangas/:username
-  router.route('/users/:username')
-    // get user info
-    .get(authController.validateToken, userController.getUser)
-    // update user info
-    .put(authController.validateToken, userController.putUser)
-    // deletes user
-    .delete(authController.validateToken, userController.delUser);
-});
+//Create endpoint handlers for /mangas/:username
+router.route('/users/:username')
+  // get user info
+  .get(authController.validateToken, userController.getUser)
+  // update user info
+  .put(authController.validateToken, userController.putUser)
+  // deletes user
+  .delete(authController.validateToken, userController.delUser);
 
 // CONFIGURE & START THE SERVER
 // =============================================================================

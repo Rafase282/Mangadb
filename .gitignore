@@ -39,4 +39,3 @@ node_modules
 users.json
 mangas.json
 *.patch
-package-lock.json
