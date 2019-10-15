@@ -28,8 +28,8 @@ const objSave = exports.objSave = (object, res, msg) => {
   * @param {Object} data
   * @return null
 **/
-const resMsg = exports.resMsg = (res, sCode, success, message, data) => {
-  res.status(sCode).json({success, message, data});
+const resMsg = exports.resMsg = (res, sCode, success, message, data, skip = false) => {
+  if (!skip) {res.status(sCode).json({success, message, data});}
 }
 /**
   * Ensures that arrays are proper arrays of 1 or more items instead of a list
@@ -86,21 +86,21 @@ const setUser = (username) => {
   * @param {String} auth
   * @return null
 **/
-const delData = exports.delData = (req, res, db, obj, ok, noOk, auth) => {
+const delData = exports.delData = (req, res, db, obj, ok, noOk, auth, skip = false) => {
   const user = setUser(req.params.username);
   if (checkUser(req.decoded.sub, user)) {
-    db.remove(obj, (err, data) => {
+    db.deleteMany(obj, (err, data) => {
       if (err) {
-        resMsg(res, 400, false, err, null);
+        resMsg(res, 400, false, err, null, skip);
       }
-      if (data.result.n === 0) {
-        resMsg(res, 404, false, noOk, null);
+      if (data && data.result && data.result.n === 0) {
+        resMsg(res, 404, false, noOk, null, skip);
       } else {
-        resMsg(res, 200, true, ok, data);
+        resMsg(res, 200, true, ok, data, skip);
       }
     });
   } else {
-    resMsg(res, 403, false, auth, null);
+    resMsg(res, 403, false, auth, null, skip);
   }
 };
 /**
@@ -115,7 +115,7 @@ const delData = exports.delData = (req, res, db, obj, ok, noOk, auth) => {
   * @param {String} auth
   * @return null
 **/
-const getData = exports.getData = (req, res, db, obj, ok, noOk, auth) => {
+const getData = exports.getData = (req, res, db, obj, ok, noOk, auth, skip = false) => {
   const user = setUser(req.params.username);
   if (checkUser(req.decoded.sub, user)) {
     db.find(obj, (err, data) => {

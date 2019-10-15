@@ -1,6 +1,7 @@
 'use strict';
 // Load required packages
 const User = require('../models/user');
+const Manga = require('../models/manga');
 const dbHelper = require('./dbHelper');
 const sendMail = require('../utils/mailModule').customEmail;
 require('dotenv').config({silent: true});
@@ -89,6 +90,7 @@ exports.delUser = (req, res) => {
   const noOk = `Could not find ${username}`;
   const ok = `Successfully deleted ${username}`;
   const obj = {username};
+  dbHelper.delData(req, res, Manga, obj, ok, noOk, auth, true);
   dbHelper.delData(req, res, User, obj, ok, noOk, auth);
   sendMail(2, username, req.decoded.email, emailCallback);
 };
