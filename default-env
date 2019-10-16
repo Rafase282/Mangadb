@@ -10,7 +10,7 @@ MONGOLAB_URI="localhost:27017/mangadb"
 IP="localhost"
 SECRET="secretsecrets"
 PORT="3000"
-ADMIN="rafase282"
+ADMIN="['Admin1, 'Admin2']"
 API_VERSION="v2"
 
 # Email verification

@@ -1,4 +1,5 @@
 'use strict';
+const auth = require('./auth.js')
 
 /**
   * Saves data in the database.
@@ -26,6 +27,7 @@ const objSave = exports.objSave = (object, res, msg) => {
   * @param {Boolean} success
   * @param {String} message
   * @param {Object} data
+  * @param {Boolean} skip = false
   * @return null
 **/
 const resMsg = exports.resMsg = (res, sCode, success, message, data, skip = false) => {
@@ -60,7 +62,7 @@ const objItemize = exports.objItemize = (input) => {
 };
  /**
   * Function To Check Username in URL. Username = req.params.username.
-  * When it is undefined, the admin takes responsability
+  * When it is undefined, the authenticated user takes responsability
   * only if the admin actually issuee the request.
   * @param {String} username
   * @return {String} user
@@ -68,7 +70,7 @@ const objItemize = exports.objItemize = (input) => {
 const setUser = (username) => {
   let user;
   if (username === undefined) {
-    user = process.env.ADMIN.toLowerCase();
+    user = req.decoded.sub;
   } else {
     user = lowerCase(username);
   }
@@ -84,6 +86,7 @@ const setUser = (username) => {
   * @param {String} ok
   * @param {String} noOk
   * @param {String} auth
+  * @param {Boolean} skip = false
   * @return null
 **/
 const delData = exports.delData = (req, res, db, obj, ok, noOk, auth, skip = false) => {
@@ -146,7 +149,7 @@ const lowerCase = exports.lowerCase = (str) => typeof str === 'undefined'
   * Used for individual manga update.
   * @param {Object} req
   * @param {Object} manga
-  * @param {Object} manga
+  * @return {Object} manga
 **/
 const updateMangaObj = exports.updateMangaObj = (req, manga) => {
   const userStatus = lowerCase(req.body.userStatus);
@@ -185,8 +188,27 @@ const updateMangaObj = exports.updateMangaObj = (req, manga) => {
   * or the same user the changes are for.
   * @param {String} username
   * @param {String} user
-  * @param {Boolean}
+  * @return {Boolean}
 **/
 const checkUser = exports.checkUser = (username, user) => {
-  return username === process.env.ADMIN.toLowerCase() || username === user
+  return inList(auth.admins, username) || username === user
+}
+/**
+  * Function to check if element
+  * is on the list.
+  * @param {List} list
+  * @param {String} element
+  * @param {Boolean} insenitive = false
+  * @return {Boolean}
+**/
+const inList = exports.inList = (list, element, insensitive = false) => {
+  let output = false;
+  if (insensitive) {
+    // Make it case insensitive
+    output = new RegExp(list.join('|')).concat('/i').test(element);
+  } else {
+    // Make it case sensitive
+    output = new RegExp(list.join('|')).test(element);
+  }
+  return output
 }
