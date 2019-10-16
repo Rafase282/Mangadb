@@ -65,9 +65,10 @@ const objItemize = exports.objItemize = (input) => {
   * When it is undefined, the authenticated user takes responsability
   * only if the admin actually issuee the request.
   * @param {String} username
+  * @parm {Object} req
   * @return {String} user
  **/
-const setUser = (username) => {
+const setUser = (username, req) => {
   let user;
   if (username === undefined) {
     user = req.decoded.sub;
@@ -90,7 +91,7 @@ const setUser = (username) => {
   * @return null
 **/
 const delData = exports.delData = (req, res, db, obj, ok, noOk, auth, skip = false) => {
-  const user = setUser(req.params.username);
+  const user = setUser(req.params.username, req);
   if (checkUser(req.decoded.sub, user)) {
     db.deleteMany(obj, (err, data) => {
       if (err) {
@@ -119,7 +120,7 @@ const delData = exports.delData = (req, res, db, obj, ok, noOk, auth, skip = fal
   * @return null
 **/
 const getData = exports.getData = (req, res, db, obj, ok, noOk, auth, skip = false) => {
-  const user = setUser(req.params.username);
+  const user = setUser(req.params.username, req);
   if (checkUser(req.decoded.sub, user)) {
     db.find(obj, (err, data) => {
       if (err) {
