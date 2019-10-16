@@ -7,6 +7,7 @@ const sendMail = require('../utils/mailModule').customEmail;
 require('dotenv').config({silent: true});
 const checkEmail = require('quickemailverification')
   .client(process.env.EV_KEY).quickemailverification();
+const authFile = require('./auth.js')
 
 //Gloabls
 const auth = 'You do not have the right permission for this action.';
@@ -105,7 +106,7 @@ exports.delUser = (req, res) => {
 exports.delUsers = (req, res) => {
  const noOk = 'There are no users to delete besides the admin account.';
  const ok = 'Successfully deleted all users but the admin.';
- const obj = {username: {$ne: process.env.ADMIN.toLowerCase()}};
+ const obj = {username: {$nin: authFile.admins}};
  dbHelper.delData(req, res, User, obj, ok, noOk, auth);
  sendMail(3, req.decoded.sub, req.decoded.email, emailCallback);
 };
@@ -120,7 +121,7 @@ exports.delUsers = (req, res) => {
 exports.putUser = (req, res) => {
   // use our user model to find the user we want
   const username = req.params.username.toLowerCase();
-  if (req.decoded.sub === process.env.ADMIN ||
+  if (dbHelper.inList(authFile.ADMINS, req.decoded.sub) ||
     req.decoded.sub === username) {
     User.findOne({
       username

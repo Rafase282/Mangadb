@@ -3,6 +3,8 @@
 const Manga = require('../models/manga');
 const dbHelper = require('./dbHelper');
 const sendMail = require('../utils/mailModule').customEmail;
+const authFile = require('./auth.js');
+
 //Gloabls
 const auth = 'You do not have the right permission for this action.';
 const noOk = 'No mangas were found!';
@@ -32,7 +34,7 @@ exports.getWelcome = (req, res) => {
 **/
 exports.postManga = (req, res) => {
   const username = req.params.username.toLowerCase();
-  if (req.decoded.sub === process.env.ADMIN ||
+  if (dbHelper.inList(authFile.ADMINS, req.decoded.sub) ||
     req.decoded.sub === username) {
     let manga = new Manga(); // create a new instance of the Manga model
     manga = dbHelper.updateMangaObj(req, manga);
@@ -82,7 +84,7 @@ exports.getMangasbyTitle = (req, res) => {
 **/
 exports.putManga = (req, res) => {
   const username = req.params.username.toLowerCase();
-  if (req.decoded.sub === process.env.ADMIN ||
+  if (dbHelper.inList(authFile.ADMINS, req.decoded.sub) ||
     req.decoded.sub === username) {
     Manga.findOne({
       _id: req.params.id,
@@ -127,7 +129,7 @@ exports.getMangas = (req, res) => {
   let username = req.params.username.toLowerCase();
   const ok = 'Manga List Generated.';
   const noOk = `${username} has not added any mangas yet.`;
-  username = req.decoded.sub === process.env.ADMIN ? username : req.decoded.sub;
+  username = dbHelper.inList(authFile.ADMINS, req.decoded.sub) ? username : req.decoded.sub;
   const obj = {username};
   dbHelper.getData(req, res, Manga, obj, ok, noOk, auth);
 };
@@ -153,7 +155,7 @@ exports.getAllMangas = (req, res) => {
 **/
 exports.delMangas = (req, res) => {
   const ok = 'Successfully deleted all mangas.';
-  const obj = {username: {$ne: process.env.ADMIN.toLowerCase()}};
+  const obj = {username: {$nin: authFile.admins}};
   dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
   sendMail(5, req.body.username, req.decoded.email, emailCallback);
 };
