@@ -1,6 +1,6 @@
-'use strict';
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt-nodejs');
+"use strict";
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt-nodejs");
 /**
  * Defines user schema
  * {username, password, email, firstname, lastname}
@@ -44,7 +44,7 @@ const UserSchema = new mongoose.Schema({
     unique: false,
     match: /[a-z]/,
   },
-}).set('toObject', {
+}).set("toObject", {
   retainKeyOrder: true,
 });
 /**
@@ -53,11 +53,11 @@ const UserSchema = new mongoose.Schema({
  * @param {Function}
  * @param {Function}
  **/
-UserSchema.pre('save', function(callback) {
+UserSchema.pre("save", function(callback) {
   const user = this;
 
   // Break out if the password hasn't changed
-  if (!user.isModified('password')) return callback();
+  if (!user.isModified("password")) return callback();
 
   // Password changed so we need to hash it
   bcrypt.genSalt(5, (err, salt) => {
@@ -81,4 +81,4 @@ UserSchema.methods.verifyPassword = function(password, cb) {
     cb(null, isMatch);
   });
 };
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model("User", UserSchema);

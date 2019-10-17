@@ -1,22 +1,22 @@
 /*eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 // server.js
-'use strict';
+"use strict";
 
 // BASE SETUP
 // =============================================================================
 
 // call the packages we need
-const express = require('express'); // call express
+const express = require("express"); // call express
 const app = express(); // define our app using express
-const bodyParser = require('body-parser');
-const path = require('path');
-const mongoose = require('mongoose');
-const authController = require('./controllers/auth');
-const mangaController = require('./controllers/manga');
-const userController = require('./controllers/user');
-require('dotenv').config({silent: true});
+const bodyParser = require("body-parser");
+const path = require("path");
+const mongoose = require("mongoose");
+const authController = require("./controllers/auth");
+const mangaController = require("./controllers/manga");
+const userController = require("./controllers/user");
+require("dotenv").config({silent: true});
 
-app.set('superSecret', process.env.SECRET); // secret constiable
+app.set("superSecret", process.env.SECRET); // secret constiable
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -26,9 +26,9 @@ app.use(bodyParser.json());
 // REGISTER OUR ROUTES -------------------------------
 const router = express.Router(); // get an instance of the express Router
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'x-access-token');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header("Access-Control-Allow-Headers", "x-access-token");
   next();
 });
 
@@ -36,10 +36,10 @@ app.use((req, res, next) => {
 app.use(`/api/${process.env.API_VERSION}`, router);
 
 // Serve Swagger UI at https://mangadbv2.herokuapp.com
-app.use('/', express.static(path.join(__dirname, 'docs')));
+app.use("/", express.static(path.join(__dirname, "docs")));
 
 //(accessed at GET https://mangadbv2.herokuapp.com/api/v#)
-router.route('/').get(mangaController.getWelcome);
+router.route("/").get(mangaController.getWelcome);
 
 // switching default mongoose promises to global object's promises
 mongoose.Promise = global.Promise;
@@ -55,12 +55,12 @@ mongoose.connect(mongouri, {
 });
 
 var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", function() {
   // we're connected!
   //Create endpoint handlers for /mangas/:username/:id
   router
-    .route('/mangas/:username/:id')
+    .route("/mangas/:username/:id")
     // get user's manga info
     .get(authController.validateToken, mangaController.getManga)
     // update user's manga info
@@ -70,13 +70,13 @@ db.once('open', function() {
 
   //Create endpoint handlers for /mangas/:user/title/:manga_title
   router
-    .route('/mangas/:username/title/:manga_title')
+    .route("/mangas/:username/title/:manga_title")
     // get user's manga info
     .get(authController.validateToken, mangaController.getMangasbyTitle);
 
   // Create endpoint handlers for /mangas/:username
   router
-    .route('/mangas/:username')
+    .route("/mangas/:username")
     //get all user's manga
     .get(authController.validateToken, mangaController.getMangas)
     //create new manga
@@ -86,7 +86,7 @@ db.once('open', function() {
 
   // Get all mangas by admin
   router
-    .route('/mangas')
+    .route("/mangas")
     //admin get all mangas
     .get(authController.validateToken, mangaController.getAllMangas)
     // admin delete all mangas
@@ -96,11 +96,11 @@ db.once('open', function() {
   // ===========================================================================
 
   // Request token generator at /mangas/auth
-  router.route('/auth').post(authController.generateToken); //Get token
+  router.route("/auth").post(authController.generateToken); //Get token
 
   // Create endpoint handlers for /users
   router
-    .route('/users')
+    .route("/users")
     // Creates new user
     .post(userController.postUsers)
     //admin get all users
@@ -110,7 +110,7 @@ db.once('open', function() {
 
   //Create endpoint handlers for /mangas/:username
   router
-    .route('/users/:username')
+    .route("/users/:username")
     // get user info
     .get(authController.validateToken, userController.getUser)
     // update user info

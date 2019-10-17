@@ -1,17 +1,17 @@
-'use strict';
+"use strict";
 // Load required packages
-const User = require('../models/user');
-const Manga = require('../models/manga');
-const dbHelper = require('./dbHelper');
-const sendMail = require('../utils/mailModule').customEmail;
-require('dotenv').config({silent: true});
-const checkEmail = require('quickemailverification')
+const User = require("../models/user");
+const Manga = require("../models/manga");
+const dbHelper = require("./dbHelper");
+const sendMail = require("../utils/mailModule").customEmail;
+require("dotenv").config({silent: true});
+const checkEmail = require("quickemailverification")
   .client(process.env.EV_KEY)
   .quickemailverification();
-const authFile = require('./auth.js');
+const authFile = require("./auth.js");
 
 //Gloabls
-const auth = 'You do not have the right permission for this action.';
+const auth = "You do not have the right permission for this action.";
 const emailCallback = (err, msg) => {
   if (err) console.log(msg);
 };
@@ -28,11 +28,11 @@ exports.postUsers = (req, res) => {
   const email = req.body.email;
   checkEmail.verify(email, (err, response) => {
     if (err) {
-      const msg = 'Daily e-mail verification limit reached.';
+      const msg = "Daily e-mail verification limit reached.";
       dbHelper.resMsg(res, err.code, false, msg, null);
     } else {
       // Print response object
-      if (response.body.result === 'valid') {
+      if (response.body.result === "valid") {
         // It is a valid e-mail.
         const user = new User({
           username: req.body.username,
@@ -45,7 +45,7 @@ exports.postUsers = (req, res) => {
         dbHelper.objSave(user, res, msg);
         sendMail(0, req.body.username, email, emailCallback);
       } else {
-        const msg = 'Invalid E-Mail.';
+        const msg = "Invalid E-Mail.";
         dbHelper.resMsg(res, 400, false, msg, null);
       }
     }
@@ -60,8 +60,8 @@ exports.postUsers = (req, res) => {
  * @param {Null}
  **/
 exports.getUsers = (req, res) => {
-  const ok = 'The list of users has been succesfully generated.';
-  const noOk = 'No users has been created yet.';
+  const ok = "The list of users has been succesfully generated.";
+  const noOk = "No users has been created yet.";
   dbHelper.getData(req, res, User, {}, ok, noOk, auth);
 };
 /**
@@ -105,8 +105,8 @@ exports.delUser = (req, res) => {
  * @param {Null}
  **/
 exports.delUsers = (req, res) => {
-  const noOk = 'There are no users to delete besides the admin account.';
-  const ok = 'Successfully deleted all users but the admin.';
+  const noOk = "There are no users to delete besides the admin account.";
+  const ok = "Successfully deleted all users but the admin.";
   const obj = {username: {$nin: authFile.admins}};
   dbHelper.delData(req, res, User, obj, ok, noOk, auth);
   sendMail(3, req.decoded.sub, req.decoded.email, emailCallback);

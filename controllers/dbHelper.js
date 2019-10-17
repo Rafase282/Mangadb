@@ -1,5 +1,5 @@
-'use strict';
-const auth = require('./auth.js');
+"use strict";
+const auth = require("./auth.js");
 
 /**
  * Saves data in the database.
@@ -54,17 +54,17 @@ const objItemize = (exports.objItemize = (input) => {
     case input === null || input === undefined:
       list = [];
       break;
-    case input === ['']:
+    case input === [""]:
       list = input;
       break;
     case input.slice(0).length < 1:
-      list = '';
+      list = "";
       break;
     case input.slice(0).length > 1:
       list = input.slice(0);
       break;
     case input.slice(0).length === 1:
-      list = input.slice(0)[0].split(',');
+      list = input.slice(0)[0].split(",");
       break;
   }
   return list;
@@ -170,7 +170,7 @@ const getData = (exports.getData = (
  * @return {String} str
  **/
 const lowerCase = (exports.lowerCase = (str) =>
-  typeof str === 'undefined' ? str : str.toLowerCase());
+  typeof str === "undefined" ? str : str.toLowerCase());
 /**
  * Function to update a Manga object.
  * Used for individual manga update.
@@ -181,18 +181,18 @@ const lowerCase = (exports.lowerCase = (str) =>
 const updateMangaObj = (exports.updateMangaObj = (req, manga) => {
   const userStatus = lowerCase(req.body.userStatus);
   if (
-    userStatus === 'reading' ||
-    userStatus === 'finished' ||
-    userStatus === 'will read'
+    userStatus === "reading" ||
+    userStatus === "finished" ||
+    userStatus === "will read"
   ) {
     manga.userStatus = userStatus || manga.userStatus;
   }
   const seriesStatus = lowerCase(req.body.seriesStatus);
-  if (seriesStatus === 'ongoing' || seriesStatus === 'completed') {
+  if (seriesStatus === "ongoing" || seriesStatus === "completed") {
     manga.seriesStatus = seriesStatus || manga.seriesStatus;
   }
   const direction = lowerCase(req.body.direction);
-  if (direction === 'left to right' || direction === 'right to left') {
+  if (direction === "left to right" || direction === "right to left") {
     manga.direction = direction || manga.direction;
   }
 
@@ -237,10 +237,10 @@ const inList = (exports.inList = (list, element, insensitive = false) => {
   let output = false;
   if (insensitive) {
     // Make it case insensitive
-    output = new RegExp(list.join('|')).concat('/i').test(element);
+    output = new RegExp(list.join("|")).concat("/i").test(element);
   } else {
     // Make it case sensitive
-    output = new RegExp(list.join('|')).test(element);
+    output = new RegExp(list.join("|")).test(element);
   }
   return output;
 });

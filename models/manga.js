@@ -1,5 +1,5 @@
-'use strict';
-const mongoose = require('mongoose');
+"use strict";
+const mongoose = require("mongoose");
 /**
  * Defines manga schema
  * {title, author, url, userStatus, type,categories, chapter, seriesStatus,
@@ -118,7 +118,7 @@ const MangaSchema = new mongoose.Schema({
     required: true,
     unique: false,
   },
-}).set('toObject', {
+}).set("toObject", {
   retainKeyOrder: true,
 });
-module.exports = mongoose.model('Manga', MangaSchema);
+module.exports = mongoose.model("Manga", MangaSchema);

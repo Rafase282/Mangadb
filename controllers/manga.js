@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 // Load required packages
-const Manga = require('../models/manga');
-const dbHelper = require('./dbHelper');
-const sendMail = require('../utils/mailModule').customEmail;
-const authFile = require('./auth.js');
+const Manga = require("../models/manga");
+const dbHelper = require("./dbHelper");
+const sendMail = require("../utils/mailModule").customEmail;
+const authFile = require("./auth.js");
 
 //Gloabls
-const auth = 'You do not have the right permission for this action.';
-const noOk = 'No mangas were found!';
+const auth = "You do not have the right permission for this action.";
+const noOk = "No mangas were found!";
 const emailCallback = (err, msg) => {
   if (err) console.log(msg);
 };
@@ -135,7 +135,7 @@ exports.delManga = (req, res) => {
  **/
 exports.getMangas = (req, res) => {
   let username = req.params.username.toLowerCase();
-  const ok = 'Manga List Generated.';
+  const ok = "Manga List Generated.";
   const noOk = `${username} has not added any mangas yet.`;
   username = dbHelper.inList(authFile.ADMINS, req.decoded.sub)
     ? username
@@ -152,7 +152,7 @@ exports.getMangas = (req, res) => {
  * @param {Null}
  **/
 exports.getAllMangas = (req, res) => {
-  const ok = 'Manga List Generated.';
+  const ok = "Manga List Generated.";
   dbHelper.getData(req, res, Manga, {}, ok, noOk, auth);
 };
 /**
@@ -164,7 +164,7 @@ exports.getAllMangas = (req, res) => {
  * @param {Null}
  **/
 exports.delMangas = (req, res) => {
-  const ok = 'Successfully deleted all mangas.';
+  const ok = "Successfully deleted all mangas.";
   const obj = {username: {$nin: authFile.admins}};
   dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
   sendMail(5, req.body.username, req.decoded.email, emailCallback);
@@ -179,7 +179,7 @@ exports.delMangas = (req, res) => {
  **/
 exports.delUserMangas = (req, res) => {
   const username = req.params.username.toLowerCase();
-  const ok = 'Successfully deleted all user mangas.';
+  const ok = "Successfully deleted all user mangas.";
   const obj = {username};
   dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
   sendMail(4, req.body.username, req.decoded.email, emailCallback);

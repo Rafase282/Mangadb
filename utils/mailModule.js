@@ -1,9 +1,9 @@
-const nodemailer = require('nodemailer');
-require('dotenv').config({silent: true});
+const nodemailer = require("nodemailer");
+require("dotenv").config({silent: true});
 const transporter = nodemailer.createTransport({
-  service: 'Gmail',
+  service: "Gmail",
   auth: {
-    type: 'OAuth2',
+    type: "OAuth2",
     clientId: process.env.CLIENTID,
     clientSecret: process.env.CLIENTSECRET,
     refreshToken: process.env.REFRESH,
@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 const mailOptions = {
   to: process.env.mainEmail,
-  subject: 'Email send machanism trigered!',
+  subject: "Email send machanism trigered!",
   from: `${process.env.mainUser} <${process.env.mainEmail}>`,
   text: `Seems like the email mechanism was trigered by someone.\n
   There is nothing here, check the code, this is the demail template.`,
@@ -20,21 +20,21 @@ const mailOptions = {
 const sendEmail = (exports.sendEmail = (mailOptions, callback) => {
   if (!mailOptions.to || !mailOptions.text)
     return callback(
-      'Error on options.',
+      "Error on options.",
       new Error(
-        'Error: No text or sender email has been added to options sent.'
+        "Error: No text or sender email has been added to options sent."
       )
     );
   if (!mailOptions.from)
     // change this to default email
     mailOptions.from = `${process.env.mainUser} <${process.env.mainEmail}>`;
   // change this to default subject
-  if (!mailOptions.subject) mailOptions.subject = 'Do not reply - MangaDB';
+  if (!mailOptions.subject) mailOptions.subject = "Do not reply - MangaDB";
   const verifyMail = (err, success) => {
-    if (err) return callback('Error verifying connection to SMTP server', err);
+    if (err) return callback("Error verifying connection to SMTP server", err);
 
     const send = (err, res) => {
-      if (err) return callback('Error', err);
+      if (err) return callback("Error", err);
 
       return callback(null, res);
     };

@@ -1,9 +1,9 @@
-'use strict';
-const User = require('../models/user');
-const dbHelper = require('./dbHelper');
-const jwt = require('jsonwebtoken');
-require('dotenv').config({silent: true});
-const ADMINS = (exports.ADMINS = process.env.ADMIN.split(',').map((str) =>
+"use strict";
+const User = require("../models/user");
+const dbHelper = require("./dbHelper");
+const jwt = require("jsonwebtoken");
+require("dotenv").config({silent: true});
+const ADMINS = (exports.ADMINS = process.env.ADMIN.split(",").map((str) =>
   str.trim()
 ));
 const admins = (exports.admins = ADMINS.map((str) => str.toLowerCase()));
@@ -37,7 +37,7 @@ exports.generateToken = (req, res) => {
             dbHelper.resMsg(res, 400, false, err, null);
           }
           if (!isMatch) {
-            const msg = 'Authentication failed. Wrong password.';
+            const msg = "Authentication failed. Wrong password.";
             dbHelper.resMsg(res, 404, false, msg, null);
           } else {
             const expTime = 60 * 60; // expires in 1 hour "seconds X Minutes"
@@ -49,9 +49,9 @@ exports.generateToken = (req, res) => {
             };
             // if user is found and password is right
             // create a token
-            const token = jwt.sign(info, req.app.get('superSecret'), {
+            const token = jwt.sign(info, req.app.get("superSecret"), {
               expiresIn: expTime,
-              issuer: 'MangaDB by Rafase282',
+              issuer: "MangaDB by Rafase282",
             });
             // return the information including token as JSON
             const msg =
@@ -76,14 +76,14 @@ exports.generateToken = (req, res) => {
  **/
 exports.validateToken = (req, res, next) => {
   // check header or url parameters or post parameters for token
-  const token = req.headers['x-access-token'];
+  const token = req.headers["x-access-token"];
 
   // decode token
   if (token) {
     // verifies secret and checks exp
-    jwt.verify(token, req.app.get('superSecret'), (err, decoded) => {
+    jwt.verify(token, req.app.get("superSecret"), (err, decoded) => {
       if (err) {
-        const msg = 'Failed to authenticate token.';
+        const msg = "Failed to authenticate token.";
         dbHelper.resMsg(res, 404, false, msg, null);
       } else {
         // if everything is good, save to request for use in other routes
@@ -93,7 +93,7 @@ exports.validateToken = (req, res, next) => {
     });
   } else {
     // if there is no token, return an error
-    const msg = 'No token provided.';
+    const msg = "No token provided.";
     dbHelper.resMsg(res, 403, false, msg, null);
   }
 };

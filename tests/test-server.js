@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
 //Require the dev-dependencies
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../server');
-const mongoose = require('mongoose');
-const User = require('../models/user');
-const Manga = require('../models/manga');
-const sendEmail = require('../utils/mailModule').sendEmail;
-require('dotenv').config({silent: true});
+const chai = require("chai");
+const chaiHttp = require("chai-http");
+const server = require("../server");
+const mongoose = require("mongoose");
+const User = require("../models/user");
+const Manga = require("../models/manga");
+const sendEmail = require("../utils/mailModule").sendEmail;
+require("dotenv").config({silent: true});
 chai.should();
 chai.use(chaiHttp);
 
@@ -22,19 +22,19 @@ const admin = new MangaUser();
 const title = encodeURI(manga.title);
 const chapter = 282;
 const user = admin.username;
-const newuser = new MangaUser('testuser', 'rafase_282@hotmail.com');
-const newuser2 = new MangaUser('testuser2', 'test@hotmail.com');
-const newmanga = new UserManga(mongoose.Types.ObjectId(), 'aiki', 282, 'pepe');
+const newuser = new MangaUser("testuser", "rafase_282@hotmail.com");
+const newuser2 = new MangaUser("testuser2", "test@hotmail.com");
+const newmanga = new UserManga(mongoose.Types.ObjectId(), "aiki", 282, "pepe");
 
-let token = '';
+let token = "";
 
 //Object Constructors
 function MangaUser(
-  usr = 'rafase282',
-  email = 'rafase282@gmail.com',
-  pwd = 'adminpwd',
-  firstname = 'rafael',
-  lastname = 'rodriguez'
+  usr = "rafase282",
+  email = "rafase282@gmail.com",
+  pwd = "adminpwd",
+  firstname = "rafael",
+  lastname = "rodriguez"
 ) {
   this.username = usr;
   this.password = pwd;
@@ -44,19 +44,19 @@ function MangaUser(
 }
 function UserManga(
   id = mongoose.Types.ObjectId(),
-  title = 'kingdom',
+  title = "kingdom",
   chapter = 41,
-  username = 'rafase282',
-  altName = 'name1, name 2',
-  author = 'hara yasuhisa',
-  url = 'http://www.readmanga.today/kingdom',
-  type = 'japanese',
-  categories = 'action, historical',
-  userStatus = 'reading',
-  seriesStatus = 'ongoing',
-  plot = 'something',
-  direction = 'right to left',
-  thumbnail = 'http://www.readmanga.today/uploads/posters/0001_576.jpg'
+  username = "rafase282",
+  altName = "name1, name 2",
+  author = "hara yasuhisa",
+  url = "http://www.readmanga.today/kingdom",
+  type = "japanese",
+  categories = "action, historical",
+  userStatus = "reading",
+  seriesStatus = "ongoing",
+  plot = "something",
+  direction = "right to left",
+  thumbnail = "http://www.readmanga.today/uploads/posters/0001_576.jpg"
 ) {
   this.title = title;
   this.chapter = chapter;
@@ -77,22 +77,22 @@ function UserManga(
 // Repeated testing
 function testObj(res, err, type) {
   res.status.should.be.oneOf([200, 400, 402, 403, 404]);
-  res.should.have.header('content-type', 'application/json; charset=utf-8');
-  res.body.should.be.a('object');
+  res.should.have.header("content-type", "application/json; charset=utf-8");
+  res.body.should.be.a("object");
   res.body.should.have
-    .property('success')
-    .be.a('boolean')
+    .property("success")
+    .be.a("boolean")
     .equal(true);
-  res.body.should.have.property('message').be.a('string');
-  res.body.should.have.property('data').be.a(type);
+  res.body.should.have.property("message").be.a("string");
+  res.body.should.have.property("data").be.a(type);
   if (err) console.log(err.response.error);
-  if (type === 'array') {
+  if (type === "array") {
     res.body.data.length.should.be.above(0);
-    res.body.data[0].should.be.a('object');
-    res.body.data[0].username.should.be.a('string');
+    res.body.data[0].should.be.a("object");
+    res.body.data[0].username.should.be.a("string");
   }
 }
-function getAuth(cb, username = 'rafase282', password = 'adminpwd') {
+function getAuth(cb, username = "rafase282", password = "adminpwd") {
   const credentials = {
     username,
     password,
@@ -102,13 +102,13 @@ function getAuth(cb, username = 'rafase282', password = 'adminpwd') {
     .post(`${api}/auth`)
     .send(credentials)
     .end((err, res) => {
-      testObj(res, err, 'string');
+      testObj(res, err, "string");
       token = res.body.data;
       cb();
     });
 }
 
-describe('Test server and service functionalities', () => {
+describe("Test server and service functionalities", () => {
   before(() => {
     mongoose.createConnection(mongouri, {
       useNewUrlParser: true,
@@ -116,8 +116,8 @@ describe('Test server and service functionalities', () => {
       useCreateIndex: true,
     });
     const db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', console.log.bind(console, 'Connected!'));
+    db.on("error", console.error.bind(console, "connection error:"));
+    db.once("open", console.log.bind(console, "Connected!"));
   });
   beforeEach((done) => {
     // Populate the DB
@@ -134,7 +134,7 @@ describe('Test server and service functionalities', () => {
   afterEach((done) => {
     // Delete Populated DB
     mongoose.connection.db.dropDatabase().then(() => {
-      token = '';
+      token = "";
       done();
     });
   });
@@ -142,13 +142,13 @@ describe('Test server and service functionalities', () => {
     mongoose.connection.close();
   });
 
-  it('GET /: Responds with swagger Docs', (done) => {
+  it("GET /: Responds with swagger Docs", (done) => {
     chai
       .request(server)
-      .get('/')
+      .get("/")
       .end((err, res) => {
         res.should.have.status(200);
-        res.should.have.header('content-type', 'text/html; charset=UTF-8');
+        res.should.have.header("content-type", "text/html; charset=UTF-8");
         if (err) console.log(err.response.error);
         done();
       });
@@ -158,17 +158,17 @@ describe('Test server and service functionalities', () => {
       .request(server)
       .get(api)
       .end((err, res) => {
-        testObj(res, err, 'null');
+        testObj(res, err, "null");
         done();
       });
   });
-  it('Send email to user', (done) => {
+  it("Send email to user", (done) => {
     sendEmail(
       {
-        from: 'MangaDB <rafase282@gmail.com>',
-        to: 'rafase282@gmail.com',
-        subject: 'Test',
-        text: 'This is a test, powered by Chai!',
+        from: "MangaDB <rafase282@gmail.com>",
+        to: "rafase282@gmail.com",
+        subject: "Test",
+        text: "This is a test, powered by Chai!",
       },
       (err, msg) => {
         chai.expect(err).to.equal(null);
@@ -179,22 +179,22 @@ describe('Test server and service functionalities', () => {
     );
   });
 
-  describe('Test creating, updating and retrieving of Users', () => {
+  describe("Test creating, updating and retrieving of Users", () => {
     it(`POST ${api}/users: Creates a new user`, (done) => {
       chai
         .request(server)
         .post(`${api}/users`)
         .send(newuser)
         .end((err, res) => {
-          testObj(res, err, 'object');
+          testObj(res, err, "object");
           res.body.data.should.have.all.keys([
-            'username',
-            'password',
-            'email',
-            'firstname',
-            'lastname',
-            '_id',
-            '__v',
+            "username",
+            "password",
+            "email",
+            "firstname",
+            "lastname",
+            "_id",
+            "__v",
           ]);
           done();
         });
@@ -206,9 +206,9 @@ describe('Test server and service functionalities', () => {
       chai
         .request(server)
         .get(`${api}/users/${user}`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .end((err, res) => {
-          testObj(res, err, 'array');
+          testObj(res, err, "array");
           res.body.data[0].username.should.be.equal(user);
           done();
         });
@@ -218,11 +218,11 @@ describe('Test server and service functionalities', () => {
       chai
         .request(server)
         .put(`${api}/users/${user}`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .send({firstname})
         .end((err, res) => {
-          testObj(res, err, 'object');
-          res.body.data.firstname.should.be.a('string');
+          testObj(res, err, "object");
+          res.body.data.firstname.should.be.a("string");
           res.body.data.firstname.should.equal(firstname);
           done();
         });
@@ -232,23 +232,23 @@ describe('Test server and service functionalities', () => {
         chai
           .request(server)
           .get(`${api}/users`)
-          .set('x-access-token', `${token}`)
+          .set("x-access-token", `${token}`)
           .end((err, res) => {
-            testObj(res, err, 'array');
+            testObj(res, err, "array");
             done();
           });
       });
     });
   });
-  describe('Test creating, updating and retrieving of Mangas', () => {
+  describe("Test creating, updating and retrieving of Mangas", () => {
     it(`POST ${api}/mangas/${user}: Create ${manga.title} manga for ${user}`, (done) => {
       chai
         .request(server)
         .post(`${api}/mangas/${user}`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .send(new UserManga())
         .end((err, res) => {
-          testObj(res, err, 'object');
+          testObj(res, err, "object");
           res.body.data.title.should.equal(manga.title);
           done();
         });
@@ -257,9 +257,9 @@ describe('Test server and service functionalities', () => {
       chai
         .request(server)
         .get(`${api}/mangas/${user}`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .end((err, res) => {
-          testObj(res, err, 'array');
+          testObj(res, err, "array");
           done();
         });
     });
@@ -267,9 +267,9 @@ describe('Test server and service functionalities', () => {
       chai
         .request(server)
         .get(`${api}/mangas/${user}/${id}`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .end((err, res) => {
-          testObj(res, err, 'array');
+          testObj(res, err, "array");
           done();
         });
     });
@@ -277,9 +277,9 @@ describe('Test server and service functionalities', () => {
       chai
         .request(server)
         .get(`${api}/mangas/${user}/title/${title}`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .end((err, res) => {
-          testObj(res, err, 'array');
+          testObj(res, err, "array");
           done();
         });
     });
@@ -287,9 +287,9 @@ describe('Test server and service functionalities', () => {
       chai
         .request(server)
         .get(`${api}/mangas`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .end((err, res) => {
-          testObj(res, err, 'array');
+          testObj(res, err, "array");
           done();
         });
     });
@@ -297,23 +297,23 @@ describe('Test server and service functionalities', () => {
       chai
         .request(server)
         .put(`${api}/mangas/${user}/${id}`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .send({chapter})
         .end((err, res) => {
-          testObj(res, err, 'object');
+          testObj(res, err, "object");
           res.body.data.chapter.should.equal(chapter);
           done();
         });
     });
   });
-  describe('Test Manga deletion', () => {
+  describe("Test Manga deletion", () => {
     it(`DEL ${api}/mangas/${user}/${id}: Delete ${manga.title} manga for ${user}`, (done) => {
       chai
         .request(server)
         .del(`${api}/mangas/${user}/${id}`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .end((err, res) => {
-          testObj(res, err, 'object');
+          testObj(res, err, "object");
           done();
         });
     });
@@ -321,9 +321,9 @@ describe('Test server and service functionalities', () => {
       chai
         .request(server)
         .del(`${api}/mangas/${user}`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .end((err, res) => {
-          testObj(res, err, 'object');
+          testObj(res, err, "object");
           done();
         });
     });
@@ -331,21 +331,21 @@ describe('Test server and service functionalities', () => {
       chai
         .request(server)
         .del(`${api}/mangas`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .end((err, res) => {
-          testObj(res, err, 'object');
+          testObj(res, err, "object");
           done();
         });
     });
   });
-  describe('Test User deletion', () => {
+  describe("Test User deletion", () => {
     it(`DEL ${api}/users: Deletes all users`, (done) => {
       chai
         .request(server)
         .del(`${api}/users`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .end((err, res) => {
-          testObj(res, err, 'object');
+          testObj(res, err, "object");
           done();
         });
     });
@@ -353,9 +353,9 @@ describe('Test server and service functionalities', () => {
       chai
         .request(server)
         .del(`${api}/users/${user}`)
-        .set('x-access-token', `${token}`)
+        .set("x-access-token", `${token}`)
         .end((err, res) => {
-          testObj(res, err, 'object');
+          testObj(res, err, "object");
           done();
         });
     });
