@@ -4,7 +4,7 @@ const User = require("../models/user");
 const Manga = require("../models/manga");
 const dbHelper = require("./dbHelper");
 const sendMail = require("../utils/mailModule").customEmail;
-require("dotenv").config({silent: true});
+require("dotenv").config({ silent: true });
 const checkEmail = require("quickemailverification")
   .client(process.env.EV_KEY)
   .quickemailverification();
@@ -76,7 +76,7 @@ exports.getUser = (req, res) => {
   const username = req.params.username.toLowerCase();
   const ok = `${username} found!`;
   const noOk = `${username}  not found.`;
-  const obj = {username};
+  const obj = { username };
   dbHelper.getData(req, res, User, obj, ok, noOk, auth);
 };
 /**
@@ -91,7 +91,7 @@ exports.delUser = (req, res) => {
   const username = req.params.username.toLowerCase();
   const noOk = `Could not find ${username}`;
   const ok = `Successfully deleted ${username}`;
-  const obj = {username};
+  const obj = { username };
   dbHelper.delData(req, res, Manga, obj, ok, noOk, auth, true);
   dbHelper.delData(req, res, User, obj, ok, noOk, auth);
   sendMail(2, username, req.decoded.email, emailCallback);
@@ -107,7 +107,7 @@ exports.delUser = (req, res) => {
 exports.delUsers = (req, res) => {
   const noOk = "There are no users to delete besides the admin account.";
   const ok = "Successfully deleted all users but the admin.";
-  const obj = {username: {$nin: authFile.admins}};
+  const obj = { username: { $nin: authFile.admins } };
   dbHelper.delData(req, res, User, obj, ok, noOk, auth);
   sendMail(3, req.decoded.sub, req.decoded.email, emailCallback);
 };

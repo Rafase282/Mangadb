@@ -2,7 +2,7 @@
 const User = require("../models/user");
 const dbHelper = require("./dbHelper");
 const jwt = require("jsonwebtoken");
-require("dotenv").config({silent: true});
+require("dotenv").config({ silent: true });
 const ADMINS = (exports.ADMINS = process.env.ADMIN.split(",").map((str) =>
   str.trim()
 ));

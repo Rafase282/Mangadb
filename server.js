@@ -14,13 +14,13 @@ const mongoose = require("mongoose");
 const authController = require("./controllers/auth");
 const mangaController = require("./controllers/manga");
 const userController = require("./controllers/user");
-require("dotenv").config({silent: true});
+require("dotenv").config({ silent: true });
 
 app.set("superSecret", process.env.SECRET); // secret constiable
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // REGISTER OUR ROUTES -------------------------------

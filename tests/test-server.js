@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 const User = require("../models/user");
 const Manga = require("../models/manga");
 const sendEmail = require("../utils/mailModule").sendEmail;
-require("dotenv").config({silent: true});
+require("dotenv").config({ silent: true });
 chai.should();
 chai.use(chaiHttp);
 
@@ -219,7 +219,7 @@ describe("Test server and service functionalities", () => {
         .request(server)
         .put(`${api}/users/${user}`)
         .set("x-access-token", `${token}`)
-        .send({firstname})
+        .send({ firstname })
         .end((err, res) => {
           testObj(res, err, "object");
           res.body.data.firstname.should.be.a("string");
@@ -298,7 +298,7 @@ describe("Test server and service functionalities", () => {
         .request(server)
         .put(`${api}/mangas/${user}/${id}`)
         .set("x-access-token", `${token}`)
-        .send({chapter})
+        .send({ chapter })
         .end((err, res) => {
           testObj(res, err, "object");
           res.body.data.chapter.should.equal(chapter);

@@ -39,7 +39,7 @@ const resMsg = (exports.resMsg = (
   skip = false
 ) => {
   if (!skip) {
-    res.status(sCode).json({success, message, data});
+    res.status(sCode).json({ success, message, data });
   }
 });
 /**

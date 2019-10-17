@@ -59,7 +59,7 @@ exports.getManga = (req, res) => {
   const username = req.params.username.toLowerCase();
   const ok = `${req.params.id} found!`;
   const noOk = `${req.params.id} not found!`;
-  const obj = {_id: req.params.id, username};
+  const obj = { _id: req.params.id, username };
   dbHelper.getData(req, res, Manga, obj, ok, noOk, auth);
 };
 /**
@@ -74,7 +74,7 @@ exports.getMangasbyTitle = (req, res) => {
   const username = req.params.username.toLowerCase();
   const ok = `${req.params.manga_title} found!`;
   const noOk = `${req.params.manga_title} not found!`;
-  const obj = {title: req.params.manga_title.toLowerCase(), username};
+  const obj = { title: req.params.manga_title.toLowerCase(), username };
   dbHelper.getData(req, res, Manga, obj, ok, noOk, auth);
 };
 /**
@@ -122,7 +122,7 @@ exports.delManga = (req, res) => {
   const username = req.params.username.toLowerCase();
   const noOk = `Could not find ${req.params.id}`;
   const ok = `Successfully deleted ${req.params.id}`;
-  const obj = {_id: req.params.id, username};
+  const obj = { _id: req.params.id, username };
   dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
 };
 /**
@@ -140,7 +140,7 @@ exports.getMangas = (req, res) => {
   username = dbHelper.inList(authFile.ADMINS, req.decoded.sub)
     ? username
     : req.decoded.sub;
-  const obj = {username};
+  const obj = { username };
   dbHelper.getData(req, res, Manga, obj, ok, noOk, auth);
 };
 /**
@@ -165,7 +165,7 @@ exports.getAllMangas = (req, res) => {
  **/
 exports.delMangas = (req, res) => {
   const ok = "Successfully deleted all mangas.";
-  const obj = {username: {$nin: authFile.admins}};
+  const obj = { username: { $nin: authFile.admins } };
   dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
   sendMail(5, req.body.username, req.decoded.email, emailCallback);
 };
@@ -180,7 +180,7 @@ exports.delMangas = (req, res) => {
 exports.delUserMangas = (req, res) => {
   const username = req.params.username.toLowerCase();
   const ok = "Successfully deleted all user mangas.";
-  const obj = {username};
+  const obj = { username };
   dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
   sendMail(4, req.body.username, req.decoded.email, emailCallback);
 };
