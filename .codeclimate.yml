@@ -1,59 +1,60 @@
----
-version: "2" 
-engines:
-  csslint:
+version: "2"
+checks:
+  argument-count:
     enabled: true
-  duplication:
-    enabled: true
-    checks:
-      argument-count:
-      config:
-        threshold: 4
-      complex-logic:
-        config:
-          threshold: 4
-      file-lines:
-        config:
-          threshold: 250
-      method-complexity:
-        config:
-          threshold: 10
-      method-count:
-        config:
-          threshold: 20
-      method-lines:
-        config:
-          threshold: 50
-      nested-control-flow:
-        config:
-          threshold: 4
-      return-statements:
-        config:
-          threshold: 4
-      Similar code:
-        enabled: false
-      Identical code:
-        enabled: true
     config:
-      languages:
-      - ruby
-      - javascript
-      - python
-      - php
-  eslint:
+      threshold: 4
+  complex-logic:
     enabled: true
-  fixme:
+    config:
+      threshold: 4
+  file-lines:
     enabled: true
-ratings:
-  paths:
-  - "**.css"
-  - "**.inc"
-  - "**.js"
-  - "**.jsx"
-  - "**.module"
-  - "**.php"
-  - "**.py"
-  - "**.rb"
-exclude_paths:
-- tests/
-- docs/
+    config:
+      threshold: 250
+  method-complexity:
+    enabled: true
+    config:
+      threshold: 5
+  method-count:
+    enabled: true
+    config:
+      threshold: 20
+  method-lines:
+    enabled: true
+    config:
+      threshold: 25
+  nested-control-flow:
+    enabled: true
+    config:
+      threshold: 4
+  return-statements:
+    enabled: true
+    config:
+      threshold: 4
+  similar-code:
+    enabled: true
+    config:
+      threshold: #language-specific defaults. overrides affect all languages.
+  identical-code:
+    enabled: true
+    config:
+      threshold: #language-specific defaults. overrides affect all languages.
+plugins:
+ rubocop:
+  enabled: true
+ eslint:
+  enabled: true
+exclude_patterns:
+- "config/"
+- "db/"
+- "dist/"
+- "features/"
+- "**/node_modules/"
+- "script/"
+- "**/spec/"
+- "**/test/"
+- "**/tests/"
+- "**/vendor/"
+- "**/*.d.ts"
+- "**/docs/"
