@@ -94,7 +94,7 @@ exports.putManga = (req, res) => {
     Manga.findOne(
       {
         _id: req.params.id,
-        username,
+        username
       },
       (err, manga) => {
         if (err) {

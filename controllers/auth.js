@@ -21,7 +21,7 @@ exports.generateToken = (req, res) => {
   const username = req.body.username.toLowerCase();
   User.findOne(
     {
-      username,
+      username
     },
     (err, user) => {
       if (err) {
@@ -45,13 +45,13 @@ exports.generateToken = (req, res) => {
             const info = {
               sub: user.username,
               jti: user._id,
-              email: user.email,
+              email: user.email
             };
             // if user is found and password is right
             // create a token
             const token = jwt.sign(info, req.app.get("superSecret"), {
               expiresIn: expTime,
-              issuer: "MangaDB by Rafase282",
+              issuer: "MangaDB by Rafase282"
             });
             // return the information including token as JSON
             const msg =

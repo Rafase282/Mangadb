@@ -13,20 +13,20 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     required: true,
     unique: true,
-    match: /[a-z-0-9]+/,
+    match: /[a-z-0-9]+/
   },
   password: {
     type: String,
     trim: true,
     required: true,
-    unique: false,
+    unique: false
   },
   email: {
     type: String,
     lowercase: true,
     trim: true,
     required: true,
-    unique: true,
+    unique: true
   },
   firstname: {
     type: String,
@@ -34,7 +34,7 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     required: false,
     unique: false,
-    match: /[a-z]/,
+    match: /[a-z]/
   },
   lastname: {
     type: String,
@@ -42,10 +42,10 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     required: false,
     unique: false,
-    match: /[a-z]/,
-  },
+    match: /[a-z]/
+  }
 }).set("toObject", {
-  retainKeyOrder: true,
+  retainKeyOrder: true
 });
 /**
  * Encrypt password before each save.

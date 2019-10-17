@@ -95,7 +95,7 @@ function testObj(res, err, type) {
 function getAuth(cb, username = "rafase282", password = "adminpwd") {
   const credentials = {
     username,
-    password,
+    password
   };
   chai
     .request(server)
@@ -113,7 +113,7 @@ describe("Test server and service functionalities", () => {
     mongoose.createConnection(mongouri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useCreateIndex: true,
+      useCreateIndex: true
     });
     const db = mongoose.connection;
     db.on("error", console.error.bind(console, "connection error:"));
@@ -168,7 +168,7 @@ describe("Test server and service functionalities", () => {
         from: "MangaDB <rafase282@gmail.com>",
         to: "rafase282@gmail.com",
         subject: "Test",
-        text: "This is a test, powered by Chai!",
+        text: "This is a test, powered by Chai!"
       },
       (err, msg) => {
         chai.expect(err).to.equal(null);
@@ -194,7 +194,7 @@ describe("Test server and service functionalities", () => {
             "firstname",
             "lastname",
             "_id",
-            "__v",
+            "__v"
           ]);
           done();
         });

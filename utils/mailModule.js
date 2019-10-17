@@ -7,15 +7,15 @@ const transporter = nodemailer.createTransport({
     clientId: process.env.CLIENTID,
     clientSecret: process.env.CLIENTSECRET,
     refreshToken: process.env.REFRESH,
-    user: process.env.mainEmail,
-  },
+    user: process.env.mainEmail
+  }
 });
 const mailOptions = {
   to: process.env.mainEmail,
   subject: "Email send machanism trigered!",
   from: `${process.env.mainUser} <${process.env.mainEmail}>`,
   text: `Seems like the email mechanism was trigered by someone.\n
-  There is nothing here, check the code, this is the demail template.`,
+  There is nothing here, check the code, this is the demail template.`
 };
 const sendEmail = (exports.sendEmail = (mailOptions, callback) => {
   if (!mailOptions.to || !mailOptions.text)

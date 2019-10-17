@@ -51,7 +51,7 @@ const mongouri =
 mongoose.connect(mongouri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true,
+  useCreateIndex: true
 });
 
 var db = mongoose.connection;

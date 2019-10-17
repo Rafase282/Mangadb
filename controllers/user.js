@@ -39,7 +39,7 @@ exports.postUsers = (req, res) => {
           password: req.body.password,
           email,
           firstname: req.body.firstname,
-          lastname: req.body.lastname,
+          lastname: req.body.lastname
         });
         const msg = `New manga reader ${req.body.username} has been added.`;
         dbHelper.objSave(user, res, msg);
@@ -128,7 +128,7 @@ exports.putUser = (req, res) => {
   ) {
     User.findOne(
       {
-        username,
+        username
       },
       (err, user) => {
         if (err) {

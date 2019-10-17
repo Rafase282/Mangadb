@@ -13,7 +13,7 @@ const MangaSchema = new mongoose.Schema({
     trim: true,
     required: true,
     unique: false,
-    match: /[a-z]/,
+    match: /[a-z]/
   },
   author: {
     type: String,
@@ -21,13 +21,13 @@ const MangaSchema = new mongoose.Schema({
     trim: true,
     required: true,
     unique: false,
-    match: /[a-z]/,
+    match: /[a-z]/
   },
   url: {
     type: String,
     trim: true,
     required: true,
-    unique: false,
+    unique: false
   },
   userStatus: {
     type: String,
@@ -35,7 +35,7 @@ const MangaSchema = new mongoose.Schema({
     trim: true,
     required: true,
     unique: false,
-    match: /[a-z]/,
+    match: /[a-z]/
   },
   type: {
     type: String,
@@ -43,7 +43,7 @@ const MangaSchema = new mongoose.Schema({
     trim: true,
     required: true,
     unique: false,
-    match: /[a-z]/,
+    match: /[a-z]/
   },
   categories: [
     {
@@ -52,15 +52,15 @@ const MangaSchema = new mongoose.Schema({
       trim: true,
       required: true,
       unique: false,
-      match: /[a-z]/,
-    },
+      match: /[a-z]/
+    }
   ],
   chapter: {
     type: Number,
     required: true,
     unique: false,
     min: 0,
-    match: /[0-9]/,
+    match: /[0-9]/
   },
   seriesStatus: {
     type: String,
@@ -68,7 +68,7 @@ const MangaSchema = new mongoose.Schema({
     trim: true,
     required: true,
     unique: false,
-    match: /[a-z]/,
+    match: /[a-z]/
   },
   plot: {
     type: String,
@@ -76,7 +76,7 @@ const MangaSchema = new mongoose.Schema({
     trim: true,
     required: true,
     unique: false,
-    match: /[a-z]/,
+    match: /[a-z]/
   },
   altName: [
     {
@@ -85,8 +85,8 @@ const MangaSchema = new mongoose.Schema({
       trim: true,
       required: false,
       unique: false,
-      match: /[a-z]/,
-    },
+      match: /[a-z]/
+    }
   ],
   direction: {
     type: String,
@@ -94,7 +94,7 @@ const MangaSchema = new mongoose.Schema({
     trim: true,
     required: true,
     unique: false,
-    match: /[a-z]/,
+    match: /[a-z]/
   },
   userId: {
     type: String,
@@ -102,7 +102,7 @@ const MangaSchema = new mongoose.Schema({
     trim: true,
     required: false,
     unique: false,
-    match: /[a-z-0-9]+/,
+    match: /[a-z-0-9]+/
   },
   username: {
     type: String,
@@ -110,15 +110,15 @@ const MangaSchema = new mongoose.Schema({
     trim: true,
     required: false,
     unique: false,
-    match: /[a-z-0-9]+/,
+    match: /[a-z-0-9]+/
   },
   thumbnail: {
     type: String,
     trim: true,
     required: true,
-    unique: false,
-  },
+    unique: false
+  }
 }).set("toObject", {
-  retainKeyOrder: true,
+  retainKeyOrder: true
 });
 module.exports = mongoose.model("Manga", MangaSchema);
