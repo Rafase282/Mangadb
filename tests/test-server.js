@@ -93,7 +93,14 @@ function getAuth(cb, username = 'rafase282', password = 'adminpwd') {
 describe('Test server and service functionalities', () => {
 
   before(() => {
-    mongoose.createConnection(mongouri);
+    mongoose.createConnection(mongouri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true
+    });
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', console.log.bind(console, 'Connected!'));
   });
   beforeEach((done) => {
     // Populate the DB
