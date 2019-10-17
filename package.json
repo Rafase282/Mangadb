@@ -1,12 +1,13 @@
 {
   "name": "mangadb",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "description": "A service to help users keep a good record of their favorite manga series",
   "main": "server.js",
   "scripts": {
     "start": "clear && node server.js",
     "test": "clear && mocha tests/test-server.js || true",
-    "lint": "clear && eslint . || true"
+    "lint": "clear && eslint . || true",
+    "prettier": "clear && prettier --write \"**/*.js\""
   },
   "repository": {
     "type": "git",
@@ -28,8 +29,13 @@
     "chai-http": "^4.3.0",
     "codecov": "^3.6.1",
     "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "husky": "^3.0.9",
     "istanbul": "^0.4.5",
-    "mocha": "^6.2.1"
+    "mocha": "^6.2.1",
+    "prettier": "1.18.2",
+    "pretty-quick": "^2.0.0"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
@@ -40,5 +46,10 @@
     "mongoose": "^5.7.5",
     "nodemailer": "^6.3.1",
     "quickemailverification": "^1.0.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }

@@ -1,0 +1,9 @@
+# Custom
+*.lock
+*.env
+*.db
+users.json
+mangas.json
+*.patch
+package-lock.json
+docs/*

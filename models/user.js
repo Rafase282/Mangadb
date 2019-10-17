@@ -2,10 +2,10 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 /**
-  * Defines user schema
-  * {username, password, email, firstname, lastname}
-  * @param {Object}
-**/
+ * Defines user schema
+ * {username, password, email, firstname, lastname}
+ * @param {Object}
+ **/
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -13,20 +13,20 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     required: true,
     unique: true,
-    match: /[a-z-0-9]+/
+    match: /[a-z-0-9]+/,
   },
   password: {
     type: String,
     trim: true,
     required: true,
-    unique: false
+    unique: false,
   },
   email: {
     type: String,
     lowercase: true,
     trim: true,
     required: true,
-    unique: true
+    unique: true,
   },
   firstname: {
     type: String,
@@ -34,7 +34,7 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     required: false,
     unique: false,
-    match: /[a-z]/
+    match: /[a-z]/,
   },
   lastname: {
     type: String,
@@ -42,17 +42,17 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     required: false,
     unique: false,
-    match: /[a-z]/
-  }
+    match: /[a-z]/,
+  },
 }).set('toObject', {
-  retainKeyOrder: true
+  retainKeyOrder: true,
 });
 /**
-  * Encrypt password before each save.
-  * @param {String}
-  * @param {Function}
-  * @param {Function}
-**/
+ * Encrypt password before each save.
+ * @param {String}
+ * @param {Function}
+ * @param {Function}
+ **/
 UserSchema.pre('save', function(callback) {
   const user = this;
 
@@ -70,11 +70,11 @@ UserSchema.pre('save', function(callback) {
   });
 });
 /**
-  * Verify the password.
-  * Password is compared without losing encryption.
-  * @param {Function}
-  * @param {Function}
-**/
+ * Verify the password.
+ * Password is compared without losing encryption.
+ * @param {Function}
+ * @param {Function}
+ **/
 UserSchema.methods.verifyPassword = function(password, cb) {
   bcrypt.compare(password, this.password, (err, isMatch) => {
     if (err) return cb(err);

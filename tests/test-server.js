@@ -29,20 +29,35 @@ const newmanga = new UserManga(mongoose.Types.ObjectId(), 'aiki', 282, 'pepe');
 let token = '';
 
 //Object Constructors
-function MangaUser(usr='rafase282', email='rafase282@gmail.com', pwd='adminpwd',
- firstname='rafael', lastname='rodriguez') {
+function MangaUser(
+  usr = 'rafase282',
+  email = 'rafase282@gmail.com',
+  pwd = 'adminpwd',
+  firstname = 'rafael',
+  lastname = 'rodriguez'
+) {
   this.username = usr;
   this.password = pwd;
   this.email = email;
   this.firstname = firstname;
   this.lastname = lastname;
 }
-function UserManga(id=mongoose.Types.ObjectId(), title='kingdom', chapter=41,
- username='rafase282', altName='name1, name 2', author='hara yasuhisa',
- url='http://www.readmanga.today/kingdom', type='japanese',
- categories='action, historical',  userStatus='reading',
- seriesStatus='ongoing', plot='something', direction='right to left',
- thumbnail='http://www.readmanga.today/uploads/posters/0001_576.jpg') {
+function UserManga(
+  id = mongoose.Types.ObjectId(),
+  title = 'kingdom',
+  chapter = 41,
+  username = 'rafase282',
+  altName = 'name1, name 2',
+  author = 'hara yasuhisa',
+  url = 'http://www.readmanga.today/kingdom',
+  type = 'japanese',
+  categories = 'action, historical',
+  userStatus = 'reading',
+  seriesStatus = 'ongoing',
+  plot = 'something',
+  direction = 'right to left',
+  thumbnail = 'http://www.readmanga.today/uploads/posters/0001_576.jpg'
+) {
   this.title = title;
   this.chapter = chapter;
   this.altName = altName;
@@ -61,15 +76,17 @@ function UserManga(id=mongoose.Types.ObjectId(), title='kingdom', chapter=41,
 
 // Repeated testing
 function testObj(res, err, type) {
-  res.status.should.be.oneOf([200, 400, 402, 403, 404])
-  res.should.have
-    .header('content-type', 'application/json; charset=utf-8');
-  res.body.should.be.a('object')
-  res.body.should.have.property('success').be.a('boolean').equal(true);
+  res.status.should.be.oneOf([200, 400, 402, 403, 404]);
+  res.should.have.header('content-type', 'application/json; charset=utf-8');
+  res.body.should.be.a('object');
+  res.body.should.have
+    .property('success')
+    .be.a('boolean')
+    .equal(true);
   res.body.should.have.property('message').be.a('string');
   res.body.should.have.property('data').be.a(type);
   if (err) console.log(err.response.error);
-  if (type === 'array'){
+  if (type === 'array') {
     res.body.data.length.should.be.above(0);
     res.body.data[0].should.be.a('object');
     res.body.data[0].username.should.be.a('string');
@@ -78,9 +95,10 @@ function testObj(res, err, type) {
 function getAuth(cb, username = 'rafase282', password = 'adminpwd') {
   const credentials = {
     username,
-    password
-  }
-  chai.request(server)
+    password,
+  };
+  chai
+    .request(server)
     .post(`${api}/auth`)
     .send(credentials)
     .end((err, res) => {
@@ -91,12 +109,11 @@ function getAuth(cb, username = 'rafase282', password = 'adminpwd') {
 }
 
 describe('Test server and service functionalities', () => {
-
   before(() => {
     mongoose.createConnection(mongouri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useCreateIndex: true
+      useCreateIndex: true,
     });
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
@@ -126,7 +143,8 @@ describe('Test server and service functionalities', () => {
   });
 
   it('GET /: Responds with swagger Docs', (done) => {
-    chai.request(server)
+    chai
+      .request(server)
       .get('/')
       .end((err, res) => {
         res.should.have.status(200);
@@ -136,7 +154,8 @@ describe('Test server and service functionalities', () => {
       });
   });
   it(`GET ${api}: Respond with JSON Greeting`, (done) => {
-    chai.request(server)
+    chai
+      .request(server)
       .get(api)
       .end((err, res) => {
         testObj(res, err, 'null');
@@ -144,45 +163,48 @@ describe('Test server and service functionalities', () => {
       });
   });
   it('Send email to user', (done) => {
-    sendEmail({
-      from : 'MangaDB <rafase282@gmail.com>',
-      to : 'rafase282@gmail.com',
-      subject : 'Test',
-      text : 'This is a test, powered by Chai!'
-    }, (err, msg) => {
-      chai.expect(err).to.equal(null);
-      chai.expect(msg.accepted[0]).to.equal(process.env.mainEmail);
-      chai.expect(msg.response).to.match(/2.0.+OK/);
-      done();
-    });
+    sendEmail(
+      {
+        from: 'MangaDB <rafase282@gmail.com>',
+        to: 'rafase282@gmail.com',
+        subject: 'Test',
+        text: 'This is a test, powered by Chai!',
+      },
+      (err, msg) => {
+        chai.expect(err).to.equal(null);
+        chai.expect(msg.accepted[0]).to.equal(process.env.mainEmail);
+        chai.expect(msg.response).to.match(/2.0.+OK/);
+        done();
+      }
+    );
   });
 
   describe('Test creating, updating and retrieving of Users', () => {
     it(`POST ${api}/users: Creates a new user`, (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .post(`${api}/users`)
         .send(newuser)
         .end((err, res) => {
           testObj(res, err, 'object');
-          res.body.data.should.have.all
-            .keys([
-              'username',
-              'password',
-              'email',
-              'firstname',
-              'lastname',
-              '_id',
-              '__v'
-            ]);
+          res.body.data.should.have.all.keys([
+            'username',
+            'password',
+            'email',
+            'firstname',
+            'lastname',
+            '_id',
+            '__v',
+          ]);
           done();
         });
     });
-    it(`POST ${api}/auth: Should return JSON data containing the JWT`,
-      (done) => {
-        getAuth(done);
-      });
+    it(`POST ${api}/auth: Should return JSON data containing the JWT`, (done) => {
+      getAuth(done);
+    });
     it(`GET ${api}/users/${user}: Find user by username`, (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .get(`${api}/users/${user}`)
         .set('x-access-token', `${token}`)
         .end((err, res) => {
@@ -193,7 +215,8 @@ describe('Test server and service functionalities', () => {
     });
     it(`PUT ${api}/users/${user}: Update ${user}'s information`, (done) => {
       const firstname = admin.firstname;
-      chai.request(server)
+      chai
+        .request(server)
         .put(`${api}/users/${user}`)
         .set('x-access-token', `${token}`)
         .send({firstname})
@@ -206,7 +229,8 @@ describe('Test server and service functionalities', () => {
     });
     it(`GET ${api}/users: Admin retrieves all users in the DB`, (done) => {
       new User(newuser).save().then(() => {
-        chai.request(server)
+        chai
+          .request(server)
           .get(`${api}/users`)
           .set('x-access-token', `${token}`)
           .end((err, res) => {
@@ -214,34 +238,34 @@ describe('Test server and service functionalities', () => {
             done();
           });
       });
-
     });
   });
   describe('Test creating, updating and retrieving of Mangas', () => {
-    it(`POST ${api}/mangas/${user}: Create ${manga.title} manga for ${user}`,
-      (done) => {
-        chai.request(server)
-          .post(`${api}/mangas/${user}`)
-          .set('x-access-token', `${token}`)
-          .send(new UserManga())
-          .end((err, res) => {
-            testObj(res, err, 'object');
-            res.body.data.title.should.equal(manga.title);
-            done();
-          });
+    it(`POST ${api}/mangas/${user}: Create ${manga.title} manga for ${user}`, (done) => {
+      chai
+        .request(server)
+        .post(`${api}/mangas/${user}`)
+        .set('x-access-token', `${token}`)
+        .send(new UserManga())
+        .end((err, res) => {
+          testObj(res, err, 'object');
+          res.body.data.title.should.equal(manga.title);
+          done();
+        });
     });
-    it(`GET ${api}/mangas/${user}: Returns list of ${user}'s mangas`,
-      (done) => {
-        chai.request(server)
-          .get(`${api}/mangas/${user}`)
-          .set('x-access-token', `${token}`)
-          .end((err, res) => {
-            testObj(res, err, 'array');
-            done();
-          });
+    it(`GET ${api}/mangas/${user}: Returns list of ${user}'s mangas`, (done) => {
+      chai
+        .request(server)
+        .get(`${api}/mangas/${user}`)
+        .set('x-access-token', `${token}`)
+        .end((err, res) => {
+          testObj(res, err, 'array');
+          done();
+        });
     });
     it(`GET ${api}/mangas/${user}/${title}: Find manga by id`, (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .get(`${api}/mangas/${user}/${id}`)
         .set('x-access-token', `${token}`)
         .end((err, res) => {
@@ -250,7 +274,8 @@ describe('Test server and service functionalities', () => {
         });
     });
     it(`GET ${api}/mangas/${user}/title/${title}: Find manga by title`, (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .get(`${api}/mangas/${user}/title/${title}`)
         .set('x-access-token', `${token}`)
         .end((err, res) => {
@@ -259,7 +284,8 @@ describe('Test server and service functionalities', () => {
         });
     });
     it(`GET ${api}/mangas: Admin retrieves all mangas in the DB`, (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .get(`${api}/mangas`)
         .set('x-access-token', `${token}`)
         .end((err, res) => {
@@ -267,54 +293,55 @@ describe('Test server and service functionalities', () => {
           done();
         });
     });
-    it(`PUT ${api}/mangas/${user}/${id}: Update ${manga.title} manga for ${user}`,
-      (done) => {
-        chai.request(server)
-          .put(`${api}/mangas/${user}/${id}`)
-          .set('x-access-token', `${token}`)
-          .send({chapter})
-          .end((err, res) => {
-            testObj(res, err, 'object');
-            res.body.data.chapter.should.equal(chapter);
-            done();
-          });
+    it(`PUT ${api}/mangas/${user}/${id}: Update ${manga.title} manga for ${user}`, (done) => {
+      chai
+        .request(server)
+        .put(`${api}/mangas/${user}/${id}`)
+        .set('x-access-token', `${token}`)
+        .send({chapter})
+        .end((err, res) => {
+          testObj(res, err, 'object');
+          res.body.data.chapter.should.equal(chapter);
+          done();
+        });
     });
   });
   describe('Test Manga deletion', () => {
-    it(`DEL ${api}/mangas/${user}/${id}: Delete ${manga.title} manga for ${user}`,
-      (done) => {
-        chai.request(server)
-          .del(`${api}/mangas/${user}/${id}`)
-          .set('x-access-token', `${token}`)
-          .end((err, res) => {
-            testObj(res, err, 'object');
-            done();
-          });
+    it(`DEL ${api}/mangas/${user}/${id}: Delete ${manga.title} manga for ${user}`, (done) => {
+      chai
+        .request(server)
+        .del(`${api}/mangas/${user}/${id}`)
+        .set('x-access-token', `${token}`)
+        .end((err, res) => {
+          testObj(res, err, 'object');
+          done();
+        });
     });
-    it(`DEL ${api}/mangas/${user}: Delete all mangas for ${user}`,
-      (done) => {
-        chai.request(server)
-          .del(`${api}/mangas/${user}`)
-          .set('x-access-token', `${token}`)
-          .end((err, res) => {
-            testObj(res, err, 'object');
-            done();
-          });
+    it(`DEL ${api}/mangas/${user}: Delete all mangas for ${user}`, (done) => {
+      chai
+        .request(server)
+        .del(`${api}/mangas/${user}`)
+        .set('x-access-token', `${token}`)
+        .end((err, res) => {
+          testObj(res, err, 'object');
+          done();
+        });
     });
-    it(`DEL ${api}/mangas: Delete all mangas`,
-      (done) => {
-        chai.request(server)
-          .del(`${api}/mangas`)
-          .set('x-access-token', `${token}`)
-          .end((err, res) => {
-            testObj(res, err, 'object');
-            done();
-          });
+    it(`DEL ${api}/mangas: Delete all mangas`, (done) => {
+      chai
+        .request(server)
+        .del(`${api}/mangas`)
+        .set('x-access-token', `${token}`)
+        .end((err, res) => {
+          testObj(res, err, 'object');
+          done();
+        });
     });
   });
   describe('Test User deletion', () => {
     it(`DEL ${api}/users: Deletes all users`, (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .del(`${api}/users`)
         .set('x-access-token', `${token}`)
         .end((err, res) => {
@@ -323,7 +350,8 @@ describe('Test server and service functionalities', () => {
         });
     });
     it(`DEL ${api}/users/${user}: Deletes ${user}`, (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .del(`${api}/users/${user}`)
         .set('x-access-token', `${token}`)
         .end((err, res) => {
@@ -332,5 +360,4 @@ describe('Test server and service functionalities', () => {
         });
     });
   });
-
 });
