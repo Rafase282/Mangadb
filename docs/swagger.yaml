@@ -7,7 +7,7 @@ info:
     If you have any questions or want to contribute then [![Gitter](https://badges.gitter.im/Rafase282/Mangadb.svg)](https://gitter.im/Rafase282/Mangadb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
     To create an admin account, you must specify it as a comma separated list on the `.env` file.
-  version: "2.3.0"
+  version: "2.4.0"
   title: MangaDB Swagger
   termsOfService: http://helloreverb.com/terms/
   contact:
@@ -28,26 +28,39 @@ securityDefinitions:
     type: apiKey
     name: x-access-token
     in: header
-    description: This is actually a JSON Web Token (JWT) and it is required for all secured routes. There is an admin and regular users.
+    description: >-
+      This is actually a JSON Web Token (JWT) and it is required for all secured routes.
+      There is an admin and regular users.
 paths:
   /:
     get:
       tags:
         - Index
       summary: Displays a welcome message.
-      description: This route does notrequires a JWT. The usesr will get a message pointing to the documentation as there is nothign to do here.
+      description: >-
+        This route does notrequires a JWT. The usesr will get a message pointing to the
+        documentation as there is nothign to do here.
       operationId: getWelcome
       responses:
         200:
           description: Ok
           schema:
-            $ref: '#/definitions/Auth'
+            $ref: '#/definitions/Success'
+  /api/v2:
+    get:
+      tags:
+        - Index
+      summary: Displays a welcome message.
+      description: This route does notrequires a JWT. The usesr will get the swagger documentation.
+      operationId: getWelcome        
   /auth:
     post:
       tags:
-        - mangas
+        - Authentication
       summary: Authenticates existing users for using the API for one hour.
-      description: This route does notrequires a JWT, but instead provides one for the user that expires in one hour. The  response provides the JWT along with some useful information.
+      description: >-
+        This route does notrequires a JWT, but instead provides one for the user that expires in one hour.
+        The response provides the JWT along with some useful information.
       operationId: getToken
       parameters:
         - in: formData
@@ -78,13 +91,49 @@ paths:
           description: Authentication failed.
           schema:
             $ref: '#/definitions/Error'
+  /reset:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticates existing users for using the API for one hour.
+      description: >-
+        This route does notrequires a JWT, but instead provides one 
+        for the user that expires in five minutes. The  response provides the 
+        JWT along with some useful information. This is used to get temporary access to change
+        a password. The token will be sent via email and not returned on the payload.
+      operationId: getToken
+      parameters:
+        - in: formData
+          name: email
+          description: Target email.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Auth'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
   /mangas:
     get:
       tags:
-        - mangas
-        - admin
+        - Mangas
+        - Administrators
       summary: Gets a list of all mangas on the database.
-      description: The admin uses this route to get a list of all the mangas and their data regardless of the user. Good for checking when you don't have access to the databse directly.
+      description: >-
+        The admin uses this route to get a list of all the mangas and their data
+        regardless of the user. Good for checking when you don't have access to the databse directly.
       operationId: getAllMangas
       responses:
         200:
@@ -107,8 +156,8 @@ paths:
         - api_key: []
     delete:
       tags:
-        - mangas
-        - admin
+        - Mangas
+        - Administrators
       summary: Deletes all mangas.
       description: This deletes all the mangas for all the users, except the admin.
       operationId: delMangas
@@ -134,7 +183,7 @@ paths:
   /mangas/{username}:
     get:
       tags:
-        - mangas
+        - Mangas
       summary: Returns a list of all the mangas the user has.
       description: Users can only view their own content. However, the admin can also view it.
       operationId: getMangas
@@ -165,7 +214,7 @@ paths:
         - api_key: []
     post:
       tags:
-        - mangas
+        - Mangas
       summary: Creates new manga.
       description: The manga title should be unique. Please see the `Manga Schema`.
       operationId: postManga
@@ -257,7 +306,7 @@ paths:
         - api_key: []
     delete:
       tags:
-        - mangas
+        - Mangas
       summary: Deletes all mangas from target user
       description: Route for users to delete their their mangas all at once or for the admin to do it.
       operationId: delUserManga
@@ -289,9 +338,11 @@ paths:
   /mangas/{username}/{id}:
     get:
       tags:
-        - mangas
+        - Mangas
       summary: Get information on a specific user's managa by its ID.
-      description: Route for retrivng the a specific manga. For the admin to use these routes, the target username should still be used.
+      description: >-
+        Route for retrivng the a specific manga. For the admin to use these routes,
+        the target username should still be used.
       operationId: getManga
       parameters:
         - in: path
@@ -325,9 +376,12 @@ paths:
         - api_key: []
     put:
       tags:
-        - mangas
+        - Mangas
       summary: Updates any and all manga fields.
-      description: This route allows to update the whole object or part of it. If you want to update specific fields, then just add the fields you want to update only.
+      description: >-
+        This route allows to update the whole object or part of it. 
+        If you want to update specific fields, 
+        then just add the fields you want to update only.
       operationId: putManga
       parameters:
         - in: path
@@ -366,7 +420,7 @@ paths:
         - api_key: []
     delete:
       tags:
-        - mangas
+        - Mangas
       summary: Deletes target manga.
       description: Deleters the target manga for the specified username. It can also be used by the admin.
       operationId: delManga
@@ -403,9 +457,12 @@ paths:
   /mangas/{username}/title/{manga_title}:
     get:
       tags:
-        - mangas
+        - Mangas
       summary: Get information on all mangas with the same title.
-      description: Route for retrivng mangas by title for a target user. The respponse will be an array with all mangas with the same title for said user. For the admin to use these routes, the target username should still be used.
+      description: >-
+        Route for retrivng mangas by title for a target user. 
+        The respponse will be an array with all mangas with the same title for said user. 
+        For the admin to use these routes, the target username should still be used.
       operationId: getMangasbyTitle
       parameters:
         - in: path
@@ -440,10 +497,12 @@ paths:
   /users:
     get:
       tags:
-        - users
-        - admin
+        - Users
+        - Administrators
       summary: Get a list of all the users in the database.
-      description: The route provides an array of user objects containing the details of the users. However, passwords are always encrypted so admin can't read them.
+      description: >-
+        The route provides an array of user objects containing the details of the users. 
+        However, passwords are always encrypted so admin can't read them.
       operationId: getUsers
       responses:
         200:
@@ -466,9 +525,11 @@ paths:
         - api_key: []
     post:
       tags:
-        - mangas
+        - Mangas
       summary: Creates new user.
-      description: The route creates new regular users. The only way to create an admin account is to specify the username in the server.
+      description: >-
+        The route creates new regular users. 
+        The only way to create an admin account is to specify the username in the server.
       operationId: postUsers
       parameters:
         - in: formData
@@ -516,10 +577,12 @@ paths:
             $ref: '#/definitions/Error'
     delete:
       tags:
-        - users
-        - admin
+        - Users
+        - Administrators
       summary: Deletes all users but the admin.
-      description: This route is for the administrator only. It allows the deleting of all users except the admin account.
+      description: >-
+        This route is for the administrator only. 
+        It allows the deleting of all users except the admin account.
       operationId: delUsers
       responses:
         200:
@@ -543,7 +606,7 @@ paths:
   /users/{username}:
     get:
       tags:
-        - users
+        - Users
       summary: Get specified user's data.
       description: Route to retrieve user's information.
       operationId: getUser
@@ -574,9 +637,11 @@ paths:
         - api_key: []
     put:
       tags:
-        - users
+        - Users
       summary: Updates user's information.
-      description: This route allows to update the whole object or part of it. If you want to update specific fields, then just add the fields you want to update only.
+      description: >-
+        This route allows to update the whole object or part of it. 
+        If you want to update specific fields, then just add the fields you want to update only.
       operationId: putUser
       parameters:
         - in: path
@@ -610,10 +675,12 @@ paths:
         - api_key: []
     delete:
       tags:
-        - users
-        - admin
+        - Users
+        - Administrators
       summary: Deletes target user.
-      description: This route deletes the target user. However, it does not deletes its mangas. So further action should be taken via `/mangas/{username`.
+      description: >-
+        This route deletes the target user. However, it does not deletes its mangas. 
+        So further action should be taken via `/mangas/{username`.
       operationId: delUser
       parameters:
         - in: path
@@ -752,6 +819,18 @@ definitions:
       data:
         type: object
         description: It is actually null.
+  Success:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: True or false depending of the code.
+      message:
+        type: string
+        description: Message reporting action status.
+      data:
+        type: object
+        description: This will be null.
   Auth:
     type: object
     properties:

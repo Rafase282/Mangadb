@@ -119,7 +119,7 @@ describe("Test server and service functionalities", () => {
     db.on("error", console.error.bind(console, "connection error:"));
     db.once("open", console.log.bind(console, "Connected!"));
   });
-  beforeEach((done) => {
+  beforeEach(done => {
     // Populate the DB
     new User(admin).save().then(() => {
       new Manga(manga).save().then(() => {
@@ -131,7 +131,7 @@ describe("Test server and service functionalities", () => {
       });
     });
   });
-  afterEach((done) => {
+  afterEach(done => {
     // Delete Populated DB
     mongoose.connection.db.dropDatabase().then(() => {
       token = "";
@@ -142,7 +142,7 @@ describe("Test server and service functionalities", () => {
     mongoose.connection.close();
   });
 
-  it("GET /: Responds with swagger Docs", (done) => {
+  it("GET /: Responds with swagger Docs", done => {
     chai
       .request(server)
       .get("/")
@@ -153,7 +153,7 @@ describe("Test server and service functionalities", () => {
         done();
       });
   });
-  it(`GET ${api}: Respond with JSON Greeting`, (done) => {
+  it(`GET ${api}: Respond with JSON Greeting`, done => {
     chai
       .request(server)
       .get(api)
@@ -162,7 +162,7 @@ describe("Test server and service functionalities", () => {
         done();
       });
   });
-  it("Send email to user", (done) => {
+  it("Send email to user", done => {
     sendEmail(
       {
         from: "MangaDB <rafase282@gmail.com>",
@@ -180,7 +180,7 @@ describe("Test server and service functionalities", () => {
   });
 
   describe("Test creating, updating and retrieving of Users", () => {
-    it(`POST ${api}/users: Creates a new user`, (done) => {
+    it(`POST ${api}/users: Creates a new user`, done => {
       chai
         .request(server)
         .post(`${api}/users`)
@@ -199,10 +199,10 @@ describe("Test server and service functionalities", () => {
           done();
         });
     });
-    it(`POST ${api}/auth: Should return JSON data containing the JWT`, (done) => {
+    it(`POST ${api}/auth: Should return JSON data containing the JWT`, done => {
       getAuth(done);
     });
-    it(`GET ${api}/users/${user}: Find user by username`, (done) => {
+    it(`GET ${api}/users/${user}: Find user by username`, done => {
       chai
         .request(server)
         .get(`${api}/users/${user}`)
@@ -213,7 +213,7 @@ describe("Test server and service functionalities", () => {
           done();
         });
     });
-    it(`PUT ${api}/users/${user}: Update ${user}'s information`, (done) => {
+    it(`PUT ${api}/users/${user}: Update ${user}'s information`, done => {
       const firstname = admin.firstname;
       chai
         .request(server)
@@ -227,7 +227,7 @@ describe("Test server and service functionalities", () => {
           done();
         });
     });
-    it(`GET ${api}/users: Admin retrieves all users in the DB`, (done) => {
+    it(`GET ${api}/users: Admin retrieves all users in the DB`, done => {
       new User(newuser).save().then(() => {
         chai
           .request(server)
@@ -241,7 +241,7 @@ describe("Test server and service functionalities", () => {
     });
   });
   describe("Test creating, updating and retrieving of Mangas", () => {
-    it(`POST ${api}/mangas/${user}: Create ${manga.title} manga for ${user}`, (done) => {
+    it(`POST ${api}/mangas/${user}: Create ${manga.title} manga for ${user}`, done => {
       chai
         .request(server)
         .post(`${api}/mangas/${user}`)
@@ -253,7 +253,7 @@ describe("Test server and service functionalities", () => {
           done();
         });
     });
-    it(`GET ${api}/mangas/${user}: Returns list of ${user}'s mangas`, (done) => {
+    it(`GET ${api}/mangas/${user}: Returns list of ${user}'s mangas`, done => {
       chai
         .request(server)
         .get(`${api}/mangas/${user}`)
@@ -263,7 +263,7 @@ describe("Test server and service functionalities", () => {
           done();
         });
     });
-    it(`GET ${api}/mangas/${user}/${title}: Find manga by id`, (done) => {
+    it(`GET ${api}/mangas/${user}/${title}: Find manga by id`, done => {
       chai
         .request(server)
         .get(`${api}/mangas/${user}/${id}`)
@@ -273,7 +273,7 @@ describe("Test server and service functionalities", () => {
           done();
         });
     });
-    it(`GET ${api}/mangas/${user}/title/${title}: Find manga by title`, (done) => {
+    it(`GET ${api}/mangas/${user}/title/${title}: Find manga by title`, done => {
       chai
         .request(server)
         .get(`${api}/mangas/${user}/title/${title}`)
@@ -283,7 +283,7 @@ describe("Test server and service functionalities", () => {
           done();
         });
     });
-    it(`GET ${api}/mangas: Admin retrieves all mangas in the DB`, (done) => {
+    it(`GET ${api}/mangas: Admin retrieves all mangas in the DB`, done => {
       chai
         .request(server)
         .get(`${api}/mangas`)
@@ -293,7 +293,7 @@ describe("Test server and service functionalities", () => {
           done();
         });
     });
-    it(`PUT ${api}/mangas/${user}/${id}: Update ${manga.title} manga for ${user}`, (done) => {
+    it(`PUT ${api}/mangas/${user}/${id}: Update ${manga.title} manga for ${user}`, done => {
       chai
         .request(server)
         .put(`${api}/mangas/${user}/${id}`)
@@ -307,7 +307,7 @@ describe("Test server and service functionalities", () => {
     });
   });
   describe("Test Manga deletion", () => {
-    it(`DEL ${api}/mangas/${user}/${id}: Delete ${manga.title} manga for ${user}`, (done) => {
+    it(`DEL ${api}/mangas/${user}/${id}: Delete ${manga.title} manga for ${user}`, done => {
       chai
         .request(server)
         .del(`${api}/mangas/${user}/${id}`)
@@ -317,7 +317,7 @@ describe("Test server and service functionalities", () => {
           done();
         });
     });
-    it(`DEL ${api}/mangas/${user}: Delete all mangas for ${user}`, (done) => {
+    it(`DEL ${api}/mangas/${user}: Delete all mangas for ${user}`, done => {
       chai
         .request(server)
         .del(`${api}/mangas/${user}`)
@@ -327,7 +327,7 @@ describe("Test server and service functionalities", () => {
           done();
         });
     });
-    it(`DEL ${api}/mangas: Delete all mangas`, (done) => {
+    it(`DEL ${api}/mangas: Delete all mangas`, done => {
       chai
         .request(server)
         .del(`${api}/mangas`)
@@ -339,7 +339,7 @@ describe("Test server and service functionalities", () => {
     });
   });
   describe("Test User deletion", () => {
-    it(`DEL ${api}/users: Deletes all users`, (done) => {
+    it(`DEL ${api}/users: Deletes all users`, done => {
       chai
         .request(server)
         .del(`${api}/users`)
@@ -349,7 +349,7 @@ describe("Test server and service functionalities", () => {
           done();
         });
     });
-    it(`DEL ${api}/users/${user}: Deletes ${user}`, (done) => {
+    it(`DEL ${api}/users/${user}: Deletes ${user}`, done => {
       chai
         .request(server)
         .del(`${api}/users/${user}`)

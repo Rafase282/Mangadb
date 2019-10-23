@@ -11,7 +11,7 @@ const auth = require("./auth.js");
  * @return {String} res
  **/
 const objSave = (exports.objSave = (object, res, msg) => {
-  object.save((err) => {
+  object.save(err => {
     if (err) {
       console.log(err);
       resMsg(res, 400, false, err.errmsg || err.message, null);
@@ -48,7 +48,7 @@ const resMsg = (exports.resMsg = (
  * @param {Array || String} input
  * @return {Array || String} list
  **/
-const objItemize = (exports.objItemize = (input) => {
+const objItemize = (exports.objItemize = input => {
   let list;
   switch (true) {
     case input === null || input === undefined:
@@ -169,7 +169,7 @@ const getData = (exports.getData = (
  * @param {String} str
  * @return {String} str
  **/
-const lowerCase = (exports.lowerCase = (str) =>
+const lowerCase = (exports.lowerCase = str =>
   typeof str === "undefined" ? str : str.toLowerCase());
 /**
  * Function to update a Manga object.

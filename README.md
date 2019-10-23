@@ -37,7 +37,7 @@ If you need help generating the Gmail credentials read this [article](https://gi
 
 ## Documentation and links:
 
-- The [API documentation](http://localhost:3000/) can be found on the root route when you run the app.
+- The [API documentation](http://localhost:8080/) can be found on the root route when you run the app.
 - You can find the current client [here.](https://manga-client.herokuapp.com/)
 - [Project Status.](https://github.com/Rafase282/Mangadb/projects/1)
 
@@ -52,5 +52,3 @@ If you have any questions not related to any of the open issues, then you can re
 If you like the project, please start it to receive updates and help make it more noticeable.
 
 #### If you would like to help out with financial support, you are welcome to do so via [paypal.me/rafase282](paypal.me/rafase282).
-
-I'm currently looking to get my career started so any amount helps. If you would like to hire me for a position or work on a project then you may also contact me about that.
