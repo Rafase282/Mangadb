@@ -82,6 +82,14 @@ const customEmail = (exports.customEmail = (type, user, email, callback) => {
       mailOptions.text = `The admin ${user} has requested this action.\n
       If you did not request this change, then please change your password and check account integrity.`;
       break;
+    case 6:
+      // Temporary JWT has been emailed
+      mailOptions.subject = `Your temporary MangaDB's token.`;
+      mailOptions.text = `A reset token was requested for ${email}. It will be valid only for 5 minutes.
+You will need to reset your password before then, otherwise a new token will be required.\n
+Your token is: ${user}\n
+If you did not request this token, then please ignore this email.`;
+      break;
   }
   sendEmail(mailOptions, callback);
 });

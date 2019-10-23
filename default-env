@@ -9,7 +9,7 @@
 MONGOLAB_URI="localhost:27017/mangadb"
 IP="localhost"
 SECRET="secretsecrets"
-PORT="3000"
+PORT="8080"
 ADMIN="['Admin1, 'Admin2']"
 API_VERSION="v2"
 

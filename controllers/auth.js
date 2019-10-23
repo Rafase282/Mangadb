@@ -3,10 +3,11 @@ const User = require("../models/user");
 const dbHelper = require("./dbHelper");
 const jwt = require("jsonwebtoken");
 require("dotenv").config({ silent: true });
-const ADMINS = (exports.ADMINS = process.env.ADMIN.split(",").map((str) =>
+const sendMail = require("../utils/mailModule").customEmail;
+const ADMINS = (exports.ADMINS = process.env.ADMIN.split(",").map(str =>
   str.trim()
 ));
-const admins = (exports.admins = ADMINS.map((str) => str.toLowerCase()));
+const admins = (exports.admins = ADMINS.map(str => str.toLowerCase()));
 
 /**
  * Generates JWT For User
@@ -40,7 +41,7 @@ exports.generateToken = (req, res) => {
             const msg = "Authentication failed. Wrong password.";
             dbHelper.resMsg(res, 404, false, msg, null);
           } else {
-            const expTime = 60 * 60; // expires in 1 hour "seconds X Minutes"
+            const expTime = 60 * 60; // expires in 1 hour "seconds X minutes"
             // Create object for the token
             const info = {
               sub: user.username,
@@ -60,6 +61,55 @@ exports.generateToken = (req, res) => {
             dbHelper.resMsg(res, 200, true, msg, token);
           }
         });
+      }
+    }
+  );
+};
+/**
+ * Generates short term JWT For User
+ * Returns result code and standard information
+ * Accessed at POST /api/v#/reset
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Null}
+ **/
+const auth = "You do not have the right permission for this action.";
+const emailCallback = (err, msg) => {
+  if (err) console.log(msg);
+};
+exports.generateOTP = (req, res) => {
+  // find the user
+  const email = req.body.email.toLowerCase();
+  User.findOne(
+    {
+      email
+    },
+    (err, user) => {
+      if (err) {
+        dbHelper.resMsg(res, 400, false, err, null);
+      }
+      if (!user) {
+        const msg = `Unable to send a temporary token. ${email} not found.`;
+        dbHelper.resMsg(res, 404, false, msg, null);
+      } else if (user) {
+        const expTime = 60 * 5; // expires in 5 minutes "seconds X minutes"
+        // Create object for the token
+        const info = {
+          sub: user.username,
+          jti: user._id,
+          email: user.email
+        };
+        // create a token
+        const token = jwt.sign(info, req.app.get("superSecret"), {
+          expiresIn: expTime,
+          issuer: "MangaDB by Rafase282"
+        });
+        // return the information including token as JSON
+        const msg =
+          `A temporary token has been generated for ${email} ` +
+          `you have ${expTime / 60} minutes to reset your password!`;
+        dbHelper.resMsg(res, 200, true, msg, null);
+        sendMail(6, token, email, emailCallback);
       }
     }
   );
