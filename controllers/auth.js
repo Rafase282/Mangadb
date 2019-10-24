@@ -10,6 +10,21 @@ const ADMINS = (exports.ADMINS = process.env.ADMIN.split(",").map(str =>
 const admins = (exports.admins = ADMINS.map(str => str.toLowerCase()));
 
 /**
+ * Requires expiration time, info object and req
+ * Returns a JWT to be used by other functions.
+ * This is internal to this file only.
+ * @param {Object} info
+ * @param {Object} req
+ * @param {Integer} expTime
+ **/
+const getToken = (info, req, expTime) => {
+  // create a token
+  return jwt.sign(info, req.app.get("superSecret"), {
+    expiresIn: expTime,
+    issuer: "MangaDB by Rafase282"
+  });
+};
+/**
  * Generates JWT For User
  * Returns result code and standard information
  * Accessed at POST /api/v#/auth
@@ -50,10 +65,7 @@ exports.generateToken = (req, res) => {
             };
             // if user is found and password is right
             // create a token
-            const token = jwt.sign(info, req.app.get("superSecret"), {
-              expiresIn: expTime,
-              issuer: "MangaDB by Rafase282"
-            });
+            const token = getToken(info, req, expTime);
             // return the information including token as JSON
             const msg =
               `Log in successfull, ${req.body.username} ` +
@@ -80,6 +92,7 @@ const emailCallback = (err, msg) => {
 exports.generateOTP = (req, res) => {
   // find the user
   const email = req.body.email.toLowerCase();
+  const url = req.body.host;
   User.findOne(
     {
       email
@@ -100,16 +113,13 @@ exports.generateOTP = (req, res) => {
           email: user.email
         };
         // create a token
-        const token = jwt.sign(info, req.app.get("superSecret"), {
-          expiresIn: expTime,
-          issuer: "MangaDB by Rafase282"
-        });
+        const token = getToken(info, req, expTime);
         // return the information including token as JSON
         const msg =
           `A temporary token has been generated for ${email} ` +
           `you have ${expTime / 60} minutes to reset your password!`;
         dbHelper.resMsg(res, 200, true, msg, null);
-        sendMail(6, token, email, emailCallback);
+        sendMail(6, null, email, emailCallback, { url, token });
       }
     }
   );
