@@ -7,7 +7,7 @@ info:
     If you have any questions or want to contribute then [![Gitter](https://badges.gitter.im/Rafase282/Mangadb.svg)](https://gitter.im/Rafase282/Mangadb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
     To create an admin account, you must specify it as a comma separated list on the `.env` file.
-  version: "2.4.0"
+  version: "2.4.1"
   title: MangaDB Swagger
   termsOfService: http://helloreverb.com/terms/
   contact:

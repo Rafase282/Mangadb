@@ -44,7 +44,13 @@ const sendEmail = (exports.sendEmail = (mailOptions, callback) => {
   transporter.verify(verifyMail);
 });
 
-const customEmail = (exports.customEmail = (type, user, email, callback) => {
+const customEmail = (exports.customEmail = (
+  type,
+  user,
+  email,
+  callback,
+  extra = {}
+) => {
   mailOptions.to = email;
   switch (type) {
     case 0:
@@ -87,7 +93,8 @@ const customEmail = (exports.customEmail = (type, user, email, callback) => {
       mailOptions.subject = `Your temporary MangaDB's token.`;
       mailOptions.text = `A reset token was requested for ${email}. It will be valid only for 5 minutes.
 You will need to reset your password before then, otherwise a new token will be required.\n
-Your token is: ${user}\n
+Please use this link to reset your password ${extra.url}/?token=${extra.token}\n
+Your token is: ${extra.token}\n
 If you did not request this token, then please ignore this email.`;
       break;
   }
