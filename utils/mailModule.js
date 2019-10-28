@@ -67,35 +67,35 @@ const customEmail = (exports.customEmail = (
     case 2:
       // User Deleted
       mailOptions.subject = `Your account was succesfully deleted!`;
-      mailOptions.text = `Your MangaDB account ${user} was deleted.\n
-      If you did not request this change, then please change your password and check account integrity.`;
+      mailOptions.text = `Your MangaDB account ${user} was deleted.\n`+
+      `If you did not request this change, then please change your password and check account integrity.`;
       break;
     case 3:
       // All users but admin deleted
       mailOptions.subject = `All non admin users were deleted`;
-      mailOptions.text = `The admin ${user} has requested this action.\n
-      If you did not request this change, then please change your password and check account integrity.`;
+      mailOptions.text = `The admin ${user} has requested this action.\n`+
+      `If you did not request this change, then please change your password and check account integrity.`;
       break;
     case 4:
       // All user's mangas deleted
       mailOptions.subject = `All your mangas were succesfully deleted!`;
-      mailOptions.text = `All your manga records for MangaDB account ${user} were deleted.\n
-      If you did not request this change, then please change your password and check account integrity.`;
+      mailOptions.text = `All your manga records for MangaDB account ${user} were deleted.\n`+
+      `If you did not request this change, then please change your password and check account integrity.`;
       break;
     case 5:
       // All mangas for all users but admin deleted
       mailOptions.subject = `All non admin mangas were deleted!`;
-      mailOptions.text = `The admin ${user} has requested this action.\n
-      If you did not request this change, then please change your password and check account integrity.`;
+      mailOptions.text = `The admin ${user} has requested this action.\n`+
+      `If you did not request this change, then please change your password and check account integrity.`;
       break;
     case 6:
       // Temporary JWT has been emailed
       mailOptions.subject = `Your temporary MangaDB's token.`;
-      mailOptions.text = `A reset token was requested for ${email}. It will be valid only for 5 minutes.
-You will need to reset your password before then, otherwise a new token will be required.\n
-Please use this link to reset your password ${extra.url}/?token=${extra.token}\n
-Your token is: ${extra.token}\n
-If you did not request this token, then please ignore this email.`;
+      mailOptions.text = `A reset token was requested for ${email}. It will be valid only for 5 minutes.\n`+
+      `You will need to reset your password before then, otherwise a new token will be required.\n\n`+
+      `Please use this link to reset your password ${extra.url}/?token=${extra.token}&username=${extra.user}\n\n`+
+      `Your token is: ${extra.token}\n\n`+
+      `If you did not request this token, then please ignore this email.`;
       break;
   }
   sendEmail(mailOptions, callback);

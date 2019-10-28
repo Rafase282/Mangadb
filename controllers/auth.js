@@ -119,7 +119,11 @@ exports.generateOTP = (req, res) => {
           `A temporary token has been generated for ${email} ` +
           `you have ${expTime / 60} minutes to reset your password!`;
         dbHelper.resMsg(res, 200, true, msg, null);
-        sendMail(6, null, email, emailCallback, { url, token });
+        sendMail(6, null, email, emailCallback, {
+          url,
+          token,
+          user: user.username
+        });
       }
     }
   );

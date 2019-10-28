@@ -1,6 +1,6 @@
 {
   "name": "mangadb",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "A service to help users keep a good record of their favorite manga series",
   "main": "server.js",
   "scripts": {
@@ -28,8 +28,8 @@
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "codecov": "^3.6.1",
-    "eslint": "^6.5.1",
-    "eslint-config-prettier": "^6.4.0",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-prettier": "^3.1.1",
     "husky": "^3.0.9",
     "istanbul": "^0.4.5",
@@ -43,7 +43,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.7.6",
+    "mongoose": "^5.7.7",
     "nodemailer": "^6.3.1",
     "quickemailverification": "^1.0.3"
   },
