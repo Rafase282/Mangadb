@@ -10,8 +10,9 @@ MONGOLAB_URI="localhost:27017/mangadb"
 IP="localhost"
 SECRET="secretsecrets"
 PORT="8080"
-ADMIN="['Admin1, 'Admin2']"
+ADMIN="Admin1, Admin2"
 API_VERSION="v2"
+APP_URL=localhost:8081/reset
 
 # Email verification
 EV_KEY="quickemailverification account key"

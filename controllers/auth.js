@@ -92,7 +92,7 @@ const emailCallback = (err, msg) => {
 exports.generateOTP = (req, res) => {
   // find the user
   const email = req.body.email.toLowerCase();
-  const url = req.body.host;
+  const url = req.body.host || process.env.APP_URL;
   User.findOne(
     {
       email
