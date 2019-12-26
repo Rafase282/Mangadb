@@ -7,7 +7,7 @@ info:
     If you have any questions or want to contribute then [![Gitter](https://badges.gitter.im/Rafase282/Mangadb.svg)](https://gitter.im/Rafase282/Mangadb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
     To create an admin account, you must specify it as a comma separated list on the `.env` file.
-  version: "2.4.2"
+  version: "2.5.0"
   title: MangaDB Swagger
   termsOfService: http://helloreverb.com/terms/
   contact:
@@ -377,7 +377,7 @@ paths:
     put:
       tags:
         - Mangas
-      summary: Updates any and all manga fields.
+      summary: Updates any and all manga fields by manga id.
       description: >-
         This route allows to update the whole object or part of it. 
         If you want to update specific fields, 
@@ -421,7 +421,7 @@ paths:
     delete:
       tags:
         - Mangas
-      summary: Deletes target manga.
+      summary: Deletes target manga by id.
       description: Deleters the target manga for the specified username. It can also be used by the admin.
       operationId: delManga
       parameters:
@@ -458,12 +458,11 @@ paths:
     get:
       tags:
         - Mangas
-      summary: Get information on all mangas with the same title.
+      summary: Get information on a specific user's managa by its title.
       description: >-
-        Route for retrivng mangas by title for a target user. 
-        The respponse will be an array with all mangas with the same title for said user. 
-        For the admin to use these routes, the target username should still be used.
-      operationId: getMangasbyTitle
+        Route for retrivng the a specific manga. For the admin to use these routes,
+        the target username should still be used.
+      operationId: getManga
       parameters:
         - in: path
           name: username
@@ -471,15 +470,95 @@ paths:
           required: true
           type: string
         - in: path
-          name: manga_title
-          description: Target manga title.
+          name: id
+          description: Target manga id.
           required: true
           type: string
       responses:
         200:
           description: Ok
           schema:
-            $ref: '#/definitions/Mangas'
+            $ref: '#/definitions/Manga'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+    put:
+      tags:
+        - Mangas
+      summary: Updates any and all manga fields by Manga title.
+      description: >-
+        This route allows to update the whole object or part of it. 
+        If you want to update specific fields, 
+        then just add the fields you want to update only.
+      operationId: putManga
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: path
+          name: id
+          description: Target manga id.
+          required: true
+          type: string
+        - in: formData
+          name: varies
+          description: The field can vary depending on what you want to update. use any or all the fields of the `MangaObj`
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Manga'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+    delete:
+      tags:
+        - Mangas
+      summary: Deletes target manga by title.
+      description: Deleters the target manga for the specified username. It can also be used by the admin.
+      operationId: delManga
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: path
+          name: id
+          description: Target manga id.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Deleted'
         400:
           description: Bad Request
           schema:

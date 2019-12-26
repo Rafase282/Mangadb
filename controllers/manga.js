@@ -57,25 +57,20 @@ exports.postManga = (req, res) => {
  **/
 exports.getManga = (req, res) => {
   const username = req.params.username.toLowerCase();
-  const ok = `${req.params.id} found!`;
-  const noOk = `${req.params.id} not found!`;
-  const obj = { _id: req.params.id, username };
-  dbHelper.getData(req, res, Manga, obj, ok, noOk, auth);
-};
-/**
- * Finds Manga By Title
- * Returns the manga information.
- * Accessed at GET /api/v#/mangas/:username/title/:manga_title
- * @param {Object} req
- * @param {Object} res
- * @param {Null}
- **/
-exports.getMangasbyTitle = (req, res) => {
-  const username = req.params.username.toLowerCase();
-  const ok = `${req.params.manga_title} found!`;
-  const noOk = `${req.params.manga_title} not found!`;
-  const obj = { title: req.params.manga_title.toLowerCase(), username };
-  dbHelper.getData(req, res, Manga, obj, ok, noOk, auth);
+  let src,
+    obj = {};
+  if (req.params.id === null || req.params.id === undefined) {
+    //use title instead
+    src = req.params.manga_title.toLowerCase();
+    obj = { title: src, username };
+  } else {
+    //use id
+    src = req.params.id;
+    obj = { _id: src, username };
+  }
+  const ok = `${src} found!`;
+  const noOk = `${src} not found!`;
+  dbHelper.getData(req, res, Manga, obj, ok, noOk, auth, false, "findOne");
 };
 /**
  * Updates Manga By Title
@@ -91,21 +86,26 @@ exports.putManga = (req, res) => {
     dbHelper.inList(authFile.ADMINS, req.decoded.sub) ||
     req.decoded.sub === username
   ) {
-    Manga.findOne(
-      {
-        _id: req.params.id,
-        username
-      },
-      (err, manga) => {
-        if (err) {
-          dbHelper.resMsg(res, 400, false, err, null);
-        } else {
-          manga = dbHelper.updateMangaObj(req, manga);
-          const msg = `${manga.title} manga updated.`;
-          dbHelper.objSave(manga, res, msg);
-        }
+    let src,
+      obj = {};
+    if (req.params.id === null || req.params.id === undefined) {
+      //use title instead
+      src = req.params.manga_title.toLowerCase();
+      obj = { title: src, username };
+    } else {
+      //use id
+      src = req.params.id;
+      obj = { _id: src, username };
+    }
+    Manga.findOne(obj, (err, manga) => {
+      if (err) {
+        dbHelper.resMsg(res, 400, false, err, null);
+      } else {
+        manga = dbHelper.updateMangaObj(req, manga);
+        const msg = `${manga.title} manga updated.`;
+        dbHelper.objSave(manga, res, msg);
       }
-    );
+    });
   } else {
     dbHelper.resMsg(res, 403, false, auth, null);
   }
@@ -120,10 +120,20 @@ exports.putManga = (req, res) => {
  **/
 exports.delManga = (req, res) => {
   const username = req.params.username.toLowerCase();
-  const noOk = `Could not find ${req.params.id}`;
-  const ok = `Successfully deleted ${req.params.id}`;
-  const obj = { _id: req.params.id, username };
-  dbHelper.delData(req, res, Manga, obj, ok, noOk, auth);
+  let src,
+    obj = {};
+  if (req.params.id === null || req.params.id === undefined) {
+    //use title instead
+    src = req.params.manga_title.toLowerCase();
+    obj = { title: src, username };
+  } else {
+    //use id
+    src = req.params.id;
+    obj = { _id: src, username };
+  }
+  const ok = `Successfully deleted ${src}`;
+  const noOk = `${src} not found!`;
+  dbHelper.delData(req, res, Manga, obj, ok, noOk, auth, false, "deleteOne");
 };
 /**
  * Finds All Mangas By User

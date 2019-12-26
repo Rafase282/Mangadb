@@ -107,11 +107,12 @@ const delData = (exports.delData = (
   ok,
   noOk,
   auth,
-  skip = false
+  skip = false,
+  op = "deleteMany"
 ) => {
   const user = setUser(req.params.username, req);
   if (checkUser(req.decoded.sub, user)) {
-    db.deleteMany(obj, (err, data) => {
+    db[op](obj, (err, data) => {
       if (err) {
         resMsg(res, 400, false, err, null, skip);
       }
@@ -145,22 +146,25 @@ const getData = (exports.getData = (
   ok,
   noOk,
   auth,
-  skip = false
+  skip = false,
+  op = "find"
 ) => {
   const user = setUser(req.params.username, req);
   if (checkUser(req.decoded.sub, user)) {
-    db.find(obj, (err, data) => {
+    const errhandling = (err, data) => {
       if (err) {
         resMsg(res, 400, false, err, null);
       }
-      if (data === null || data.length < 1) {
+      if (data === null || data === undefined || data.length < 1) {
         resMsg(res, 404, false, noOk, null);
       } else {
         resMsg(res, 200, true, ok, data);
       }
-    });
+    };
+    //Performs action based on requester method
+    db[op](obj, errhandling);
   } else {
-    resMsg(res, 403, false, auth, null);
+    resMsg(res, 403, false, auth, null, skip);
   }
 });
 /**

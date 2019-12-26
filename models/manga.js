@@ -121,4 +121,6 @@ const MangaSchema = new mongoose.Schema({
 }).set("toObject", {
   retainKeyOrder: true
 });
+//Make unique compound index
+MangaSchema.index({ userId: 1, title: 1 }, { unique: true });
 module.exports = mongoose.model("Manga", MangaSchema);
