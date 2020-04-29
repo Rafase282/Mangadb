@@ -52,7 +52,12 @@ paths:
         - Index
       summary: Displays a welcome message.
       description: This route does notrequires a JWT. The usesr will get the swagger documentation.
-      operationId: getWelcome        
+      operationId: getAPI 
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Success'       
   /auth:
     post:
       tags:
@@ -95,13 +100,13 @@ paths:
     post:
       tags:
         - Authentication
-      summary: Authenticates existing users for using the API for one hour.
+      summary: Authenticates users for using the API for 5 minutes for password reset purposes..
       description: >-
-        This route does notrequires a JWT, but instead provides one 
+        This route does not requires a JWT, but instead provides one 
         for the user that expires in five minutes. The  response provides the 
         JWT along with some useful information. This is used to get temporary access to change
         a password. The token will be sent via email and not returned on the payload.
-      operationId: getToken
+      operationId: getResetToken
       parameters:
         - in: formData
           name: email
@@ -454,15 +459,15 @@ paths:
             $ref: '#/definitions/Error'
       security:
         - api_key: []
-  /mangas/{username}/title/{manga_title}:
+  /mangas/{username}/title/{id}:
     get:
       tags:
         - Mangas
-      summary: Get information on a specific user's managa by its title.
+      summary: Get information on a specific user's managa by its title or id.
       description: >-
         Route for retrivng the a specific manga. For the admin to use these routes,
         the target username should still be used.
-      operationId: getManga
+      operationId: getMangabyTitle
       parameters:
         - in: path
           name: username
@@ -471,7 +476,7 @@ paths:
           type: string
         - in: path
           name: id
-          description: Target manga id.
+          description: Target manga id or title.
           required: true
           type: string
       responses:
@@ -501,7 +506,7 @@ paths:
         This route allows to update the whole object or part of it. 
         If you want to update specific fields, 
         then just add the fields you want to update only.
-      operationId: putManga
+      operationId: putMangabyTitle
       parameters:
         - in: path
           name: username
@@ -510,7 +515,7 @@ paths:
           type: string
         - in: path
           name: id
-          description: Target manga id.
+          description: Target manga id or title.
           required: true
           type: string
         - in: formData
@@ -542,7 +547,7 @@ paths:
         - Mangas
       summary: Deletes target manga by title.
       description: Deleters the target manga for the specified username. It can also be used by the admin.
-      operationId: delManga
+      operationId: delMangabyTitle
       parameters:
         - in: path
           name: username
@@ -551,7 +556,7 @@ paths:
           type: string
         - in: path
           name: id
-          description: Target manga id.
+          description: Target manga id or title.
           required: true
           type: string
       responses:
