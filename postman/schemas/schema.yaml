@@ -31,6 +31,8 @@ securityDefinitions:
     description: >-
       This is actually a JSON Web Token (JWT) and it is required for all secured routes.
       There is an admin and regular users.
+security:
+    - api_key: []
 paths:
   /:
     get:
