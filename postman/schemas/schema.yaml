@@ -1,0 +1,984 @@
+swagger: "2.0"
+info:
+  description: |
+    MangaDB allows you to easily keep track of the mangas you are reading,
+    want to read, and have already finished reading.
+
+    If you have any questions or want to contribute then [![Gitter](https://badges.gitter.im/Rafase282/Mangadb.svg)](https://gitter.im/Rafase282/Mangadb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
+    To create an admin account, you must specify it as a comma separated list on the `.env` file.
+  version: "2.5.0"
+  title: MangaDB Swagger
+  termsOfService: http://helloreverb.com/terms/
+  contact:
+    name: rafase282@gmail.com
+  license:
+    name: MIT
+    url: https://github.com/Rafase282/Mangadb/blob/master/LICENSE
+host: mangadbv2.herokuapp.com
+basePath: /api/v2
+schemes:
+  - https
+consumes:
+  - application/x-www-form-urlencoded
+produces:
+  - application/json
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: x-access-token
+    in: header
+    description: >-
+      This is actually a JSON Web Token (JWT) and it is required for all secured routes.
+      There is an admin and regular users.
+paths:
+  /:
+    get:
+      tags:
+        - Index
+      summary: Displays a welcome message.
+      description: >-
+        This route does notrequires a JWT. The usesr will get a message pointing to the
+        documentation as there is nothign to do here.
+      operationId: getWelcome
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Success'
+  /api/v2:
+    get:
+      tags:
+        - Index
+      summary: Displays a welcome message.
+      description: This route does notrequires a JWT. The usesr will get the swagger documentation.
+      operationId: getAPI 
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Success'       
+  /auth:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticates existing users for using the API for one hour.
+      description: >-
+        This route does notrequires a JWT, but instead provides one for the user that expires in one hour.
+        The response provides the JWT along with some useful information.
+      operationId: getToken
+      parameters:
+        - in: formData
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: formData
+          name: password
+          description: User's password.
+          required: true
+          type: string
+          format: password
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Auth'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+  /reset:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticates users for using the API for 5 minutes for password reset purposes..
+      description: >-
+        This route does not requires a JWT, but instead provides one 
+        for the user that expires in five minutes. The  response provides the 
+        JWT along with some useful information. This is used to get temporary access to change
+        a password. The token will be sent via email and not returned on the payload.
+      operationId: getResetToken
+      parameters:
+        - in: formData
+          name: email
+          description: Target email.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Auth'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+  /mangas:
+    get:
+      tags:
+        - Mangas
+        - Administrators
+      summary: Gets a list of all mangas on the database.
+      description: >-
+        The admin uses this route to get a list of all the mangas and their data
+        regardless of the user. Good for checking when you don't have access to the databse directly.
+      operationId: getAllMangas
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Mangas'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+    delete:
+      tags:
+        - Mangas
+        - Administrators
+      summary: Deletes all mangas.
+      description: This deletes all the mangas for all the users, except the admin.
+      operationId: delMangas
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Deleted'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+  /mangas/{username}:
+    get:
+      tags:
+        - Mangas
+      summary: Returns a list of all the mangas the user has.
+      description: Users can only view their own content. However, the admin can also view it.
+      operationId: getMangas
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Mangas'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+    post:
+      tags:
+        - Mangas
+      summary: Creates new manga.
+      description: The manga title should be unique. Please see the `Manga Schema`.
+      operationId: postManga
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: formData
+          name: title
+          description: Manga's title.
+          required: true
+          type: string
+        - in: formData
+          name: author
+          description: Manga's author.
+          required: true
+          type: string
+        - in: formData
+          name: url
+          description: URL to read manga online.
+          required: true
+          type: string
+        - in: formData
+          name: userStatus
+          description: Whether the user is currently reading or not.
+          required: true
+          type: string
+        - in: formData
+          name: type
+          description: The type of manga.
+          required: true
+          type: string
+        - in: formData
+          name: categories
+          description: Categories for the manga.
+          required: true
+          type: string
+        - in: formData
+          name: chapter
+          description: Last chapter read.
+          required: true
+          type: integer
+          format: int32
+        - in: formData
+          name: seriesStatus
+          description: Whether the series is ongoing or not.
+          required: true
+          type: string
+        - in: formData
+          name: plot
+          description: Manga's plot.
+          required: true
+          type: string
+        - in: formData
+          name: altName
+          description: Alternate names for the manga.
+          required: true
+          type: string
+        - in: formData
+          name: direction
+          description: The reading direction of the manga.
+          required: true
+          type: string
+        - in: formData
+          name: thumbnail
+          description: Direct url to a thumbnail of the manga.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Manga'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+    delete:
+      tags:
+        - Mangas
+      summary: Deletes all mangas from target user
+      description: Route for users to delete their their mangas all at once or for the admin to do it.
+      operationId: delUserManga
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Deleted'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+  /mangas/{username}/{id}:
+    get:
+      tags:
+        - Mangas
+      summary: Get information on a specific user's managa by its ID.
+      description: >-
+        Route for retrivng the a specific manga. For the admin to use these routes,
+        the target username should still be used.
+      operationId: getManga
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: path
+          name: id
+          description: Target manga id.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Manga'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+    put:
+      tags:
+        - Mangas
+      summary: Updates any and all manga fields by manga id.
+      description: >-
+        This route allows to update the whole object or part of it. 
+        If you want to update specific fields, 
+        then just add the fields you want to update only.
+      operationId: putManga
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: path
+          name: id
+          description: Target manga id.
+          required: true
+          type: string
+        - in: formData
+          name: varies
+          description: The field can vary depending on what you want to update. use any or all the fields of the `MangaObj`
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Manga'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+    delete:
+      tags:
+        - Mangas
+      summary: Deletes target manga by id.
+      description: Deleters the target manga for the specified username. It can also be used by the admin.
+      operationId: delManga
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: path
+          name: id
+          description: Target manga id.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Deleted'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+  /mangas/{username}/title/{id}:
+    get:
+      tags:
+        - Mangas
+      summary: Get information on a specific user's managa by its title or id.
+      description: >-
+        Route for retrivng the a specific manga. For the admin to use these routes,
+        the target username should still be used.
+      operationId: getMangabyTitle
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: path
+          name: id
+          description: Target manga id or title.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Manga'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+    put:
+      tags:
+        - Mangas
+      summary: Updates any and all manga fields by Manga title.
+      description: >-
+        This route allows to update the whole object or part of it. 
+        If you want to update specific fields, 
+        then just add the fields you want to update only.
+      operationId: putMangabyTitle
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: path
+          name: id
+          description: Target manga id or title.
+          required: true
+          type: string
+        - in: formData
+          name: varies
+          description: The field can vary depending on what you want to update. use any or all the fields of the `MangaObj`
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Manga'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+    delete:
+      tags:
+        - Mangas
+      summary: Deletes target manga by title.
+      description: Deleters the target manga for the specified username. It can also be used by the admin.
+      operationId: delMangabyTitle
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: path
+          name: id
+          description: Target manga id or title.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Deleted'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+  /users:
+    get:
+      tags:
+        - Users
+        - Administrators
+      summary: Get a list of all the users in the database.
+      description: >-
+        The route provides an array of user objects containing the details of the users. 
+        However, passwords are always encrypted so admin can't read them.
+      operationId: getUsers
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Users'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+    post:
+      tags:
+        - Mangas
+      summary: Creates new user.
+      description: >-
+        The route creates new regular users. 
+        The only way to create an admin account is to specify the username in the server.
+      operationId: postUsers
+      parameters:
+        - in: formData
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: formData
+          name: password
+          description: Password.
+          required: true
+          type: string
+          format: password
+        - in: formData
+          name: email
+          description: User's email.
+          required: true
+          type: string
+        - in: formData
+          name: firstname
+          description: First name.
+          required: true
+          type: string
+        - in: formData
+          name: lastname
+          description: Last name.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      tags:
+        - Users
+        - Administrators
+      summary: Deletes all users but the admin.
+      description: >-
+        This route is for the administrator only. 
+        It allows the deleting of all users except the admin account.
+      operationId: delUsers
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Deleted'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+  /users/{username}:
+    get:
+      tags:
+        - Users
+      summary: Get specified user's data.
+      description: Route to retrieve user's information.
+      operationId: getUser
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+    put:
+      tags:
+        - Users
+      summary: Updates user's information.
+      description: >-
+        This route allows to update the whole object or part of it. 
+        If you want to update specific fields, then just add the fields you want to update only.
+      operationId: putUser
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+        - in: formData
+          name: varies
+          description: The field can vary depending on what you want to update. use any or all the fields of the `UserObj`
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+    delete:
+      tags:
+        - Users
+        - Administrators
+      summary: Deletes target user.
+      description: >-
+        This route deletes the target user. However, it does not deletes its mangas. 
+        So further action should be taken via `/mangas/{username`.
+      operationId: delUser
+      parameters:
+        - in: path
+          name: username
+          description: Target username.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/Deleted'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: No token provided
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Authentication failed.
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - api_key: []
+definitions:
+  UserObj:
+    type: object
+    required: [username, password, email, firstname, lastname]
+    properties:
+      username:
+        description: The username has to be unique.
+        type: string
+      password:
+        description: There are no limitations.
+        type: string
+        format: password
+      email:
+        description: There are no limitations.
+        type: string
+      firstname:
+        description: Only letters are allowed.
+        type: string
+      lastname:
+        description: Only letters are allowed.
+        type: string
+      __v:
+        type: integer
+        format: int32
+        description: This is generated by Mongodb
+      _id:
+        type: string
+        description: This is generated by Mongodb
+  MangaObj:
+    type: object
+    description: Manga Object.
+    required: [title, author, url, userStatus, type, categories, chapter, seriesStatus, plot, direction, thumbnail]
+    properties:
+      title:
+        type: string
+      author:
+        type: string
+      url:
+        type: string
+      userStatus:
+        type: string
+        description: It must be either of 'reading', 'finished' or 'will read'.
+      type:
+        type: string
+      categories:
+        type: array
+        items:
+          type: string
+        description: It will be a string that will be turned into an array separated by commas.
+      chapter:
+        type: integer
+        format: int32
+      seriesStatus:
+        type: string
+        description: It must be either of 'ongoing' or 'completed'.
+      plot:
+        type: string
+      altName:
+        type: array
+        items:
+          type: string
+        description: It will be a string that will be turned into an array separated by commas.
+      direction:
+        type: string
+        description: It must be either of 'left to right' or 'right to left'.
+      userId:
+        type: string
+        description: This is obtained internally.
+      username:
+        type: string
+        description: This is obtained internally.
+      thumbnail:
+        type: string
+      __v:
+        type: integer
+        format: int32
+        description: This is generated by Mongodb
+      _id:
+        type: string
+        description: This is generated by Mongodb
+  DeleteObj:
+    type: object
+    properties:
+      n:
+        type: integer
+        format: int32
+      ok:
+        description: 1 for true and 0 for false.
+        type: boolean
+        format: number
+  MangasArr:
+    type: array
+    description: An array of manga objects.
+    items:
+      $ref: '#/definitions/MangaObj'
+  UsersArr:
+    type: array
+    description: An array of user objects.
+    items:
+      $ref: '#/definitions/UserObj'
+  Error:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: True or false depending of the code.
+      message:
+        type: string
+        description: Message reporting action status.
+      data:
+        type: object
+        description: It is actually null.
+  Success:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: True or false depending of the code.
+      message:
+        type: string
+        description: Message reporting action status.
+      data:
+        type: object
+        description: This will be null.
+  Auth:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: True or false depending of the code.
+      message:
+        type: string
+        description: Message reporting action status.
+      data:
+        type: string
+        description: It will be either null or the data.
+  User:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: True or false depending of the code.
+      message:
+        type: string
+        description: Message reporting action status.
+      data:
+        $ref: '#/definitions/UserObj'
+  Users:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: True or false depending of the code.
+      message:
+        type: string
+        description: Message reporting action status.
+      data:
+        $ref: '#/definitions/UsersArr'
+  Manga:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: True or false depending of the code.
+      message:
+        type: string
+        description: Message reporting action status.
+      data:
+        $ref: '#/definitions/MangaObj'
+  Mangas:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: True or false depending of the code.
+      message:
+        type: string
+        description: Message reporting action status.
+      data:
+        $ref: '#/definitions/MangasArr'
+  Deleted:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: True or false depending of the code.
+      message:
+        type: string
+        description: Message reporting action status.
+      data:
+        $ref: '#/definitions/DeleteObj'
